@@ -1,75 +1,61 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { User, IUser } from '../models/User.js';
+import { Request, Response, NextFunction } from "express";
+import { auth } from "../config/auth.js";
 
-export interface AuthRequest extends Request {
-  user?: IUser;
+export interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string;
+    email: string;
+    name?: string;
+    image?: string;
+  };
+  session?: {
+    id: string;
+    userId: string;
+    expiresAt: Date;
+  };
 }
 
-export const authenticateToken = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const authenticateUser = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+    const session = await auth.api.getSession({
+      headers: req.headers,
+    });
 
-    if (!token) {
-      return res.status(401).json({ 
-        error: 'Access token required',
-        detail: 'No authorization token provided'
-      });
+    if (!session) {
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const jwtSecret = process.env.JWT_SECRET;
-    if (!jwtSecret) {
-      throw new Error('JWT_SECRET not configured');
-    }
-
-    const decoded = jwt.verify(token, jwtSecret) as { userId: string };
-    const user = await User.findById(decoded.userId);
-
-    if (!user) {
-      return res.status(401).json({ 
-        error: 'Invalid token',
-        detail: 'User not found'
-      });
-    }
-
-    req.user = user;
+    req.user = session.user;
+    req.session = session.session;
     next();
   } catch (error) {
-    if (error instanceof jwt.JsonWebTokenError) {
-      return res.status(401).json({ 
-        error: 'Invalid token',
-        detail: 'Token is malformed or expired'
-      });
-    }
-    
-    console.error('Authentication error:', error);
-    return res.status(500).json({ 
-      error: 'Authentication failed',
-      detail: 'Internal server error'
-    });
+    console.error("Authentication error:", error);
+    return res.status(401).json({ error: "Unauthorized" });
   }
 };
 
-export const optionalAuth = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const optionalAuth = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(' ')[1];
+    const session = await auth.api.getSession({
+      headers: req.headers,
+    });
 
-    if (token) {
-      const jwtSecret = process.env.JWT_SECRET;
-      if (jwtSecret) {
-        const decoded = jwt.verify(token, jwtSecret) as { userId: string };
-        const user = await User.findById(decoded.userId);
-        if (user) {
-          req.user = user;
-        }
-      }
+    if (session) {
+      req.user = session.user;
+      req.session = session.session;
     }
     
     next();
   } catch (error) {
-    // For optional auth, we don't fail on token errors
+    // Continue without authentication for optional auth
     next();
   }
 };

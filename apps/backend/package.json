@@ -1,47 +1,38 @@
 {
   "name": "aipet-backend",
-  "version": "1.0.0",
-  "description": "Express backend for AIPet application",
-  "main": "dist/index.js",
+  "version": "0.0.1",
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "lint": "eslint src --ext .ts",
-    "test": "jest"
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "express": "^4.18.2",
+    "express": "^4.19.2",
     "cors": "^2.8.5",
     "helmet": "^7.1.0",
-    "express-rate-limit": "^7.1.5",
-    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "dotenv": "^16.4.5",
+    "better-auth": "^0.7.0",
+    "drizzle-orm": "^0.33.0",
+    "postgres": "^3.4.4",
     "bcryptjs": "^2.4.3",
-    "express-session": "^1.17.3",
-    "connect-mongo": "^5.1.0",
-    "mongoose": "^8.0.3",
-    "express-validator": "^7.0.1",
-    "dotenv": "^16.3.1",
-    "uuid": "^9.0.1"
+    "jsonwebtoken": "^9.0.2",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
     "@types/cors": "^2.8.17",
-    "@types/jsonwebtoken": "^9.0.5",
+    "@types/morgan": "^1.9.9",
     "@types/bcryptjs": "^2.4.6",
-    "@types/express-session": "^1.17.10",
-    "@types/uuid": "^9.0.7",
-    "@types/node": "^20.10.5",
-    "typescript": "^5.3.3",
-    "tsx": "^4.6.2",
-    "eslint": "^8.56.0",
-    "@typescript-eslint/eslint-plugin": "^6.15.0",
-    "@typescript-eslint/parser": "^6.15.0",
-    "jest": "^29.7.0",
-    "@types/jest": "^29.5.11"
-  },
-  "keywords": ["express", "api", "authentication", "aipet"],
-  "author": "noel wilson",
-  "license": "MIT"
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^22.13.14",
+    "typescript": "^5.8.2",
+    "tsx": "^4.19.2",
+    "drizzle-kit": "^0.24.0"
+  }
 }

@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from "express";
 
 export interface AppError extends Error {
   statusCode?: number;
@@ -6,48 +6,43 @@ export interface AppError extends Error {
 }
 
 export const errorHandler = (
-  error: AppError,
+  err: AppError,
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  let { statusCode = 500, message } = error;
+  let error = { ...err };
+  error.message = err.message;
 
-  // Log error for debugging
-  console.error('Error:', {
-    message: error.message,
-    stack: error.stack,
-    url: req.url,
-    method: req.method,
-    ip: req.ip,
-    userAgent: req.get('User-Agent'),
-  });
+  // Log error
+  console.error(err);
 
-  // Handle specific error types
-  if (error.name === 'ValidationError') {
-    statusCode = 400;
-    message = 'Validation Error';
-  } else if (error.name === 'CastError') {
-    statusCode = 400;
-    message = 'Invalid ID format';
-  } else if (error.name === 'MongoError' && (error as any).code === 11000) {
-    statusCode = 409;
-    message = 'Duplicate field value';
-  } else if (error.name === 'JsonWebTokenError') {
-    statusCode = 401;
-    message = 'Invalid token';
-  } else if (error.name === 'TokenExpiredError') {
-    statusCode = 401;
-    message = 'Token expired';
+  // Mongoose bad ObjectId
+  if (err.name === "CastError") {
+    const message = "Resource not found";
+    error = { message, statusCode: 404 } as AppError;
   }
 
-  // Don't leak error details in production
-  if (process.env.NODE_ENV === 'production' && statusCode === 500) {
-    message = 'Internal server error';
+  // Mongoose duplicate key
+  if (err.name === "MongoError" && (err as any).code === 11000) {
+    const message = "Duplicate field value entered";
+    error = { message, statusCode: 400 } as AppError;
   }
 
-  res.status(statusCode).json({
-    error: message,
-    ...(process.env.NODE_ENV === 'development' && { stack: error.stack }),
+  // Mongoose validation error
+  if (err.name === "ValidationError") {
+    const message = Object.values((err as any).errors).map((val: any) => val.message);
+    error = { message: message.join(", "), statusCode: 400 } as AppError;
+  }
+
+  res.status(error.statusCode || 500).json({
+    success: false,
+    error: error.message || "Server Error",
   });
+};
+
+export const notFound = (req: Request, res: Response, next: NextFunction) => {
+  const error = new Error(`Not Found - ${req.originalUrl}`) as AppError;
+  error.statusCode = 404;
+  next(error);
 };

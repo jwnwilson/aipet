@@ -1,150 +1,170 @@
-# AIPet Backend
+# AI Pet Backend
 
-Express.js backend API for the AIPet application with JWT-based authentication and MongoDB integration.
+A Node.js Express backend application with authentication using Better Auth and PostgreSQL with Drizzle ORM.
 
 ## Features
 
-- **Authentication**: JWT-based authentication with access and refresh tokens
-- **User Management**: User registration, login, email verification, password reset
-- **Security**: CSRF protection, rate limiting, input validation, password hashing
-- **Database**: MongoDB with Mongoose ODM
-- **API Endpoints**: RESTful API matching the frontend client expectations
+- 🔐 **Authentication**: Better Auth with email/password and OAuth support
+- 🗄️ **Database**: PostgreSQL with Drizzle ORM
+- 🐾 **Pet Management**: CRUD operations for virtual pets
+- 📊 **Activity Tracking**: Log and track pet activities
+- 🛡️ **Security**: Helmet, CORS, and input validation
+- 📝 **Logging**: Morgan HTTP request logger
 
-## API Endpoints
+## Tech Stack
 
-### Authentication
-- `POST /api/v1/auth/signup` - User registration
-- `POST /api/v1/auth/login` - User login
-- `GET /api/v1/auth/verify/:token` - Email verification
-- `POST /api/v1/auth/resend-verification` - Resend verification email
-- `POST /api/v1/auth/password-reset/request` - Request password reset
-- `POST /api/v1/auth/password-reset/confirm` - Confirm password reset
-- `GET /api/v1/auth/profile` - Get user profile
-- `PUT /api/v1/auth/profile` - Update user profile
+- **Runtime**: Node.js with TypeScript
+- **Framework**: Express.js
+- **Authentication**: Better Auth
+- **Database**: PostgreSQL
+- **ORM**: Drizzle ORM
+- **Validation**: Zod
+- **Security**: Helmet, CORS
 
-### Token Management
-- `POST /api/v1/token/pair` - Get access and refresh tokens (login compatibility)
-- `POST /api/v1/token/refresh` - Refresh access token
-- `POST /api/v1/token/logout` - Logout (client-side token removal)
-- `GET /api/v1/token/verify` - Verify token validity
+## Getting Started
 
-### CSRF Protection
-- `GET /api/v1/csrf/token` - Get CSRF token
-- `POST /api/v1/csrf/verify` - Verify CSRF token
+### Prerequisites
 
-### AI Pet
-- `POST /api/v1/aipet/recommendations` - Get pet action recommendations
-- `GET /api/v1/aipet/status` - Get pet status
-- `POST /api/v1/aipet/status` - Update pet status
+- Node.js (v18 or higher)
+- PostgreSQL database
+- pnpm package manager
 
-## Setup
+### Installation
 
-1. **Install dependencies**:
+1. Install dependencies:
    ```bash
    pnpm install
    ```
 
-2. **Environment Configuration**:
-   Copy `env.example` to `.env` and configure:
+2. Set up environment variables:
    ```bash
    cp env.example .env
    ```
 
-   Required environment variables:
-   - `PORT`: Server port (default: 8000)
-   - `MONGODB_URI`: MongoDB connection string
-   - `JWT_SECRET`: Secret for JWT access tokens
-   - `JWT_REFRESH_SECRET`: Secret for JWT refresh tokens
-   - `SESSION_SECRET`: Secret for session management
-   - `CORS_ORIGIN`: Allowed CORS origin (default: http://localhost:5173)
+3. Update the `.env` file with your database credentials:
+   ```env
+   DATABASE_URL=postgresql://username:password@localhost:5432/aipet_db
+   BETTER_AUTH_SECRET=your-secret-key-here
+   BETTER_AUTH_URL=http://localhost:3001
+   PORT=3001
+   NODE_ENV=development
+   CORS_ORIGIN=http://localhost:5173
+   ```
 
-3. **Database Setup**:
-   Make sure MongoDB is running and accessible at the configured URI.
+4. Generate and run database migrations:
+   ```bash
+   pnpm db:generate
+   pnpm db:migrate
+   ```
 
-4. **Development**:
+5. Start the development server:
    ```bash
    pnpm dev
    ```
 
-5. **Production Build**:
-   ```bash
-   pnpm build
-   pnpm start
-   ```
+The server will start on `http://localhost:3001`
 
-## Security Features
+## API Endpoints
 
-- **Password Hashing**: bcrypt with salt rounds
-- **JWT Tokens**: Secure token-based authentication
-- **CSRF Protection**: Session-based CSRF tokens
-- **Rate Limiting**: Configurable request rate limits
-- **Input Validation**: Comprehensive request validation
-- **CORS**: Configurable cross-origin resource sharing
-- **Helmet**: Security headers middleware
+### Authentication
+- `POST /api/auth/sign-up` - User registration
+- `POST /api/auth/sign-in` - User login
+- `POST /api/auth/sign-out` - User logout
+- `GET /api/auth/me` - Get current user
+- `GET /api/auth/session` - Get current session
+
+### Pets
+- `GET /api/pets` - Get all user's pets
+- `GET /api/pets/:id` - Get specific pet
+- `POST /api/pets` - Create new pet
+- `PUT /api/pets/:id` - Update pet
+- `DELETE /api/pets/:id` - Delete pet
+- `GET /api/pets/:id/activities` - Get pet activities
+- `POST /api/pets/:id/activities` - Add pet activity
+
+### Health
+- `GET /health` - Health check endpoint
 
 ## Database Schema
 
-### User Model
-```typescript
-{
-  username: string (unique, 3-30 chars)
-  email: string (unique, validated)
-  password: string (hashed, min 6 chars)
-  firstName: string (1-50 chars)
-  lastName: string (1-50 chars)
-  isEmailVerified: boolean
-  emailVerificationToken?: string
-  passwordResetToken?: string
-  passwordResetExpires?: Date
-  createdAt: Date
-  updatedAt: Date
-}
-```
+### Users
+- `id` (UUID, Primary Key)
+- `email` (String, Unique)
+- `name` (String, Optional)
+- `emailVerified` (Boolean)
+- `image` (String, Optional)
+- `createdAt` (Timestamp)
+- `updatedAt` (Timestamp)
+
+### Pets
+- `id` (UUID, Primary Key)
+- `userId` (UUID, Foreign Key)
+- `name` (String)
+- `species` (String)
+- `breed` (String, Optional)
+- `age` (Integer, Optional)
+- `health` (Integer, 0-100)
+- `happiness` (Integer, 0-100)
+- `hunger` (Integer, 0-100)
+- `energy` (Integer, 0-100)
+- `createdAt` (Timestamp)
+- `updatedAt` (Timestamp)
+
+### Pet Activities
+- `id` (UUID, Primary Key)
+- `petId` (UUID, Foreign Key)
+- `activity` (String)
+- `description` (String, Optional)
+- `createdAt` (Timestamp)
 
 ## Development
 
-The backend is designed to work seamlessly with the frontend webapp. The API endpoints match the expectations of the frontend API client in `apps/webapp/src/api/client.ts`.
+### Available Scripts
 
-### Testing
+- `pnpm dev` - Start development server with hot reload
+- `pnpm build` - Build the application
+- `pnpm start` - Start production server
+- `pnpm db:generate` - Generate database migrations
+- `pnpm db:migrate` - Run database migrations
+- `pnpm db:studio` - Open Drizzle Studio
 
-Run the test suite:
-```bash
-pnpm test
+### Project Structure
+
+```
+src/
+├── config/
+│   ├── auth.ts          # Better Auth configuration
+│   └── database.ts      # Database connection
+├── middleware/
+│   ├── auth.ts          # Authentication middleware
+│   └── errorHandler.ts  # Error handling middleware
+├── models/
+│   └── schema.ts        # Database schema definitions
+├── routes/
+│   ├── auth.ts          # Authentication routes
+│   └── pets.ts          # Pet management routes
+└── index.ts             # Main application entry point
 ```
 
-### Linting
+## Environment Variables
 
-Run ESLint:
-```bash
-pnpm lint
-```
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DATABASE_URL` | PostgreSQL connection string | Required |
+| `BETTER_AUTH_SECRET` | Secret key for Better Auth | Required |
+| `BETTER_AUTH_URL` | Base URL for Better Auth | `http://localhost:3001` |
+| `PORT` | Server port | `3001` |
+| `NODE_ENV` | Environment mode | `development` |
+| `CORS_ORIGIN` | CORS allowed origin | `http://localhost:5173` |
 
-## Deployment
+## Contributing
 
-The backend can be deployed to any Node.js hosting platform. Make sure to:
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
-1. Set all required environment variables
-2. Configure MongoDB connection
-3. Set up proper CORS origins for production
-4. Use HTTPS in production
-5. Configure proper rate limiting for your use case
+## License
 
-## API Compatibility
-
-This backend is designed to be compatible with the existing frontend API client. All endpoints return responses in the expected format:
-
-```typescript
-// Success response
-{
-  data?: any;
-  message?: string;
-  status: number;
-}
-
-// Error response
-{
-  error: string;
-  detail?: string;
-  status: number;
-}
-```
+This project is licensed under the MIT License.
