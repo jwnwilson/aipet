@@ -1,0 +1,8 @@
+Model Information:
+* title:	Minecraft Inspired Bed
+* source:	https://sketchfab.com/3d-models/minecraft-inspired-bed-57baa63d8afa40cf93a5c12f693e5784
+* author:	Leb (https://sketchfab.com/royalpc1)
+
+Model License:
+* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
+* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works

@@ -1,0 +1,112 @@
+{
+  "needs": [
+    {
+      "name": "FoodNeed",
+      "position": {
+        "x": 5,
+        "y": 0,
+        "z": 0
+      },
+      "size": 2,
+      "color": {
+        "r": 1,
+        "g": 0,
+        "b": 0
+      },
+      "mass": 1,
+      "isStatic": true,
+      "isVisible": true,
+      "objectType": "food"
+    },
+    {
+      "name": "WaterNeed",
+      "position": {
+        "x": -5,
+        "y": 0.5,
+        "z": 0
+      },
+      "size": 2,
+      "color": {
+        "r": 0,
+        "g": 0,
+        "b": 1
+      },
+      "mass": 1,
+      "isStatic": true,
+      "isVisible": true,
+      "objectType": "food"
+    },
+    {
+      "name": "ToyNeed",
+      "position": {
+        "x": 0,
+        "y": 0.5,
+        "z": 5
+      },
+      "size": 3,
+      "color": {
+        "r": 1,
+        "g": 1,
+        "b": 0
+      },
+      "mass": 2,
+      "isStatic": true,
+      "isVisible": true,
+      "objectType": "toy"
+    },
+    {
+      "name": "SleepNeed",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": -5
+      },
+      "size": 1,
+      "color": {
+        "r": 0.5,
+        "g": 0.5,
+        "b": 1
+      },
+      "mass": 3,
+      "isStatic": true,
+      "isVisible": true,
+      "objectType": "bed"
+    },
+    {
+      "name": "ExerciseNeed",
+      "position": {
+        "x": 8,
+        "y": 0.5,
+        "z": 8
+      },
+      "size": 2,
+      "color": {
+        "r": 0,
+        "g": 1,
+        "b": 0
+      },
+      "mass": 1.5,
+      "isStatic": true,
+      "isVisible": true,
+      "objectType": "toy"
+    },
+    {
+      "name": "ToiletNeed",
+      "position": {
+        "x": -8,
+        "y": 0,
+        "z": -8
+      },
+      "size": 2,
+      "color": {
+        "r": 0,
+        "g": 1,
+        "b": 0
+      },
+      "mass": 1.5,
+      "isStatic": true,
+      "isVisible": true,
+      "objectType": "toilet"
+    }
+  ]
+} 
