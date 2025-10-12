@@ -31,7 +31,10 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 // Better-auth middleware
-app.use("/api/auth", auth.handler);
+app.use("/api/auth", (req, res, next) => {
+  console.log("Auth request:", req.method, req.url, req.headers.host);
+  return auth.handler(req, res, next);
+});
 
 // API routes
 app.use("/api/auth", authRoutes);

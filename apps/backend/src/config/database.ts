@@ -6,6 +6,8 @@ config();
 
 const connectionString = process.env.DATABASE_URL!;
 
+console.log("Connection string:", connectionString);
+
 // Create the connection
 const client = postgres(connectionString);
 
