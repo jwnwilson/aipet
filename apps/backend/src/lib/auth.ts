@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "./database.js";
-import { users, sessions, accounts, verifications } from "../models/schema.js";
+import { db } from "../models/database";
+import { users, sessions, accounts, verifications } from "../models/schema";
 import { config } from "dotenv";
 
 config();

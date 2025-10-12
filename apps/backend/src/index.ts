@@ -3,7 +3,8 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import { config } from "dotenv";
-import { auth } from "./config/auth.js";
+import { auth } from "./lib/auth.js";
+import { toNodeHandler } from "better-auth/node";
 import authRoutes from "./routes/auth.js";
 import petRoutes from "./routes/pets.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
@@ -26,18 +27,14 @@ app.use(cors({
 // Logging middleware
 app.use(morgan("combined"));
 
+app.use("/api/auth", authRoutes);
+app.all("/api/auth/*", toNodeHandler(auth));
+
 // Body parsing middleware
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// Better-auth middleware
-app.use("/api/auth", (req, res, next) => {
-  console.log("Auth request:", req.method, req.url, req.headers.host);
-  return auth.handler(req, res, next);
-});
-
 // API routes
-app.use("/api/auth", authRoutes);
 app.use("/api/pets", petRoutes);
 
 // Health check endpoint

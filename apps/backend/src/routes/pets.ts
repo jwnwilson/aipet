@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { eq, and } from "drizzle-orm";
-import { db } from "../config/database.js";
+import { db } from "../models/database";
 import { pets, petActivities } from "../models/schema.js";
 import { authenticateUser, AuthenticatedRequest } from "../middleware/auth.js";
 import { z } from "zod";
