@@ -4,7 +4,10 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "debug": "ts-node-dev --respawn --inspect --transpile-only src/index.ts",
+    "dev": "ts-node-dev --respawn --inspect --transpile-only src/index.ts",
+    "start": "ts-node --transpile-only src/index.ts",
+    "build": "tsc && cp -r public dist"
   },
   "keywords": [],
   "author": "",
@@ -15,11 +18,16 @@
     "@colyseus/monitor": "^0.15.8",
     "@colyseus/schema": "^2.0.37",
     "@colyseus/ws-transport": "^0.15.3",
+    "axios": "^1.13.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.18.2",
     "nanoid": "^3.0.0",
+    "qs": "^6.14.1",
     "sqlite3": "^5.1.7",
     "winston": "^3.13.0"
+  },
+  "devDependencies": {
+    "ts-node-dev": "^2.0.0"
   }
 }

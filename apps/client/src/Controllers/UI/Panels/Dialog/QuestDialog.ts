@@ -2,8 +2,8 @@ import { StackPanel } from "@babylonjs/gui/2D/controls/stackPanel";
 import { TextBlock, TextWrapping } from "@babylonjs/gui/2D/controls/textBlock";
 import { Panel_Dialog } from "../..";
 import { Button } from "@babylonjs/gui/2D/controls/button";
-import { Quest, QuestObjective, QuestObjectiveMap, QuestStatus, ServerMsg } from "../../../../../shared/types";
-import { QuestsHelper } from "../../../../../shared/Class/QuestsHelper";
+import { Quest, QuestObjective, QuestObjectiveMap, QuestStatus, ServerMsg } from "../../../../../../shared/types";
+import { QuestsHelper } from "../../../../../../shared/Class/QuestsHelper";
 import { Control } from "@babylonjs/gui/2D/controls/control";
 import { GameController } from "../../../GameController";
 

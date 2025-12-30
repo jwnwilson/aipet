@@ -8,7 +8,7 @@ import { Room } from "colyseus.js";
 import { UserInterface } from "../Controllers/UserInterface";
 import { PlayerInput } from "../Controllers/PlayerInput";
 
-import { randomNumberInRange } from "../../shared/Utils";
+import { randomNumberInRange } from "../../../shared/Utils";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { GameController } from "../Controllers/GameController";
 import { EntityNamePlate } from "./Entity/EntityNamePlate";

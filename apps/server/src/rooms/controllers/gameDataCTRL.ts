@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { Ability, Race, Item, Quest } from "../../../shared/types";
+import { Ability, Race, Item, Quest } from "../../../../shared/types";
 
 export class gameDataCTRL {
     private _gameData = {

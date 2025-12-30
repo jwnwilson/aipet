@@ -4,7 +4,7 @@ import { Scene } from "@babylonjs/core/scene";
 import { generatePanel, getBg } from "./Theme";
 import { Button } from "@babylonjs/gui/2D/controls/button";
 import { Rectangle } from "@babylonjs/gui/2D/controls/rectangle";
-import { ServerMsg } from "../../../shared/types";
+import { ServerMsg } from "../../../../shared/types";
 import { UserInterface } from "../UserInterface";
 
 export class RessurectBox {

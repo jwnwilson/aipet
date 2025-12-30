@@ -5,7 +5,7 @@ import { ItemsDB } from "./data/ItemDB";
 import { QuestsDB } from "./data/QuestsDB";
 import { HelpDB } from "./data/HelpDB";
 
-import { Ability, Race, Item, Quest } from "../shared/types";
+import { Ability, Race, Item, Quest } from "../../shared/types";
 
 export class GameData {
     public static get(type, key) {

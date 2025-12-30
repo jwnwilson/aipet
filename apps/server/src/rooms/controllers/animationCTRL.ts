@@ -1,5 +1,5 @@
 import { clearTimeout } from "timers";
-import { EntityState } from "../../../shared/types";
+import { EntityState } from "../../../../shared/types";
 import { GameRoomState } from "../state/GameRoomState";
 
 export class animationCTRL {

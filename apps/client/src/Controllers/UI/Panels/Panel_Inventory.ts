@@ -3,8 +3,8 @@ import { Image } from "@babylonjs/gui/2D/controls/image";
 import { TextBlock } from "@babylonjs/gui/2D/controls/textBlock";
 import { Control } from "@babylonjs/gui/2D/controls/control";
 import { Grid } from "@babylonjs/gui/2D/controls/grid";
-import { Item, ServerMsg } from "../../../../shared/types";
-import { Rarity } from "../../../../shared/Class/Rarity";
+import { Item, ServerMsg } from "../../../../../shared/types";
+import { Rarity } from "../../../../../shared/Class/Rarity";
 import { Panel } from "./Panel";
 
 export class Panel_Inventory extends Panel {

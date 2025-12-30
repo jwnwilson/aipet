@@ -7,8 +7,8 @@ import { Scene } from "@babylonjs/core/scene";
 import { StackPanel } from "@babylonjs/gui/2D/controls/stackPanel";
 import { generatePanel } from "./Theme";
 import { GameController } from "../GameController";
-import { CalculationTypes } from "../../../shared/types";
-import { Rarity } from "../../../shared/Class/Rarity";
+import { CalculationTypes } from "../../../../shared/types";
+import { Rarity } from "../../../../shared/Class/Rarity";
 
 export class Tooltip {
     private _playerUI;

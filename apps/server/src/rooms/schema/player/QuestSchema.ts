@@ -1,6 +1,6 @@
 import { Schema, type } from "@colyseus/schema";
 import { GameData } from "../../../gameData";
-import { QuestObjective } from "../../../../shared/types";
+import { QuestObjective } from "../../../../../shared/types";
 
 export class QuestSchema extends Schema {
     // networked player specific

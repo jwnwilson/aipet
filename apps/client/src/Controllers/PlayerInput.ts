@@ -5,7 +5,7 @@ import { GameController } from "./GameController";
 import { UserInterface } from "./UserInterface";
 import { GameScene } from "../Screens/GameScene";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
-import { ServerMsg } from "../../shared/types";
+import { ServerMsg } from "../../../shared/types";
 
 export class PlayerInput {
     private _gameScene: GameScene;

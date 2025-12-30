@@ -1,4 +1,4 @@
-import State from "../client/Screens/Screens";
+import State from "../client/src/Screens/Screens";
 
 class Config {
     // general settings

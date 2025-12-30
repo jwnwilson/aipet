@@ -4,7 +4,7 @@ import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { Scene } from "@babylonjs/core/scene";
-import { generateRandomId, randomNumberInRange } from "../../../shared/Utils";
+import { generateRandomId, randomNumberInRange } from "../../../../shared/Utils";
 import { Entity } from "../Entity";
 import { Item } from "../Item";
 

@@ -14,10 +14,10 @@ import { EntityNamePlate } from "./Entity/EntityNamePlate";
 import { EntityActions } from "./Entity/EntityActions";
 import { EntityMesh } from "./Entity/EntityMesh";
 
-import { UserInterface } from "../../client/Controllers/UserInterface";
+import { UserInterface } from "../../../client/src/Controllers/UserInterface";
 import { AI_STATE } from "./Entity/AIState";
-import { EntityState } from "../../shared/types";
-import { PlayerInput } from "../../client/Controllers/PlayerInput";
+import { EntityState } from "../../../shared/types";
+import { PlayerInput } from "../../../client/src/Controllers/PlayerInput";
 
 import { GameController } from "../Controllers/GameController";
 import { GameScene } from "../Screens/GameScene";

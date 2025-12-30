@@ -5,8 +5,8 @@ import { Control } from "@babylonjs/gui/2D/controls/control";
 import { applyTheme, createButton } from "../Theme";
 import { TextBlock } from "@babylonjs/gui/2D/controls/textBlock";
 import { Image } from "@babylonjs/gui/2D/controls/image";
-import { ServerMsg } from "../../../../shared/types";
-import { Rarity } from "../../../../shared/Class/Rarity";
+import { ServerMsg } from "../../../../../shared/types";
+import { Rarity } from "../../../../../shared/Class/Rarity";
 
 export class Panel_Character extends Panel {
     // inventory tab

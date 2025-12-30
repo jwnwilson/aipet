@@ -1,6 +1,6 @@
 import { AnimationGroup } from "@babylonjs/core/Animations/animationGroup";
 import { Entity } from "../Entity";
-import { EntityState } from "../../../shared/types";
+import { EntityState } from "../../../../shared/types";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 
 export class EntityAnimator {

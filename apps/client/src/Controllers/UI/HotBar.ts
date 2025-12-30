@@ -5,7 +5,7 @@ import { Image } from "@babylonjs/gui/2D/controls/image";
 import { Player } from "../../Entities/Player";
 import { generatePanel, getBg, getPadding } from "./Theme";
 import { GameController } from "../GameController";
-import { ServerMsg } from "../../../shared/types";
+import { ServerMsg } from "../../../../shared/types";
 import { Room } from "colyseus.js";
 import { UserInterface } from "../UserInterface";
 

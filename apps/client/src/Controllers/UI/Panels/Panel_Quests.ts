@@ -4,8 +4,8 @@ import { ScrollViewer } from "@babylonjs/gui/2D/controls/scrollViewers/scrollVie
 import { Control } from "@babylonjs/gui/2D/controls/control";
 import { StackPanel } from "@babylonjs/gui/2D/controls/stackPanel";
 import { TextBlock, TextWrapping } from "@babylonjs/gui/2D/controls/textBlock";
-import { QuestObjectives } from "../../../../shared/types";
-import { QuestsHelper } from "../../../../shared/Class/QuestsHelper";
+import { QuestObjectives } from "../../../../../shared/types";
+import { QuestsHelper } from "../../../../../shared/Class/QuestsHelper";
 
 export class Panel_Quests extends Panel {
     private panel: Rectangle;

@@ -40,7 +40,7 @@ import { HighlightLayer } from "@babylonjs/core/Layers/highlightLayer";
 import { Panel } from "./UI/Panels/Panel";
 import { GameController } from "./GameController";
 import { StackPanel } from "@babylonjs/gui/2D/controls/stackPanel";
-import { ServerMsg } from "../../shared/types";
+import { ServerMsg } from "../../../shared/types";
 
 export class UserInterface {
     public _game: GameController;

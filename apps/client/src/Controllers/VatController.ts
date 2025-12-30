@@ -9,7 +9,7 @@ import { AnimationGroup } from "@babylonjs/core/Animations/animationGroup";
 import { mergeMesh, mergeMeshAndSkeleton } from "../Entities/Common/MeshHelper";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
-import { EntityState, EquippableType, Item, PlayerSlots } from "../../shared/types";
+import { EntityState, EquippableType, Item, PlayerSlots } from "../../../shared/types";
 import { VertexBuffer } from "@babylonjs/core/Buffers/buffer";
 import { Entity } from "../Entities/Entity";
 import { PBRCustomMaterial } from "@babylonjs/materials/custom/pbrCustomMaterial";

@@ -1,6 +1,6 @@
 import { Schema, type } from "@colyseus/schema";
-import { GameData } from "../../../gameData";
-import { ItemClass } from "../../../../shared/types";
+import { GameData } from "../../../../src/gameData";
+import { ItemClass } from "../../../../../shared/types";
 
 export class HotbarSchema extends Schema {
     // networked player specific

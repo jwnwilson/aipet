@@ -93,7 +93,7 @@ class Database {
 
     async saveUser(username: string, password: string, token: string = nanoid()) {
         let lastId = await this.querier.run(`INSERT INTO users (username, password, token) VALUES (?,?,?)`, [username, password, token]);
-        return await this.getUserById(lastId);
+        return await this.getUserById(lastId as number);
     }
 
     ///////////////////////////////////////

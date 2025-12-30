@@ -11,7 +11,7 @@ import { StackPanel } from "@babylonjs/gui/2D/controls/stackPanel";
 import { CascadedShadowGenerator } from "@babylonjs/core/Lights/Shadows/cascadedShadowGenerator";
 import { DirectionalLight } from "@babylonjs/core/Lights/directionalLight";
 import State from "./Screens";
-import { generateRandomPlayerName } from "../../shared/Utils";
+import { generateRandomPlayerName } from "../../../shared/Utils";
 import { apiUrl } from "../Utils";
 import { Rectangle } from "@babylonjs/gui/2D/controls/rectangle";
 import { TextBlock, TextWrapping } from "@babylonjs/gui/2D/controls/textBlock";

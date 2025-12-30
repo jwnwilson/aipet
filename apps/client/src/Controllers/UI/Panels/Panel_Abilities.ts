@@ -7,7 +7,7 @@ import { StackPanel } from "@babylonjs/gui/2D/controls/stackPanel";
 import { Button } from "@babylonjs/gui/2D/controls/button";
 import { applyTheme } from "../Theme";
 import { ScrollViewer } from "@babylonjs/gui/2D/controls/scrollViewers/scrollViewer";
-import { ServerMsg } from "../../../../shared/types";
+import { ServerMsg } from "../../../../../shared/types";
 
 export class Panel_Abilities extends Panel {
     // inventory tab

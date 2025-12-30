@@ -6,7 +6,7 @@ import { Color3, Vector3, Vector4 } from "@babylonjs/core/Maths/math";
 import { Entity } from "../Entity";
 import { Skeleton } from "@babylonjs/core/Bones/skeleton";
 import { GameController } from "../../Controllers/GameController";
-import { EquipmentSchema } from "../../../server/rooms/schema";
+import { EquipmentSchema } from "../../../../server/src/rooms/schema";
 import { UserInterface } from "../../Controllers/UserInterface";
 import { VatController } from "../../Controllers/VatController";
 import { EquippableType } from "../../../../shared/types";

@@ -1,7 +1,7 @@
-import { PlayerSchema } from "./../../server/rooms/schema";
+import { PlayerSchema } from "../../server/src/rooms/schema";
 import { roundTo } from "../Utils";
 import { ServerMsg } from "../types";
-import Logger from "../../server/utils/Logger";
+import Logger from "../../server/src/utils/Logger";
 
 // level progression
 const LEVEL_EXPERIENCE = [

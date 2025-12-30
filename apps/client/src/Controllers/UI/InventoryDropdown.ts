@@ -1,7 +1,7 @@
 import { Rectangle } from "@babylonjs/gui/2D/controls/rectangle";
 import { Control } from "@babylonjs/gui/2D/controls/control";
 import { StackPanel } from "@babylonjs/gui/2D/controls/stackPanel";
-import { ItemClass, ServerMsg } from "../../../shared/types";
+import { ItemClass, ServerMsg } from "../../../../shared/types";
 import { Button } from "@babylonjs/gui/2D/controls/button";
 import { UserInterface } from "../UserInterface";
 

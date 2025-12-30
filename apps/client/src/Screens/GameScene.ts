@@ -12,12 +12,12 @@ import { Player } from "../Entities/Player";
 import { Entity } from "../Entities/Entity";
 import { Item } from "../Entities/Item";
 import { Room } from "colyseus.js";
-import { NavMesh } from "../../shared/Libs/yuka-min";
+import { NavMesh } from "../../../shared/Libs/yuka-min";
 
 import { createConvexRegionHelper } from "../Utils/navMeshHelper";
 import { GameController } from "../Controllers/GameController";
 import loadNavMeshFromString from "../Utils/loadNavMeshFromString";
-import { PlayerInputs, ServerMsg } from "../../shared/types";
+import { PlayerInputs, ServerMsg } from "../../../shared/types";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";
 import { VatController } from "../Controllers/VatController";

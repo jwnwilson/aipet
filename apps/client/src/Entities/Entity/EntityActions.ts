@@ -8,7 +8,7 @@ import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Tools } from "@babylonjs/core/Misc/tools";
 import { nanoid } from "nanoid";
 import { GameScene } from "../../Screens/GameScene";
-import { EntityState, PlayerSlots } from "../../../shared/types";
+import { EntityState, PlayerSlots } from "../../../../shared/types";
 import { MeshParticleEmitter } from "@babylonjs/core/Particles/EmitterTypes/meshParticleEmitter";
 
 export class EntityActions {

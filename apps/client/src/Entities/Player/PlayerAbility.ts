@@ -1,7 +1,7 @@
 import { Scene } from "@babylonjs/core/scene";
 import { Player } from "../Player";
 import { PlayerInput } from "../../Controllers/PlayerInput";
-import { Ability, ServerMsg } from "../../../shared/types";
+import { Ability, ServerMsg } from "../../../../shared/types";
 
 export class PlayerAbility {
     private player: Player;

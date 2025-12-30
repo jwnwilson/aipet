@@ -1,4 +1,4 @@
-import { NavMesh, NavMeshLoader } from "../../shared/Libs/yuka-min";
+import { NavMesh, NavMeshLoader } from "../../../shared/Libs/yuka-min";
 
 export default async function loadNavMeshFromString(fileNameNavMesh: string): Promise<NavMesh> {
     let url = "/models/navmesh/" + fileNameNavMesh + ".glb";

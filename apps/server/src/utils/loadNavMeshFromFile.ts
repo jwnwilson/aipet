@@ -7,7 +7,7 @@ import path from "path";
 import { NavMeshLoader, NavMesh } from "../../../shared/Libs/yuka-min";
 
 export default async function loadNavMeshFromFile(fileNameNavMesh: string): Promise<NavMesh> {
-    const url = path.join(__dirname, "../../../public/models/navmesh/" + fileNameNavMesh + ".glb");
+    const url = path.join(__dirname, "../../../client/public/models/navmesh/" + fileNameNavMesh + ".glb");
     console.log(url);
     const data = await fs.readFileSync(url);
     const loader = new NavMeshLoader();

@@ -3,7 +3,7 @@ import { TextBlock } from "@babylonjs/gui/2D/controls/textBlock";
 import { Image } from "@babylonjs/gui/2D/controls/image";
 import { Control } from "@babylonjs/gui/2D/controls/control";
 import { generatePanel, getPadding } from "./Theme";
-import { roundTo } from "../../../shared/Utils/index";
+import { roundTo } from "../../../../shared/Utils/index";
 import { GameController } from "../GameController";
 import { UserInterface } from "../UserInterface";
 

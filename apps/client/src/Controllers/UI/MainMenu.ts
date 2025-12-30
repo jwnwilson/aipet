@@ -8,7 +8,7 @@ import { Image } from "@babylonjs/gui/2D/controls/image";
 import { UserInterface } from "../UserInterface";
 import State from "../../Screens/Screens";
 import { GameController } from "../GameController";
-import { ServerMsg } from "../../../shared/types";
+import { ServerMsg } from "../../../../shared/types";
 import { Tools } from "@babylonjs/core/Misc/tools";
 
 export class MainMenu {

@@ -1,4 +1,4 @@
-import { BrainSchema, PlayerSchema } from "../../server/rooms/schema";
+import { BrainSchema, PlayerSchema } from "../../server/src/rooms/schema";
 
 export class AttackPositions {
     static updateAvailableAttakPositions(owner) {

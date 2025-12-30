@@ -5,7 +5,7 @@ import { StackPanel } from "@babylonjs/gui/2D/controls/stackPanel";
 import { Image } from "@babylonjs/gui/2D/controls/image";
 import { TextBlock, TextWrapping } from "@babylonjs/gui/2D/controls/textBlock";
 import { Panel_Dialog } from "../..";
-import { Ability, ServerMsg } from "../../../../../shared/types";
+import { Ability, ServerMsg } from "../../../../../../shared/types";
 import { Button } from "@babylonjs/gui/2D/controls/button";
 import { CubicEase, EasingFunction } from "@babylonjs/core/Animations/easing";
 import { Animation } from "@babylonjs/core/Animations/animation";
