@@ -11,7 +11,7 @@ import { GameRoom } from "./rooms/GameRoom";
 import { ChatRoom } from "./rooms/ChatRoom";
 
 import { Api } from "./api";
-import { Database } from "./database";
+import { Database } from "./database/index";
 
 import Logger from "./utils/Logger";
 import { Config } from "../../shared/Config";

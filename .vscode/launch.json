@@ -1,0 +1,50 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Server",
+      "runtimeExecutable": "${workspaceFolder}/apps/server/node_modules/.bin/ts-node",
+      "runtimeArgs": [
+        "--transpile-only"
+      ],
+      "args": [
+        "${workspaceFolder}/apps/server/src/index.ts"
+      ],
+      "cwd": "${workspaceFolder}/apps/server",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "sourceMaps": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ],
+      "env": {
+        "NODE_ENV": "development",
+        "TS_NODE_PROJECT": "${workspaceFolder}/apps/server/tsconfig.json"
+      },
+      "envFile": "${workspaceFolder}/apps/server/.env"
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to Server (via debug script)",
+      "port": 9229,
+      "restart": true,
+      "cwd": "${workspaceFolder}/apps/server",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "sourceMaps": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    }
+  ]
+}
+
