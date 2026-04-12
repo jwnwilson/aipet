@@ -143,74 +143,27 @@ export class UserInterface {
 
         // create main interface elements
         this._MainMenu = new MainMenu(this, currentPlayer);
-        this._CastingBar = new CastingBar(this, currentPlayer);
-        this._RessurectBox = new RessurectBox(this, currentPlayer);
-        this._ExperienceBar = new ExperienceBar(this, currentPlayer);
-
-        // create hotbar and events
-        this._HotBar = new HotBar(this, currentPlayer);
+        // DISABLED: this._CastingBar = new CastingBar(this, currentPlayer);
+        // DISABLED: this._RessurectBox = new RessurectBox(this, currentPlayer);
+        // DISABLED: this._ExperienceBar = new ExperienceBar(this, currentPlayer);
+        // DISABLED: this._HotBar = new HotBar(this, currentPlayer);
 
         // create chat ui + events
         this._ChatBox = new ChatBox(this._playerUI, this._chatRoom, currentPlayer, this._entities, this._game);
 
-        // create selected entity panel
-        this._targetEntitySelectedBar = new EntitySelectedBar(this, {
-            panelName: "target",
-            currentPlayer: false,
-        });
-        this._playerEntitySelectedBar = new EntitySelectedBar(this, {
-            panelName: "player",
-            currentPlayer: currentPlayer,
-        });
-        this._playerEntitySelectedBar.setTarget(currentPlayer);
+        // DISABLED: entity selected bars (combat targeting)
+        // this._targetEntitySelectedBar = new EntitySelectedBar(...)
+        // this._playerEntitySelectedBar = new EntitySelectedBar(...)
 
-        // create panel
-        this.panelInventory = new Panel_Inventory(this, currentPlayer, {
-            name: "Inventory",
-            stayOpen: true,
-            width: "246px;",
-            height: "300px;",
-            top: "-30px;",
-            left: "-15px;",
-            horizontal_position: Control.HORIZONTAL_ALIGNMENT_RIGHT,
-            vertical_position: Control.VERTICAL_ALIGNMENT_BOTTOM,
-        });
-        this._InventoryDropdown = new InventoryDropdown(this);
+        // DISABLED: panels not needed for bunny world
+        // this.panelInventory = new Panel_Inventory(...)
+        // this._InventoryDropdown = new InventoryDropdown(this);
+        // this.panelAbilities = new Panel_Abilities(...)
+        // this.panelCharacter = new Panel_Character(...)
+        // this.panelHelp = new Panel_Help(...)
+        // this.panelQuests = new Panel_Quests(...)
 
-        // create panel
-        this.panelAbilities = new Panel_Abilities(this, currentPlayer, {
-            name: "Abilities",
-            width: "500px;",
-            height: "400px;",
-            top: "-50px;",
-            left: "0px;",
-            horizontal_position: Control.HORIZONTAL_ALIGNMENT_CENTER,
-            vertical_position: Control.VERTICAL_ALIGNMENT_CENTER,
-        });
-
-        // create panel
-        this.panelCharacter = new Panel_Character(this, currentPlayer, {
-            name: "Character",
-            width: "600px;",
-            height: "320px;",
-            top: "-50px;",
-            left: "0px;",
-            horizontal_position: Control.HORIZONTAL_ALIGNMENT_CENTER,
-            vertical_position: Control.VERTICAL_ALIGNMENT_CENTER,
-        });
-
-        // create help panel
-        this.panelHelp = new Panel_Help(this, currentPlayer, {
-            name: "Welcome to T5C",
-            width: "500px;",
-            height: "500px;",
-            top: "-50px;",
-            left: "0px;",
-            horizontal_position: Control.HORIZONTAL_ALIGNMENT_CENTER,
-            vertical_position: Control.VERTICAL_ALIGNMENT_CENTER,
-        });
-
-        // create dialog panel
+        // create dialog panel (needed for bunny interaction)
         this.panelDialog = new Panel_Dialog(this, currentPlayer, {
             name: "Dialog Panel",
             width: "350px;",
@@ -220,24 +173,6 @@ export class UserInterface {
             horizontal_position: Control.HORIZONTAL_ALIGNMENT_CENTER,
             vertical_position: Control.VERTICAL_ALIGNMENT_CENTER,
         });
-
-        // create quests panel
-        this.panelQuests = new Panel_Quests(this, currentPlayer, {
-            name: "Active Quests",
-            width: "300px;",
-            height: "300px;",
-            top: "-50px;",
-            left: "0px;",
-            horizontal_position: Control.HORIZONTAL_ALIGNMENT_CENTER,
-            vertical_position: Control.VERTICAL_ALIGNMENT_CENTER,
-        });
-
-        // open inventory by default
-        this.panelInventory.open();
-        //this.panelHelp.open();
-
-        // create tooltip
-        this._Tooltip = new Tooltip(this, currentPlayer);
 
         // initial resize event
         this.resize();

@@ -137,8 +137,12 @@ export class AssetsController {
 
     public async loadLevel(key) {
         this.assetToPreload = this.assetDatabase;
-        this.assetToPreload.push({ name: "ENV_" + key, filename: "environment/" + key + ".glb", extension: "glb", type: "mesh" });
-        console.log(this.assetToPreload);
+
+        // only load the environment mesh when the location is not procedural
+        if (!this._game.currentLocation.procedural) {
+            this.assetToPreload.push({ name: "ENV_" + key, filename: "environment/" + key + ".glb", extension: "glb", type: "mesh" });
+        }
+
         await this.preloadAssets();
         await this.prepareLevel(key);
         await this.prepareTextures();
@@ -351,6 +355,20 @@ export class AssetsController {
     //What we do once the environment assets have been imported
     //handles setting the necessary flags for collision and trigger meshes,
     public async prepareLevel(key) {
+        // procedural ground plane: skip mesh loading, create a flat ground instead
+        if (this._game.currentLocation.procedural) {
+            const ground = CreateGround("ground", { width: 200, height: 200, subdivisions: 1 }, this._game.scene);
+            ground.isPickable = true;
+            ground.metadata = { type: "environment" };
+            ground.receiveShadows = true;
+
+            const grassMat = new StandardMaterial("grass", this._game.scene);
+            grassMat.diffuseColor = new Color3(0.35, 0.6, 0.25);
+            grassMat.specularColor = new Color3(0, 0, 0);
+            ground.material = grassMat;
+            return;
+        }
+
         // add water
         if (this._game.currentLocation.waterPlane) {
             var waterMesh = CreateGround("waterMesh", { width: 512, height: 512, subdivisions: 1 }, this._game.scene);

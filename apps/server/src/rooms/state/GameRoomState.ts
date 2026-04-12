@@ -10,7 +10,7 @@ import { GameRoom } from "../GameRoom";
 
 import { NavMesh, Vector3 } from "../../../../shared/Libs/yuka-min";
 import Logger from "../../utils/Logger";
-import { ItemClass, ServerMsg, Speed } from "../../../../shared/types";
+import { ServerMsg } from "../../../../shared/types";
 import { Config } from "../../../../shared/Config";
 
 export class GameRoomState extends Schema {
@@ -199,25 +199,6 @@ export class GameRoomState extends Schema {
         }
 
         /////////////////////////////////////
-        // on player learn skill
-        if (type === ServerMsg.PLAYER_LEARN_SKILL) {
-            //playerState.abilitiesCTRL.learnAbility(data.key);
-        }
-
-        /////////////////////////////////////
-        // on player add stat point
-        if (type === ServerMsg.PLAYER_ADD_STAT_POINT) {
-            let key = data.key;
-            if (playerState.player_data.points > 0) {
-                // remove point
-                playerState.player_data.points -= 1;
-
-                // update controller
-                playerState.statsCTRL.updateBaseStats(key, 1);
-            }
-        }
-
-        /////////////////////////////////////
         // on player input
         if (type === ServerMsg.PLAYER_MOVE) {
             playerState.moveCTRL.processPlayerInput(data);
@@ -225,109 +206,29 @@ export class GameRoomState extends Schema {
 
         // on player click to move
         if (type === ServerMsg.PLAYER_MOVE_TO) {
-            //playerState.abilitiesCTRL.cancelAutoAttack(playerState);
             playerState.moveCTRL.setTargetDestination(new Vector3(data.x, data.y, data.z));
         }
 
         /////////////////////////////////////
-        // on player ressurect
-        if (type === ServerMsg.PLAYER_PICKUP) {
-            //playerState.abilitiesCTRL.cancelAutoAttack(playerState);
-            const itemState = this.getEntity(data.sessionId);
-            if (itemState) {
-                playerState.setTarget(itemState);
-            }
+        // on player interact with entity (bunny / NPC)
+        if (type === ServerMsg.PLAYER_INTERACT) {
+            const targetState = this.getEntity(data.sessionId);
+            Logger.info(`[PLAYER_INTERACT] player ${client.sessionId} interacted with ${data.sessionId}`);
+            // placeholder: future AI dialogue logic goes here
         }
 
-        if (type === ServerMsg.PLAYER_DROP_ITEM) {
-            let slot = data.slot;
-            let dropAll = data.drop_all ?? false;
-            const item = playerState.getInventoryItemByIndex(slot);
-            if (item) {
-                playerState.dropItem(item, dropAll);
-            }
-        }
-
-        if (type === ServerMsg.PLAYER_BUY_ITEM) {
-            const item = this.gameData.get("item", data.key);
-            if (item) {
-                playerState.buyItem(item, data.qty);
-            }
-        }
-
-        if (type === ServerMsg.PLAYER_SELL_ITEM) {
-            const index = data.index;
-            const item = playerState.getInventoryItemByIndex(index);
-            if (item) {
-                playerState.sellItem(item);
-            }
-        }
-
-        /////////////////////////////////////
-        // on player equip
-        // data will equal the inventory index of the clicked item
-        if (type === ServerMsg.PLAYER_USE_ITEM) {
-            const index = data.index;
-            const item = playerState.getInventoryItemByIndex(index);
-            if (item) {
-                if (item.class === ItemClass.CONSUMABLE) {
-                    playerState.consumeItem(item);
-                } else if (item.equippable) {
-                    playerState.equipItem(item);
-                }
-            }
-        }
-
-        /////////////////////////////////////
-        // on player unequip
-        if (type === ServerMsg.PLAYER_UNEQUIP_ITEM) {
-            const key = data.key;
-            const item = this.gameData.get("item", key);
-            // does item exist in database
-            if (item) {
-                playerState.unequipItem(item.key, item.slot);
-            }
-        }
-
-        /////////////////////////////////////
-        // on player unequip
-        if (type === ServerMsg.PLAYER_QUEST_UPDATE) {
-            playerState.dynamicCTRL.questUpdate(data);
-        }
-
-        /////////////////////////////////////
-        // player entity_attack
-        if (type === ServerMsg.PLAYER_HOTBAR_ACTIVATED) {
-            // get players involved
-            let targetState = this.getEntity(data.targetId) as Entity;
-            let hotbarData = playerState.player_data.hotbar.get("" + data.digit);
-
-            Logger.warning(`[ServerMsg.PLAYER_HOTBAR_ACTIVATED]`, data.digit);
-
-            if (data.digit === 6) {
-                this.spawnCTRL.createItem(playerState);
-                return false;
-            }
-
-            if (!hotbarData) {
-                return false;
-            }
-
-            // if item
-            if (hotbarData && hotbarData.type === "item") {
-                const item = playerState.getInventoryItem(hotbarData.key, "key");
-                if (item && item.class === ItemClass.CONSUMABLE) {
-                    playerState.consumeItem(item);
-                }
-                return false;
-            }
-
-            // if ability
-            if (hotbarData && hotbarData.type === "ability") {
-                playerState.abilitiesCTRL.addAbility(playerState, targetState, data);
-                return false;
-            }
-        }
+        /* DISABLED: combat, loot, abilities, quests
+        if (type === ServerMsg.PLAYER_LEARN_SKILL) { ... }
+        if (type === ServerMsg.PLAYER_ADD_STAT_POINT) { ... }
+        if (type === ServerMsg.PLAYER_PICKUP) { ... }
+        if (type === ServerMsg.PLAYER_DROP_ITEM) { ... }
+        if (type === ServerMsg.PLAYER_BUY_ITEM) { ... }
+        if (type === ServerMsg.PLAYER_SELL_ITEM) { ... }
+        if (type === ServerMsg.PLAYER_USE_ITEM) { ... }
+        if (type === ServerMsg.PLAYER_UNEQUIP_ITEM) { ... }
+        if (type === ServerMsg.PLAYER_QUEST_UPDATE) { ... }
+        if (type === ServerMsg.PLAYER_HOTBAR_ACTIVATED) { ... }
+        */
 
         /////////
         /////// DEBUG /////////////////

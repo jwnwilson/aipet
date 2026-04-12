@@ -88,6 +88,7 @@ export enum ServerMsg {
     DEBUG_INCREASE_ENTITIES,
     DEBUG_DECREASE_ENTITIES,
     DEBUG_BOTS,
+    PLAYER_INTERACT,
 }
 
 //////////////////////////////////////////////////////////////

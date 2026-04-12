@@ -46,7 +46,7 @@ export class Player extends Entity {
         this.cameraController = this._gamescene._camera;
         this.cameraController.attach(this);
         this.actionsController = new EntityActions(this._scene, this._game._loadedAssets, this.entities, this._gamescene);
-        this.abilityController = new PlayerAbility(this);
+        // DISABLED: this.abilityController = new PlayerAbility(this);
 
         // register player server messages
         this.registerServerMessages();
@@ -109,46 +109,30 @@ export class Player extends Entity {
 
         if (!metadata) return false;
 
-        // select entity
+        // select entity / interact
         if (metadata.type === "player" || metadata.type === "entity") {
-            // select entity
             let targetSessionId = metadata.sessionId;
             let target = this.entities.get(targetSessionId);
-            this._ui._targetEntitySelectedBar.setTarget(target);
 
-            // display nameplate for a certain time for any entity right clicked
+            // show nameplate
             if (target.characterLabel) {
                 target.characterLabel.isVisible = true;
             }
 
-            // if spawninfo available
-            if (!target.spawnInfo) return false;
-
-            /*
-            // if targets is aggressive, clicking on with will trigger move & attack
-            // note: need to find a better way to do this, not linked to hotbar
-            if (target.spawnInfo.aggressive) {
-                // send to server
-                this._game.sendMessage(ServerMsg.PLAYER_HOTBAR_ACTIVATED, {
-                    senderId: this._room.sessionId,
-                    targetId: target ? target.sessionId : false,
-                    digit: 1,
-                });
-                return false;
-            }*/
-
-            // if interactable target
-            if (!target.spawnInfo.interactable) return false;
+            if (!target.spawnInfo?.interactable) return false;
 
             // if close enough, open dialog
             let playerPos = this.getPosition();
             let entityPos = target.getPosition();
             let distanceBetween = Vector3.Distance(playerPos, entityPos);
             if (distanceBetween < this._game.config.PLAYER_INTERACTABLE_DISTANCE) {
+                // notify server of interaction
+                this._game.sendMessage(ServerMsg.PLAYER_INTERACT, { sessionId: target.sessionId });
+
+                // open dialog
                 this._ui.panelDialog.open(target);
 
-                // stop any movement
-                // todo: improve
+                // stop movement while talking
                 this._input.left_click = false;
                 this._input.vertical = 0;
                 this._input.horizontal = 0;
@@ -156,12 +140,7 @@ export class Player extends Entity {
             }
         }
 
-        // pick up item
-        if (metadata.type === "item") {
-            this._game.sendMessage(ServerMsg.PLAYER_PICKUP, {
-                sessionId: metadata.sessionId,
-            });
-        }
+        // DISABLED: item pickup
 
         // move to clicked point
         if (metadata.type === "environment" && !this.isDead) {
@@ -228,22 +207,8 @@ export class Player extends Entity {
             this.moveController.processMove();
         }
 
-        if (this.abilityController) {
-            this.abilityController.update(delta);
-        }
-        // if dead, show ressurect panel
-        if (!this.isDeadUI && this.health < 1) {
-            this._ui._RessurectBox.open();
-            this.cameraController.vfx_black_and_white_on();
-            this.isDeadUI = true;
-        }
-
-        // if ressurected, hide panel
-        if (this.isDeadUI && this.health > 0) {
-            this.cameraController.vfx_black_and_white_off();
-            this._ui._RessurectBox.close();
-            this.isDeadUI = false;
-        }
+        // DISABLED: ability controller update (combat system)
+        // DISABLED: dead / ressurect UI
 
         // sounds
         if (this.isMoving && this.footstepCurrent > this.footstepInterval) {
@@ -257,38 +222,11 @@ export class Player extends Entity {
         // run super function first
         super.updateSlowRate(delta);
 
-        ///////////// DIALOG ///////////////////////////
-        // only if moving, look for the closest interactable entities.
-        if (this.isMoving) {
-            // look for closest npc
-            // todo: maybe this is a silly way?
-            //this.findCloseToInteractableEntity();
-
-            // if close enough, show interactable button
-            if (this.closestEntityDistance < 5 && this.closestEntity.interactableButtons) {
-                this.closestEntity.interactableButtons.isVisible = true;
-            }
-
-            // if far enough, hide interactable button & any open dialog
-            if (this.closestEntityDistance > 5 && this.closestEntity.interactableButtons) {
+        // close dialog if player walks away from interactable entity
+        if (this.isMoving && this.closestEntity?.interactableButtons) {
+            if (this.closestEntityDistance > 5) {
                 this._ui.panelDialog.close();
             }
-
-            ///////////// ENVIRONMENT LOD ///////////////////////////
-            // only show meshes close to us
-            let currentPos = this.getPosition();
-            let key = "ENV_" + this._game.currentLocation.mesh;
-            let allMeshes = this._game._loadedAssets[key]?.loadedMeshes ?? [];
-            allMeshes.forEach((element) => {
-                if (element.name !== "__root__") {
-                    let distanceTo = Vector3.Distance(element.getAbsolutePosition(), currentPos);
-                    if (distanceTo < 50) {
-                        element.setEnabled(true);
-                    } else {
-                        element.setEnabled(false);
-                    }
-                }
-            });
         }
     }
 
@@ -330,22 +268,7 @@ export class Player extends Entity {
             this.teleport(location);
         });
 
-        // server confirm player can start casting
-        this._room.onMessage(ServerMsg.PLAYER_CASTING_START, (data) => {
-            console.log("ServerMsg.PLAYER_CASTING_START", data);
-            this.abilityController.startCasting(data);
-        });
-
-        this._room.onMessage(ServerMsg.PLAYER_CASTING_CANCEL, (data) => {
-            console.log("ServerMsg.PLAYER_CASTING_CANCEL", data);
-            this.abilityController.stopCasting(data);
-        });
-
-        // server confirms ability can be cast
-        this._room.onMessage(ServerMsg.PLAYER_ABILITY_CAST, (data) => {
-            console.log("ServerMsg.PLAYER_ABILITY_CAST", data);
-            this.abilityController.processServerCasting(data);
-        });
+        // DISABLED: PLAYER_CASTING_START, PLAYER_CASTING_CANCEL, PLAYER_ABILITY_CAST (combat system)
     }
 
     public async remove() {
