@@ -162,7 +162,10 @@ export class GameScene {
         if (this._game.currentChat) {
             this._game.currentChat.leave();
         }
-        this._game.currentChat = await this._game.client.joinChatRoom({ name: this._game._currentCharacter.name });
+        this._game.currentChat = await this._game.client.joinChatRoom({
+            name: this._game._currentCharacter.name,
+            character_id: this._game._currentCharacter.id,
+        });
 
         // join the game room and use chat room session ID
         this.room = await this._game.client.joinOrCreateRoom(

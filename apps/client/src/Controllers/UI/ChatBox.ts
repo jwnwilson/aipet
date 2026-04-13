@@ -35,6 +35,7 @@ export class ChatBox {
             event: "orange",
             system: "white",
             chat: "white",
+            npc: "#a8e6a8",
         };
 
         // create ui
@@ -138,10 +139,24 @@ export class ChatBox {
             this.addNotificationMessage("system", message.message, new Date());
         });
 
-        // receive message event
+        // receive player chat message
         this._chatRoom.onMessage(ServerMsg.CHAT_MESSAGE, (message: PlayerMessage) => {
             message.color = this._colors["chat"];
             this.processMessage(message);
+        });
+
+        // receive NPC (Bunny) message
+        this._chatRoom.onMessage(ServerMsg.NPC_MESSAGE, (data: { name: string; message: string }) => {
+            this._game.currentChats.push({
+                type: "npc",
+                senderID: "NPC",
+                name: data.name,
+                message: data.message,
+                timestamp: 0,
+                createdAt: new Date().toISOString(),
+                color: this._colors["npc"],
+            });
+            this._refreshChatBox();
         });
     }
 
@@ -231,7 +246,9 @@ export class ChatBox {
             this._chatUI.addControl(headlineRect);
 
             let prefix = "[GLOBAL] " + msg.name + ": ";
-            if (this._currentPlayer) {
+            if (msg.type === "npc") {
+                prefix = msg.name + " says: ";
+            } else if (this._currentPlayer) {
                 prefix = msg.senderID == this._currentPlayer.sessionId ? "You said: " : "[GLOBAL] " + msg.name + ": ";
             }
 

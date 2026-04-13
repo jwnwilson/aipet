@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.88.0",
     "@colyseus/core": "^0.15.57",
     "@colyseus/loadtest": "^0.15.7",
     "@colyseus/monitor": "^0.15.8",

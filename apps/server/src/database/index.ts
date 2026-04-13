@@ -349,6 +349,27 @@ class Database {
         const sql = `SELECT COUNT(id) as count FROM users WHERE username=? ;`;
         return this.querier.get(sql, [name]);
     }
+
+    ///////////////////////////////////////
+    // NPC chat history
+    ///////////////////////////////////////
+
+    async getNpcChatHistory(character_id: number, npc_key: string = "bunny", limit: number = 40): Promise<{ role: string; content: string }[]> {
+        const sql = `SELECT role, content FROM npc_chat_history WHERE character_id=? AND npc_key=? ORDER BY created_at ASC LIMIT ?;`;
+        return <{ role: string; content: string }[]>await this.querier.all(sql, [character_id, npc_key, limit]);
+    }
+
+    async appendNpcChatTurn(character_id: number, npc_key: string = "bunny", role: string, content: string): Promise<void> {
+        const sql = `INSERT INTO npc_chat_history (character_id, npc_key, role, content) VALUES (?,?,?,?);`;
+        await this.querier.run(sql, [character_id, npc_key, role, content]);
+    }
+
+    async trimNpcChatHistory(character_id: number, npc_key: string = "bunny", keepLast: number = 40): Promise<void> {
+        const sql = `DELETE FROM npc_chat_history WHERE character_id=? AND npc_key=? AND id NOT IN (
+            SELECT id FROM npc_chat_history WHERE character_id=? AND npc_key=? ORDER BY created_at DESC LIMIT ?
+        );`;
+        await this.querier.run(sql, [character_id, npc_key, character_id, npc_key, keepLast]);
+    }
 }
 
 export { Database };
