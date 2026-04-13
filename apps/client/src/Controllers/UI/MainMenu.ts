@@ -236,21 +236,11 @@ export class MainMenu {
 
     public openPanel(key) {
         switch (key) {
-            case "inventory":
-                this._UI.panelInventory.open();
-                break;
-            case "character":
-                this._UI.panelCharacter.open();
-                break;
-            case "abilities":
-                this._UI.panelAbilities.open();
-                break;
-            case "help":
-                this._UI.panelHelp.open();
-                break;
-            case "quests":
-                this._UI.panelQuests.open();
-                break;
+            case "inventory": this._UI.panelInventory?.open(); break;
+            case "character": this._UI.panelCharacter?.open(); break;
+            case "abilities": this._UI.panelAbilities?.open(); break;
+            case "help":      this._UI.panelHelp?.open(); break;
+            case "quests":    this._UI.panelQuests?.open(); break;
         }
     }
 }

@@ -2,7 +2,6 @@ import { Rectangle } from "@babylonjs/gui/2D/controls/rectangle";
 import { TextBlock } from "@babylonjs/gui/2D/controls/textBlock";
 import { Button } from "@babylonjs/gui/2D/controls/button";
 import { Control } from "@babylonjs/gui/2D/controls/control";
-import { Tooltip } from "../Tooltip";
 import { applyTheme } from "../Theme";
 import { Scene } from "@babylonjs/core/scene";
 import { GameController } from "../../GameController";
@@ -20,7 +19,7 @@ export class Panel {
     public _engine: Engine;
     public _playerUI;
     public _room: Room;
-    private _UITooltip: Tooltip;
+    private _UITooltip;
     public _scene: Scene;
     public _currentPlayer;
     public _loadedAssets;
@@ -160,11 +159,11 @@ export class Panel {
 
         // drag and drop events
         panelHeader.onPointerDownObservable.add((e) => {
-            this._UI.startDragging(this._panel);
+            this._UI.startDragging?.(this._panel);
             this._panel.isPointerBlocker = false;
         });
         panelHeader.onPointerUpObservable.add((e) => {
-            this._UI.stopDragging();
+            this._UI.stopDragging?.();
         });
     }
 
@@ -172,12 +171,12 @@ export class Panel {
     public open(): void {
         const visible = this._panel.isVisible;
 
-        // close all panels
+        // close all other panels (guard: panels may not exist)
         if (!this._options.stayOpen) {
-            this._UI.panelAbilities._panel.isVisible = false;
-            this._UI.panelCharacter._panel.isVisible = false;
-            this._UI.panelHelp._panel.isVisible = false;
-            this._UI.panelQuests._panel.isVisible = false;
+            if (this._UI.panelAbilities) this._UI.panelAbilities._panel.isVisible = false;
+            if (this._UI.panelCharacter) this._UI.panelCharacter._panel.isVisible = false;
+            if (this._UI.panelHelp) this._UI.panelHelp._panel.isVisible = false;
+            if (this._UI.panelQuests) this._UI.panelQuests._panel.isVisible = false;
         }
 
         // if already open, close panel

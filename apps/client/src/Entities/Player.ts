@@ -3,18 +3,13 @@ import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { EntityActions } from "./Entity/EntityActions";
 import { Entity } from "./Entity";
 import State from "../../../client/src/Screens/Screens";
-import { Ability, EntityState, ServerMsg } from "../../../shared/types";
+import { ServerMsg } from "../../../shared/types";
 import { GameScene } from "../Screens/GameScene";
-import { PlayerAbility } from "./Player/PlayerAbility";
-import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
-import { Color3 } from "@babylonjs/core/Maths/math.color";
 
 export class Player extends Entity {
     public game;
     public entities;
     public interval;
-    public abilityController: PlayerAbility;
-
     public onPointerObservable;
 
     public player_data;
@@ -46,7 +41,6 @@ export class Player extends Entity {
         this.cameraController = this._gamescene._camera;
         this.cameraController.attach(this);
         this.actionsController = new EntityActions(this._scene, this._game._loadedAssets, this.entities, this._gamescene);
-        // DISABLED: this.abilityController = new PlayerAbility(this);
 
         // register player server messages
         this.registerServerMessages();

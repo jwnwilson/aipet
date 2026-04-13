@@ -2,33 +2,10 @@ import { Scene } from "@babylonjs/core/scene";
 import { Engine } from "@babylonjs/core/Engines/engine";
 
 import { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture";
-import { Button } from "@babylonjs/gui/2D/controls/button";
 import { Control } from "@babylonjs/gui/2D/controls/control";
-import { Image } from "@babylonjs/gui/2D/controls/image";
 import { Rectangle } from "@babylonjs/gui/2D/controls/rectangle";
-import { TextBlock, TextWrapping } from "@babylonjs/gui/2D/controls/textBlock";
 
-import {
-    ChatBox,
-    HotBar,
-    DebugBox,
-    EntitySelectedBar,
-    Tooltip,
-    InventoryDropdown,
-    Panel_Inventory,
-    CastingBar,
-    ExperienceBar,
-    MainMenu,
-    RessurectBox,
-    DamageText,
-    Panel_Abilities,
-    Panel_Character,
-    Panel_Help,
-    Panel_Dialog,
-    Panel_Quests,
-    Cursor,
-    Watermark,
-} from "./UI";
+import { ChatBox, DebugBox, MainMenu, Panel_Dialog, Cursor, Watermark } from "./UI";
 
 import { Room } from "colyseus.js";
 
@@ -36,11 +13,7 @@ import { Entity } from "../Entities/Entity";
 import { Player } from "../Entities/Player";
 import { Item } from "../Entities/Item";
 
-import { HighlightLayer } from "@babylonjs/core/Layers/highlightLayer";
-import { Panel } from "./UI/Panels/Panel";
 import { GameController } from "./GameController";
-import { StackPanel } from "@babylonjs/gui/2D/controls/stackPanel";
-import { ServerMsg } from "../../../shared/types";
 
 export class UserInterface {
     public _game: GameController;
@@ -50,54 +23,30 @@ export class UserInterface {
     private _chatRoom: Room;
     public _entities: Map<string, Player | Entity | Item>;
     private _currentPlayer;
-    public _loadedAssets;
 
-    //UI Elements
     public MAIN_ADT: AdvancedDynamicTexture;
     public LABELS_ADT: AdvancedDynamicTexture;
     public _playerUI;
-    public _labelsUI;
-    public _hightlight;
 
-    // interface
+    public _loadedAssets; // delegated from _game._loadedAssets; consumed by Panel base class
+
     public _ChatBox: ChatBox;
     public _DebugBox: DebugBox;
-    private _HotBar: HotBar;
-    public _targetEntitySelectedBar: EntitySelectedBar;
-    public _playerEntitySelectedBar: EntitySelectedBar;
-    public _Tooltip: Tooltip;
     public _MainMenu: MainMenu;
-    public _CastingBar: CastingBar;
-    public _RessurectBox: RessurectBox;
-    private _ExperienceBar: ExperienceBar;
-    public _InventoryDropdown: InventoryDropdown;
-    public _DamageText: DamageText;
     public _Cursor: Cursor;
     public _Watermark: Watermark;
 
-    // openable panels
-    private _panels: Panel[];
-    public panelInventory: Panel_Inventory;
-    public panelAbilities: Panel_Abilities;
-    public panelCharacter: Panel_Character;
-    public panelHelp: Panel_Help;
+    // active panel
     public panelDialog: Panel_Dialog;
-    public panelQuests: Panel_Quests;
 
-    // tooltip
-    public _UITooltip;
-
-    // labels
-    public showingLabels: boolean = false;
-
-    // debug
-    public fpsPanel;
-
-    _isDragging;
-    _pointerDownPosition;
+    // stub references so Panel base class and MainMenu compile without errors
+    public panelInventory = null;
+    public panelAbilities = null;
+    public panelCharacter = null;
+    public panelHelp = null;
+    public panelQuests = null;
 
     constructor(game: GameController, entities: Map<string, Player | Entity | Item>, currentPlayer) {
-        // set var we will be needing
         this._game = game;
         this._scene = game.scene;
         this._engine = game.engine;
@@ -105,18 +54,15 @@ export class UserInterface {
         this._chatRoom = game.currentChat;
         this._entities = entities;
         this._currentPlayer = currentPlayer;
-        this._loadedAssets = this._game._loadedAssets;
+        this._loadedAssets = game._loadedAssets;
 
-        // create ui
         const LABELS_ADT = AdvancedDynamicTexture.CreateFullscreenUI("UI_Names", true, this._scene);
         this.LABELS_ADT = LABELS_ADT;
 
-        // create ui
         const uiLayer = AdvancedDynamicTexture.CreateFullscreenUI("UI_Player", true, this._scene);
         uiLayer.renderScale = 1;
         this.MAIN_ADT = uiLayer;
 
-        //
         const uiLayerContainer = new Rectangle("uiLayerContainer");
         uiLayerContainer.width = 1;
         uiLayerContainer.height = 1;
@@ -128,42 +74,15 @@ export class UserInterface {
         this._playerUI = uiLayerContainer;
     }
 
-    // set current player
-    ////////////////////////////
     public setCurrentPlayer(currentPlayer) {
-        // set current player
         this._currentPlayer = currentPlayer;
 
-        // cursor
         this._Cursor = new Cursor(this);
         this._Watermark = new Watermark(this);
-
-        // create debug ui + events
         this._DebugBox = new DebugBox(this._playerUI, this._engine, this._scene, this._room, this._currentPlayer, this._entities);
-
-        // create main interface elements
         this._MainMenu = new MainMenu(this, currentPlayer);
-        // DISABLED: this._CastingBar = new CastingBar(this, currentPlayer);
-        // DISABLED: this._RessurectBox = new RessurectBox(this, currentPlayer);
-        // DISABLED: this._ExperienceBar = new ExperienceBar(this, currentPlayer);
-        // DISABLED: this._HotBar = new HotBar(this, currentPlayer);
-
-        // create chat ui + events
         this._ChatBox = new ChatBox(this._playerUI, this._chatRoom, currentPlayer, this._entities, this._game);
 
-        // DISABLED: entity selected bars (combat targeting)
-        // this._targetEntitySelectedBar = new EntitySelectedBar(...)
-        // this._playerEntitySelectedBar = new EntitySelectedBar(...)
-
-        // DISABLED: panels not needed for bunny world
-        // this.panelInventory = new Panel_Inventory(...)
-        // this._InventoryDropdown = new InventoryDropdown(this);
-        // this.panelAbilities = new Panel_Abilities(...)
-        // this.panelCharacter = new Panel_Character(...)
-        // this.panelHelp = new Panel_Help(...)
-        // this.panelQuests = new Panel_Quests(...)
-
-        // create dialog panel (needed for bunny interaction)
         this.panelDialog = new Panel_Dialog(this, currentPlayer, {
             name: "Dialog Panel",
             width: "350px;",
@@ -174,80 +93,22 @@ export class UserInterface {
             vertical_position: Control.VERTICAL_ALIGNMENT_CENTER,
         });
 
-        // initial resize event
         this.resize();
     }
 
-    // update every server tick
-    public update() {
-        if (this._Tooltip) {
-            this._Tooltip.update();
-        }
+    // no-op drag stubs — called by Panel base class; no draggable panels are active
+    public startDragging(_panel) {}
+    public stopDragging() {}
 
-        //
-        this.dragging();
-    }
+    public update() {}
 
-    // runs in the afterRender callback.
-    // update every 1000ms
     public slow_update() {
-        if (this._targetEntitySelectedBar) {
-            this._targetEntitySelectedBar.update();
-        }
-
-        if (this._playerEntitySelectedBar) {
-            this._playerEntitySelectedBar.update();
-        }
-
         if (this._DebugBox) {
             this._DebugBox.update();
         }
-
-        if (this.panelInventory) {
-            this.panelInventory.update();
-        }
-
-        if (this.panelAbilities) {
-            this.panelAbilities.update();
-        }
-
-        if (this.panelCharacter) {
-            this.panelCharacter.update();
-        }
-
-        if (this.panelHelp) {
-            this.panelHelp.update();
-        }
-
         if (this.panelDialog) {
             this.panelDialog.update();
         }
-
-        if (this.panelQuests) {
-            this.panelQuests.update();
-        }
-    }
-
-    public dragging() {
-        if (this._isDragging) {
-            var deltaX = this._scene.pointerX - this._pointerDownPosition.x;
-            var deltaY = this._scene.pointerY - this._pointerDownPosition.y;
-            this._isDragging.leftInPixels += deltaX;
-            this._isDragging.topInPixels += deltaY;
-            this._pointerDownPosition.x = this._scene.pointerX;
-            this._pointerDownPosition.y = this._scene.pointerY;
-            this._InventoryDropdown.refresh();
-        }
-    }
-
-    public startDragging(panel) {
-        this._isDragging = panel;
-        this._pointerDownPosition = { x: this._scene.pointerX, y: this._scene.pointerY };
-    }
-
-    public stopDragging() {
-        this._isDragging.isPointerBlocker = true;
-        this._isDragging = null;
     }
 
     public resize() {
