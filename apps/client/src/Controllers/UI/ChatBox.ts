@@ -35,7 +35,7 @@ export class ChatBox {
             event: "orange",
             system: "white",
             chat: "white",
-            npc: "#a8e6a8",
+            npc: "#4caf50",
         };
 
         // create ui
@@ -157,6 +157,7 @@ export class ChatBox {
                 color: this._colors["npc"],
             });
             this._refreshChatBox();
+            this._showMessageAboveNpc(data.name, data.message);
         });
     }
 
@@ -189,6 +190,15 @@ export class ChatBox {
     public processNotificationMessage(message) {
         this._game.currentChats.push(message);
         this._refreshChatBox();
+    }
+
+    // show NPC response above the NPC's mesh in the 3D scene
+    private _showMessageAboveNpc(npcName: string, message: string) {
+        this._entities.forEach((entity) => {
+            if (entity.name === npcName && entity.nameplateController) {
+                entity.nameplateController.addChatMessage(message, 1.5, "#1b5e20");
+            }
+        });
     }
 
     // show chat message above player

@@ -127,8 +127,25 @@ export class EntityNamePlate {
      * @param offset_y
      * @returns
      */
-    addChatMessage(message = "Hello World!", offset_y = 0.6) {
-        // clear eny existing messsage
+    private _wrapText(text: string, maxCharsPerLine: number = 22): string[] {
+        const words = text.split(" ");
+        const lines: string[] = [];
+        let currentLine = "";
+        for (const word of words) {
+            const test = currentLine ? currentLine + " " + word : word;
+            if (test.length <= maxCharsPerLine) {
+                currentLine = test;
+            } else {
+                if (currentLine) lines.push(currentLine);
+                currentLine = word;
+            }
+        }
+        if (currentLine) lines.push(currentLine);
+        return lines.length > 0 ? lines : [text];
+    }
+
+    addChatMessage(message = "Hello World!", offset_y = 1.5, color = "blue") {
+        // clear any existing message
         if (this.messageTimeout) {
             clearTimeout(this.messageTimeout);
             this.currentMessage.texture.dispose();
@@ -136,9 +153,25 @@ export class EntityNamePlate {
             this.currentMessage.plane.dispose();
         }
 
-        // create mesh + texture
+        const lines = this._wrapText(message);
+        const numLines = lines.length;
+        const longestLine = lines.reduce((a, b) => (a.length > b.length ? a : b), "");
+
+        // create mesh + texture sized for all lines
         let entity_height = this.getEntityheight(offset_y);
-        let { planeWidth, planeHeight, texture, material } = this.createMaterial(0.5, 1.4, message, this._entity.scale);
+        let { planeWidth, planeHeight, texture, material } = this.createMaterial(0.4 * numLines, numLines, longestLine, this._entity.scale);
+
+        // draw each line manually onto the canvas
+        const size = texture.getSize();
+        const ctx = texture.getContext();
+        ctx.font = this.font;
+        ctx.fillStyle = color;
+        const lineHeight = size.height / numLines;
+        lines.forEach((line, i) => {
+            ctx.fillText(line, 4, (i + 0.85) * lineHeight);
+        });
+        texture.update();
+
         var plane = MeshBuilder.CreatePlane(
             "chatMessage_" + this._entity.name,
             { width: planeWidth, height: planeHeight, sideOrientation: Mesh.DOUBLESIDE },
@@ -149,9 +182,6 @@ export class EntityNamePlate {
         plane.billboardMode = Mesh.BILLBOARDMODE_ALL;
         plane.material = material;
 
-        // draw text on texture
-        this.drawDynamicTexture(message, texture, "blue");
-
         // set as actual message
         this.currentMessage = {
             plane: plane,
@@ -159,7 +189,6 @@ export class EntityNamePlate {
             texture: texture,
         };
 
-        // 5 seconds
         this.messageTimeout = setTimeout(() => {
             texture.dispose();
             material.dispose();
