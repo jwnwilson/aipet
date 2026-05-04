@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { BrainSchema, LootSchema } from "../schema";
+import { BrainSchema, LootSchema, WorldObjectSchema } from "../schema";
 import { GameRoom } from "../GameRoom";
 import { EntityState, Speed } from "../../../../shared/types";
 import Logger from "../../utils/Logger";
@@ -29,8 +29,28 @@ export class spawnCTRL {
             }
         }
 
+        // spawn static world objects once on startup
+        this.initWorldObjects();
+
         //
         this.process();
+    }
+
+    private initWorldObjects() {
+        const objects = this.location.worldobjects ?? [];
+        objects.forEach((obj: any) => {
+            const entity = new WorldObjectSchema({
+                sessionId: obj.key,
+                subtype: obj.subtype,
+                name: obj.name,
+                x: obj.x,
+                y: obj.y,
+                z: obj.z,
+                rot: 0,
+            });
+            this._state.entityCTRL.add(entity);
+            Logger.info(`[spawnCTRL] spawned world object: ${obj.subtype} (${obj.key})`);
+        });
     }
 
     public debug_bots() {

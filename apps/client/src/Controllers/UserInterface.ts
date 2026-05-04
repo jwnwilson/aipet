@@ -12,6 +12,7 @@ import { Room } from "colyseus.js";
 import { Entity } from "../Entities/Entity";
 import { Player } from "../Entities/Player";
 import { Item } from "../Entities/Item";
+import { WorldObject } from "../Entities/WorldObject";
 
 import { GameController } from "./GameController";
 
@@ -21,7 +22,7 @@ export class UserInterface {
     public _engine: Engine;
     public _room: Room;
     private _chatRoom: Room;
-    public _entities: Map<string, Player | Entity | Item>;
+    public _entities: Map<string, Player | Entity | Item | WorldObject>;
     private _currentPlayer;
 
     public MAIN_ADT: AdvancedDynamicTexture;
@@ -46,7 +47,7 @@ export class UserInterface {
     public panelHelp = null;
     public panelQuests = null;
 
-    constructor(game: GameController, entities: Map<string, Player | Entity | Item>, currentPlayer) {
+    constructor(game: GameController, entities: Map<string, Player | Entity | Item | WorldObject>, currentPlayer) {
         this._game = game;
         this._scene = game.scene;
         this._engine = game.engine;
