@@ -4,6 +4,11 @@ import { State } from "../brain/StateManager";
 
 class IdleState extends State {
     enter(owner) {
+        // apply stat reset for the action that just completed
+        if (owner.AI_PENDING_ACTION && owner._state.aiService) {
+            owner._state.aiService.applyPendingAction(owner.sessionId, owner.AI_PENDING_ACTION);
+            owner.AI_PENDING_ACTION = null;
+        }
         owner.IDLE_TIMER = 0;
         owner.IDLE_TIMER_LENGTH = randomNumberInRange(1000, 4000);
         owner.ai_state = AI_STATE.IDLE;

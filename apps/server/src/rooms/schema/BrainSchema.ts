@@ -299,10 +299,14 @@ export class BrainSchema extends Entity {
      * @param {Vector3} targetPos
      */
     setTargetDestination(targetPos: Vector3): void {
-        console.log("[setTargetDestination]", this.AI_TARGET_WAYPOINTS);
-        this.AI_TARGET_WAYPOINTS = this._state.navMesh.findPath(this.getPosition(), targetPos);
+        // clamp target y to navmesh surface height so findPath succeeds for objects placed at y=0
+        const clampedTarget = new Vector3(targetPos.x, 0.06, targetPos.z);
+        this.AI_TARGET_WAYPOINTS = this._state.navMesh.findPath(this.getPosition(), clampedTarget);
         if (this.AI_TARGET_WAYPOINTS.length === 0) {
+            console.warn(`[BrainSchema] setTargetDestination: findPath returned empty from ${JSON.stringify(this.getPosition())} to ${JSON.stringify(clampedTarget)}`);
             this.AI_TARGET_WAYPOINTS = [];
+        } else {
+            this.AI_TARGET_WAYPOINTS.push(clampedTarget);
         }
     }
 

@@ -36,6 +36,10 @@ export class AIBehaviourService {
         }
     }
 
+    public applyPendingAction(sessionId: string, action: PetAction): void {
+        this._petStats.applyAction(sessionId, action);
+    }
+
     public async requestTick(entity: any, state: any): Promise<void> {
         if (entity.AI_TICK_PENDING) return;
         entity.AI_TICK_PENDING = true;
@@ -121,18 +125,18 @@ export class AIBehaviourService {
             }
         }
 
-        this._petStats.applyAction(entity.sessionId, action);
-
         switch (action) {
             case "IDLE":
                 // Stay in IdleState; reset timer so the next tick fires in ~3s
                 entity.IDLE_TIMER = 0;
                 entity.IDLE_TIMER_LENGTH = 3000;
+                this._petStats.applyAction(entity.sessionId, action);
                 break;
 
             case "EXPLORE":
             case "TOILET":
-                entity.setRandomDestination(entity.getPosition());
+                // stat reset deferred to arrival (IdleState.enter via AI_PENDING_ACTION)
+                entity.AI_PENDING_ACTION = action;
                 entity._stateMachine.changeTo("PATROL");
                 break;
 
@@ -143,12 +147,12 @@ export class AIBehaviourService {
             case "PLAY":
             case "FETCH":
             case "SLEEP":
+                // stat reset deferred to arrival (IdleState.enter via AI_PENDING_ACTION)
+                entity.AI_PENDING_ACTION = action;
+                entity._stateMachine.changeTo("PATROL");
                 if (targetEntity) {
                     entity.setTargetDestination(targetEntity.getPosition());
-                } else {
-                    entity.setRandomDestination(entity.getPosition());
                 }
-                entity._stateMachine.changeTo("PATROL");
                 break;
         }
     }
