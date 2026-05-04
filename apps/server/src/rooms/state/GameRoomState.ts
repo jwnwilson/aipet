@@ -5,6 +5,8 @@ import { BrainSchema, Entity, EquipmentSchema, LootSchema, PlayerSchema } from "
 import { spawnCTRL } from "../controllers/spawnCTRL";
 import { entityCTRL } from "../controllers/entityCTRL";
 import { gameDataCTRL } from "../controllers/gameDataCTRL";
+import { PetStatsService } from "../../services/PetStatsService";
+import { AIBehaviourService } from "../../services/AIBehaviourService";
 
 import { GameRoom } from "../GameRoom";
 
@@ -34,6 +36,8 @@ export class GameRoomState extends Schema {
     public navMesh: NavMesh = null;
     public entityCTRL: entityCTRL;
     public gameData: gameDataCTRL;
+    public petStatsService: PetStatsService;
+    public aiService: AIBehaviourService;
 
     public config: Config;
     public roomDetails;
@@ -62,6 +66,13 @@ export class GameRoomState extends Schema {
         // load controllers
         this.entityCTRL = new entityCTRL(this);
         this.spawnCTRL = new spawnCTRL(this);
+
+        // AI behaviour services
+        this.petStatsService = new PetStatsService();
+        this.aiService = new AIBehaviourService(
+            this.petStatsService,
+            process.env.AIPET_LLM_URL ?? "http://localhost:8000",
+        );
     }
 
     public update(deltaTime: number) {
@@ -69,7 +80,11 @@ export class GameRoomState extends Schema {
         if (this.entityCTRL.hasEntities()) {
             this.entityCTRL.all.forEach((entity) => {
                 entity.update(deltaTime);
-                // todo: remove item/loot that's been on the ground over 5 minutes
+
+                // decay pet stats for bunny entities
+                if ((entity as any).AI_SPAWN_INFO?.key === "bunny") {
+                    this.petStatsService.update(entity.sessionId, deltaTime);
+                }
             });
         }
 

@@ -3,9 +3,6 @@ import { AI_STATE } from "../../../../shared/types";
 import { State } from "../brain/StateManager";
 
 class IdleState extends State {
-    private _rotationTimer: number = 0;
-    private _rotationTimerTimeout: number = 0;
-
     enter(owner) {
         owner.IDLE_TIMER = 0;
         owner.IDLE_TIMER_LENGTH = randomNumberInRange(1000, 4000);
@@ -13,33 +10,43 @@ class IdleState extends State {
     }
 
     execute(owner) {
-        // if static spawn, stay idle
+        const isBunny = owner.AI_SPAWN_INFO?.key === "bunny" && owner._state.aiService;
+
+        if (isBunny) {
+            // While a tick is pending, freeze the idle timer and wait for the response
+            if (owner.AI_TICK_PENDING) return;
+
+            owner.IDLE_TIMER += owner._state.config.updateRate;
+            if (owner.IDLE_TIMER > owner.IDLE_TIMER_LENGTH) {
+                // Fire the AI behaviour tick; it will change state when it resolves
+                owner._state.aiService.requestTick(owner, owner._state);
+            }
+            return;
+        }
+
+        // Non-bunny entities: original patrol logic
         if (owner.AI_SPAWN_INFO.type == "static") {
             return false;
         }
 
-        // if there is a closest player, and in aggro range
         if (owner.isAnyPlayerInAggroRange() && owner.AI_SPAWN_INFO.aggressive === true) {
             owner.setPlayerTarget(owner.AI_CLOSEST_PLAYER);
             owner._stateMachine.changeTo("CHASE");
         }
 
-        // if entity has a target, start searching for it
         if (owner.hasValidTarget() && owner.AI_SPAWN_INFO.aggressive === true) {
             owner._stateMachine.changeTo("CHASE");
             return false;
         }
 
-        // keep track of idling time
         owner.IDLE_TIMER += owner._state.config.updateRate;
         if (owner.IDLE_TIMER > owner.IDLE_TIMER_LENGTH) {
             owner._stateMachine.changeTo("PATROL");
             return false;
         }
-        //console.log("[IdleState] idle entity", owner.IDLE_TIMER, owner.IDLE_TIMER_LENGTH);
     }
 
-    exit(owner) {}
+    exit(_owner) {}
 }
 
 export default IdleState;

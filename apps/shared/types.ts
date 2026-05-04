@@ -59,6 +59,8 @@ export enum AI_STATE {
     ATTACKING = 3,
 }
 
+export type PetAction = "EAT" | "DRINK" | "PLAY" | "FETCH" | "SLEEP" | "SOCIAL" | "FOLLOW" | "TOILET" | "IDLE" | "EXPLORE";
+
 export enum ServerMsg {
     PING = 1,
     PONG,

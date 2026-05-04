@@ -79,6 +79,7 @@ export class BrainSchema extends Entity {
     public AI_CLOSEST_PLAYER_DISTANCE = null;
     public AI_SPAWN_INFO = null;
     public AI_TARGET_SPOT = null;
+    public AI_TICK_PENDING: boolean = false;
 
     constructor(state, data, ...args: any[]) {
         super();
