@@ -4,6 +4,7 @@ import { PetStatsService } from "../services/PetStatsService";
 
 jest.mock("axios");
 const mockAxios = axios as jest.Mocked<typeof axios>;
+const mockPost = jest.fn();
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -59,6 +60,7 @@ let petStats: PetStatsService;
 
 beforeEach(() => {
     jest.clearAllMocks();
+    mockAxios.create.mockReturnValue({ post: mockPost } as any);
     petStats = new PetStatsService();
     svc = new AIBehaviourService(petStats, "http://localhost:8000");
 });
@@ -68,16 +70,16 @@ beforeEach(() => {
 it("does nothing when AI_TICK_PENDING is true", async () => {
     const bunny = makeBunny({ AI_TICK_PENDING: true });
     await svc.requestTick(bunny, makeState());
-    expect(mockAxios.post).not.toHaveBeenCalled();
+    expect(mockPost).not.toHaveBeenCalled();
     expect(bunny._stateMachine.changeTo).not.toHaveBeenCalled();
 });
 
 it("sets AI_TICK_PENDING to true during call and false after", async () => {
     const bunny = makeBunny();
-    mockAxios.post.mockResolvedValue({ data: { action: "IDLE", target_object_id: null } });
+    mockPost.mockResolvedValue({ data: { action: "IDLE", target_object_id: null } });
 
     let pendingDuringCall = false;
-    mockAxios.post.mockImplementation(async () => {
+    mockPost.mockImplementation(async () => {
         pendingDuringCall = bunny.AI_TICK_PENDING;
         return { data: { action: "IDLE", target_object_id: null } };
     });
@@ -92,7 +94,7 @@ it("sets AI_TICK_PENDING to true during call and false after", async () => {
 
 it("EXPLORE: calls setRandomDestination and changeTo PATROL", async () => {
     const bunny = makeBunny();
-    mockAxios.post.mockResolvedValue({ data: { action: "EXPLORE", target_object_id: null } });
+    mockPost.mockResolvedValue({ data: { action: "EXPLORE", target_object_id: null } });
 
     await svc.requestTick(bunny, makeState());
 
@@ -102,7 +104,7 @@ it("EXPLORE: calls setRandomDestination and changeTo PATROL", async () => {
 
 it("TOILET: calls setRandomDestination and changeTo PATROL (no target needed)", async () => {
     const bunny = makeBunny();
-    mockAxios.post.mockResolvedValue({ data: { action: "TOILET", target_object_id: null } });
+    mockPost.mockResolvedValue({ data: { action: "TOILET", target_object_id: null } });
 
     await svc.requestTick(bunny, makeState());
 
@@ -112,7 +114,7 @@ it("TOILET: calls setRandomDestination and changeTo PATROL (no target needed)", 
 
 it("IDLE: resets idle timer, does NOT call changeTo", async () => {
     const bunny = makeBunny({ IDLE_TIMER: 9999, IDLE_TIMER_LENGTH: 9999 });
-    mockAxios.post.mockResolvedValue({ data: { action: "IDLE", target_object_id: null } });
+    mockPost.mockResolvedValue({ data: { action: "IDLE", target_object_id: null } });
 
     await svc.requestTick(bunny, makeState());
 
@@ -128,7 +130,7 @@ it.each(["SOCIAL", "FOLLOW", "EAT", "DRINK", "PLAY", "FETCH", "SLEEP"] as const)
         const state = makeState([player]);
         const bunny = makeBunny();
 
-        mockAxios.post.mockResolvedValue({ data: { action, target_object_id: "player-1" } });
+        mockPost.mockResolvedValue({ data: { action, target_object_id: "player-1" } });
 
         await svc.requestTick(bunny, state);
 
@@ -140,7 +142,7 @@ it.each(["SOCIAL", "FOLLOW", "EAT", "DRINK", "PLAY", "FETCH", "SLEEP"] as const)
 it("SOCIAL with missing target falls back to setRandomDestination + PATROL", async () => {
     const state = makeState(); // no player-99 entity
     const bunny = makeBunny();
-    mockAxios.post.mockResolvedValue({ data: { action: "SOCIAL", target_object_id: "player-99" } });
+    mockPost.mockResolvedValue({ data: { action: "SOCIAL", target_object_id: "player-99" } });
 
     await svc.requestTick(bunny, state);
 
@@ -152,7 +154,7 @@ it("SOCIAL with missing target falls back to setRandomDestination + PATROL", asy
 
 it("on axios error: falls back to EXPLORE and clears AI_TICK_PENDING", async () => {
     const bunny = makeBunny();
-    mockAxios.post.mockRejectedValue(new Error("timeout"));
+    mockPost.mockRejectedValue(new Error("timeout"));
 
     await svc.requestTick(bunny, makeState());
 
@@ -170,11 +172,11 @@ it("excludes the bunny itself from scene objects", async () => {
         entities: new Map([["bunny-1", bunny]]),
         entityCTRL: { get: jest.fn() },
     };
-    mockAxios.post.mockResolvedValue({ data: { action: "IDLE", target_object_id: null } });
+    mockPost.mockResolvedValue({ data: { action: "IDLE", target_object_id: null } });
 
     await svc.requestTick(bunny, state);
 
-    const body = mockAxios.post.mock.calls[0][1] as any;
+    const body = mockPost.mock.calls[0][1] as any;
     expect(body.scene.objects).toHaveLength(0);
 });
 
@@ -183,11 +185,11 @@ it("includes a player entity within SCENE_RADIUS as type 'player'", async () => 
     const bunny = makeBunny({ getPosition: jest.fn().mockReturnValue({ distanceTo: jest.fn().mockReturnValue(10) }) });
     const player = makePlayer("player-1", 10);
     const state = makeState([player]);
-    mockAxios.post.mockResolvedValue({ data: { action: "IDLE", target_object_id: null } });
+    mockPost.mockResolvedValue({ data: { action: "IDLE", target_object_id: null } });
 
     await svc.requestTick(bunny, state);
 
-    const body = mockAxios.post.mock.calls[0][1] as any;
+    const body = mockPost.mock.calls[0][1] as any;
     const obj = body.scene.objects.find((o: any) => o.id === "player-1");
     expect(obj).toBeDefined();
     expect(obj.type).toBe("player");
@@ -199,11 +201,11 @@ it("excludes entities beyond SCENE_RADIUS (30 units)", async () => {
     const bunny = makeBunny({ getPosition: jest.fn().mockReturnValue({ distanceTo: jest.fn().mockReturnValue(35) }) });
     const farPlayer = makePlayer("far-player", 35);
     const state = makeState([farPlayer]);
-    mockAxios.post.mockResolvedValue({ data: { action: "IDLE", target_object_id: null } });
+    mockPost.mockResolvedValue({ data: { action: "IDLE", target_object_id: null } });
 
     await svc.requestTick(bunny, state);
 
-    const body = mockAxios.post.mock.calls[0][1] as any;
+    const body = mockPost.mock.calls[0][1] as any;
     expect(body.scene.objects.find((o: any) => o.id === "far-player")).toBeUndefined();
 });
 
@@ -211,11 +213,11 @@ it("includes worldobject bowl as type 'bowl'", async () => {
     const bunny = makeBunny();
     const bowl = makeWorldObject("bowl-1", "bowl", 5);
     const state = makeState([bowl]);
-    mockAxios.post.mockResolvedValue({ data: { action: "IDLE", target_object_id: null } });
+    mockPost.mockResolvedValue({ data: { action: "IDLE", target_object_id: null } });
 
     await svc.requestTick(bunny, state);
 
-    const body = mockAxios.post.mock.calls[0][1] as any;
+    const body = mockPost.mock.calls[0][1] as any;
     const obj = body.scene.objects.find((o: any) => o.id === "bowl-1");
     expect(obj).toBeDefined();
     expect(obj.type).toBe("bowl");
@@ -225,11 +227,11 @@ it("excludes worldobject with subtype 'toilet' from scene (TOILET needs no LLM t
     const bunny = makeBunny();
     const toilet = makeWorldObject("toilet-1", "toilet", 5);
     const state = makeState([toilet]);
-    mockAxios.post.mockResolvedValue({ data: { action: "IDLE", target_object_id: null } });
+    mockPost.mockResolvedValue({ data: { action: "IDLE", target_object_id: null } });
 
     await svc.requestTick(bunny, state);
 
-    const body = mockAxios.post.mock.calls[0][1] as any;
+    const body = mockPost.mock.calls[0][1] as any;
     expect(body.scene.objects.find((o: any) => o.id === "toilet-1")).toBeUndefined();
 });
 
@@ -240,10 +242,10 @@ it("sends current pet stats in the request body", async () => {
     const stats = petStats.getOrInit("bunny-1");
     stats.hunger = 0.8;
 
-    mockAxios.post.mockResolvedValue({ data: { action: "IDLE", target_object_id: null } });
+    mockPost.mockResolvedValue({ data: { action: "IDLE", target_object_id: null } });
 
     await svc.requestTick(bunny, makeState());
 
-    const body = mockAxios.post.mock.calls[0][1] as any;
+    const body = mockPost.mock.calls[0][1] as any;
     expect(body.pet_stats.hunger).toBeCloseTo(0.8);
 });

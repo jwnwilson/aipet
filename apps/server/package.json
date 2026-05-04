@@ -8,7 +8,8 @@
     "dev": "ts-node-dev --respawn --inspect --transpile-only src/index.ts",
     "start": "ts-node --transpile-only src/index.ts",
     "build": "tsc && cp -r public dist",
-    "test": "jest"
+    "test": "jest",
+    "test:integration": "jest --config jest.integration.config.js"
   },
   "keywords": [],
   "author": "",

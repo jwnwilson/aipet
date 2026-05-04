@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
 import Logger from "../utils/Logger";
 import { PetStatsService } from "./PetStatsService";
 import { PetAction } from "../../../shared/types";
@@ -11,24 +11,31 @@ type SceneObject = {
     distance: number;
 };
 
-// Maximum distance (units) from bunny to include an object in the scene
 const SCENE_RADIUS = 30;
 
 export class AIBehaviourService {
     private _petStats: PetStatsService;
-    private _llmUrl: string;
+    private _axios: AxiosInstance;
     private _tick = 0;
 
-    constructor(petStats: PetStatsService, llmUrl: string) {
+    constructor(
+        petStats: PetStatsService,
+        llmUrl: string,
+        timeoutMs = parseInt(process.env.AIPET_LLM_TIMEOUT_MS ?? "10000", 10),
+    ) {
         this._petStats = petStats;
-        this._llmUrl = llmUrl;
+        this._axios = axios.create({ baseURL: llmUrl, timeout: timeoutMs });
     }
 
-    /**
-     * Fire-and-forget behaviour tick for a single bunny entity.
-     * Collects scene, calls POST /infer, dispatches the returned action.
-     * Sets AI_TICK_PENDING to guard against concurrent calls.
-     */
+    static async checkHealth(url: string): Promise<void> {
+        try {
+            const res = await axios.get<{ status: string; model?: string }>(`${url}/health`, { timeout: 3000 });
+            Logger.info(`[aipet_llm] connected — model: ${res.data?.model ?? "unknown"}`);
+        } catch {
+            Logger.warning("[aipet_llm] service unreachable — behaviour AI will fall back to EXPLORE");
+        }
+    }
+
     public async requestTick(entity: any, state: any): Promise<void> {
         if (entity.AI_TICK_PENDING) return;
         entity.AI_TICK_PENDING = true;
@@ -41,11 +48,15 @@ export class AIBehaviourService {
                 scene: { objects: sceneObjects, tick: this._tick++ },
                 pet_stats: petStats,
             };
+            Logger.info(`LLM Request: ${JSON.stringify(requestBody)}`);
 
-            const response = await axios.post(`${this._llmUrl}/infer`, requestBody, { timeout: 5000 });
+            const response = await this._axios.post("/infer", requestBody);
+
+            Logger.info(`LLM Response: ${JSON.stringify(response.data)}`);
+
             const { action, target_object_id } = response.data as { action: PetAction; target_object_id: string | null };
 
-            this._dispatchAction(entity, state, action, target_object_id, sceneObjects);
+            this._dispatchAction(entity, state, action, target_object_id);
         } catch (err) {
             Logger.error("[AIBehaviourService] inference error, falling back to EXPLORE:", err);
             entity.setRandomDestination(entity.getPosition());
@@ -94,7 +105,6 @@ export class AIBehaviourService {
         state: any,
         action: PetAction,
         targetId: string | null,
-        sceneObjects: SceneObject[],
     ): void {
         Logger.info(`[AIBehaviourService] bunny ${entity.sessionId}: action=${action} target=${targetId ?? "none"}`);
 

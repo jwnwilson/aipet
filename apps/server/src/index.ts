@@ -15,6 +15,7 @@ import { Database } from "./database/index";
 
 import Logger from "./utils/Logger";
 import { Config } from "../../shared/Config";
+import { AIBehaviourService } from "./services/AIBehaviourService";
 
 import "dotenv/config";
 
@@ -66,6 +67,7 @@ class GameServer {
         gameServer.listen(port).then(() => {
             // server is now running
             Logger.info("[gameserver] listening on http://localhost:" + port);
+            AIBehaviourService.checkHealth(process.env.AIPET_LLM_URL ?? "http://localhost:8000");
 
             // create town room
             //matchMaker.createRoom("game_room", { location: "lh_town" });
