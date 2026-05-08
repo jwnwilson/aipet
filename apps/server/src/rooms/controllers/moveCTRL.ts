@@ -22,6 +22,7 @@ export class moveCTRL {
             if (this._owner.AI_TARGET_WAYPOINTS.length < 1) {
                 this.setTargetDestination(this._owner.AI_TARGET_POSITION);
             }
+            console.log("target", this._owner.AI_TARGET);
 
             // check distance to target
             let distance = this._owner.AI_TARGET_DISTANCE;
