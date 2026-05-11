@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
 import { ParsedQs } from "qs";
-import { MapSchema } from "@colyseus/schema/lib/types/MapSchema";
+import { MapSchema } from "@colyseus/schema";
 
 import { DB_SQLLITE } from "./sqllite";
 import Logger from "../utils/Logger";
