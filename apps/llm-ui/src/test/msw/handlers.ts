@@ -1,5 +1,6 @@
+// apps/llm-ui/src/test/msw/handlers.ts
 import { http, HttpResponse } from 'msw'
-import type { TrainingModel, TrainingModelConfig } from '@/types'
+import type { TrainingModel, TrainingModelConfig, TriggerRunRequest } from '@/types'
 import { MODEL_FIXTURE, RUN_FIXTURE } from './fixtures'
 
 const BASE = 'http://localhost:8000'
@@ -7,9 +8,7 @@ const BASE = 'http://localhost:8000'
 let models: TrainingModel[] = [MODEL_FIXTURE]
 
 export const handlers = [
-  http.get(`${BASE}/api/models`, () => {
-    return HttpResponse.json(models)
-  }),
+  http.get(`${BASE}/api/models`, () => HttpResponse.json(models)),
 
   http.post(`${BASE}/api/models`, async ({ request }) => {
     const config = await request.json() as TrainingModelConfig
@@ -45,20 +44,17 @@ export const handlers = [
     return new HttpResponse(null, { status: 204 })
   }),
 
-  http.post(`${BASE}/api/models/:id/trigger`, ({ params }) => {
-    const model = models.find(m => m.id === params.id)
+  http.post(`${BASE}/api/runs/trigger`, async ({ request }) => {
+    const body = await request.json() as TriggerRunRequest
+    const model = models.find(m => m.id === body.model_id)
     if (!model) return HttpResponse.json({ detail: 'Not found' }, { status: 404 })
-    return HttpResponse.json({ workflow_id: 'training-test-abc12345' }, { status: 202 })
+    return HttpResponse.json({ run_id: RUN_FIXTURE.id }, { status: 202 })
   }),
 
-  http.get(`${BASE}/api/runs`, () => {
-    return HttpResponse.json([RUN_FIXTURE])
-  }),
+  http.get(`${BASE}/api/runs`, () => HttpResponse.json([RUN_FIXTURE])),
 
-  http.get(`${BASE}/api/runs/:workflowId`, ({ params }) => {
-    if (params.workflowId === RUN_FIXTURE.workflow_id) {
-      return HttpResponse.json(RUN_FIXTURE)
-    }
+  http.get(`${BASE}/api/runs/:id`, ({ params }) => {
+    if (params.id === RUN_FIXTURE.id) return HttpResponse.json(RUN_FIXTURE)
     return HttpResponse.json({ detail: 'Not found' }, { status: 404 })
   }),
 ]
