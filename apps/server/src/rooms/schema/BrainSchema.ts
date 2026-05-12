@@ -1,9 +1,10 @@
-import { type, ArraySchema, MapSchema } from "@colyseus/schema";
+import { type, MapSchema } from "@colyseus/schema";
 import { EntityState, AI_STATE } from "../../../../shared/types";
 import { Entity } from "./Entity";
-import { abilitiesCTRL } from "../controllers/abilityCTRL";
-import { AbilitySchema } from "../schema/player/AbilitySchema";
-import { IdleState, PatrolState, ChaseState, AttackState, DeadState } from "../brain";
+// import { abilitiesCTRL } from "../controllers/abilityCTRL"; // DISABLED: combat system
+// import { AbilitySchema } from "../schema/player/AbilitySchema"; // DISABLED: combat system
+import { IdleState, PatrolState } from "../brain";
+// ChaseState, AttackState, DeadState DISABLED: combat system
 import { StateManager } from "../brain/StateManager";
 import { Vector3 } from "../../../../shared/Libs/yuka-min";
 import { randomNumberInRange } from "../../../../shared/Utils";
@@ -56,9 +57,9 @@ export class BrainSchema extends Entity {
     public client;
 
     // CTRL
-    public abilitiesCTRL: abilitiesCTRL;
+    // public abilitiesCTRL: abilitiesCTRL; // DISABLED: combat system
     public animationCTRL: animationCTRL;
-    public abilities: AbilitySchema[] = [];
+    // public abilities: AbilitySchema[] = []; // DISABLED: combat system
     public default_abilities;
 
     // TIMERS
@@ -78,6 +79,7 @@ export class BrainSchema extends Entity {
     public AI_CLOSEST_PLAYER_DISTANCE = null;
     public AI_SPAWN_INFO = null;
     public AI_TARGET_SPOT = null;
+    public AI_TICK_PENDING: boolean = false;
 
     constructor(state, data, ...args: any[]) {
         super();
@@ -100,16 +102,16 @@ export class BrainSchema extends Entity {
         }
 
         // set controllers
-        this.abilitiesCTRL = new abilitiesCTRL(this);
+        // this.abilitiesCTRL = new abilitiesCTRL(this); // DISABLED: combat system
         this.animationCTRL = new animationCTRL(this);
 
         // initialize state machine
         this._stateMachine = new StateManager(this);
         this._stateMachine.add("IDLE", new IdleState());
         this._stateMachine.add("PATROL", new PatrolState());
-        this._stateMachine.add("CHASE", new ChaseState());
-        this._stateMachine.add("ATTACK", new AttackState());
-        this._stateMachine.add("DEAD", new DeadState());
+        // this._stateMachine.add("CHASE", new ChaseState()); // DISABLED: combat system
+        // this._stateMachine.add("ATTACK", new AttackState()); // DISABLED: combat system
+        // this._stateMachine.add("DEAD", new DeadState()); // DISABLED: combat system
 
         // initial state
         this._stateMachine.changeTo("IDLE");
@@ -117,21 +119,6 @@ export class BrainSchema extends Entity {
 
     // entity update
     public update(delta) {
-        /////////////////////////////////////////////////////////////////
-        // if players are connected, start monitoring them
-        if (this.isEntityDead() && !this.isDead) {
-            //this._stateMachine.changeTo("DEAD");
-        }
-
-        // if does not have a target, keep monitoring the closest player
-        if (this.AI_TARGET === null || this.AI_TARGET === undefined) {
-            this.findClosestPlayer();
-        }
-        // if entity has a target, monitor it's position
-        if (this.AI_TARGET != null && this.AI_TARGET !== undefined) {
-            this.monitorTarget();
-        }
-
         // update state machine
         this._stateMachine.update();
     }
@@ -312,10 +299,14 @@ export class BrainSchema extends Entity {
      * @param {Vector3} targetPos
      */
     setTargetDestination(targetPos: Vector3): void {
-        console.log("[setTargetDestination]", this.AI_TARGET_WAYPOINTS);
-        this.AI_TARGET_WAYPOINTS = this._state.navMesh.findPath(this.getPosition(), targetPos);
+        // clamp target y to navmesh surface height so findPath succeeds for objects placed at y=0
+        const clampedTarget = new Vector3(targetPos.x, 0.06, targetPos.z);
+        this.AI_TARGET_WAYPOINTS = this._state.navMesh.findPath(this.getPosition(), clampedTarget);
         if (this.AI_TARGET_WAYPOINTS.length === 0) {
+            console.warn(`[BrainSchema] setTargetDestination: findPath returned empty from ${JSON.stringify(this.getPosition())} to ${JSON.stringify(clampedTarget)}`);
             this.AI_TARGET_WAYPOINTS = [];
+        } else {
+            this.AI_TARGET_WAYPOINTS.push(clampedTarget);
         }
     }
 

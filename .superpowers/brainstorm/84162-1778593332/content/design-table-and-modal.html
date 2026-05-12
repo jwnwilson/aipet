@@ -1,0 +1,125 @@
+<h2>Proposed design: Models table + Run modal</h2>
+<p class="subtitle">Table with inline search. "Run" opens a param override dialog. "Edit" navigates to the existing edit page.</p>
+
+<div class="mockup" style="max-width:860px">
+  <div class="mockup-header">Models list — /models</div>
+  <div class="mockup-body" style="padding:20px;background:#f8f9fa">
+
+    <!-- toolbar -->
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:16px">
+      <div style="position:relative;flex:1;max-width:320px">
+        <span style="position:absolute;left:9px;top:50%;transform:translateY(-50%);color:#9ca3af;font-size:13px">🔍</span>
+        <div style="background:#fff;border:1px solid #d1d5db;border-radius:6px;padding:6px 10px 6px 28px;font-size:12px;color:#9ca3af">Search by name, base model…</div>
+      </div>
+      <div style="margin-left:auto;background:#2563eb;color:#fff;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:500">+ New model</div>
+    </div>
+
+    <!-- table -->
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden">
+      <!-- header -->
+      <div style="display:grid;grid-template-columns:2fr 2.5fr 1fr 1fr 0.6fr 1.8fr;gap:0;background:#f9fafb;border-bottom:1px solid #e5e7eb;padding:8px 14px;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.03em">
+        <span>Name</span>
+        <span>Base model</span>
+        <span>Backend</span>
+        <span>Epochs</span>
+        <span>Active</span>
+        <span>Actions</span>
+      </div>
+      <!-- row 1 -->
+      <div style="display:grid;grid-template-columns:2fr 2.5fr 1fr 1fr 0.6fr 1.8fr;gap:0;border-bottom:1px solid #f3f4f6;padding:10px 14px;align-items:center;font-size:12px">
+        <div>
+          <div style="font-weight:500;color:#111827">bunny-v1</div>
+          <div style="color:#9ca3af;font-size:10px">Base training run</div>
+        </div>
+        <div style="color:#374151;font-family:monospace;font-size:11px">SmolLM2-360M</div>
+        <div style="color:#374151">local</div>
+        <div style="color:#374151">5</div>
+        <div><span style="background:#d1fae5;color:#065f46;padding:2px 6px;border-radius:99px;font-size:10px;font-weight:500">✓</span></div>
+        <div style="display:flex;gap:6px">
+          <span style="background:#2563eb;color:#fff;padding:4px 10px;border-radius:5px;font-size:11px;font-weight:500;cursor:pointer">▶ Run</span>
+          <span style="background:#fff;border:1px solid #d1d5db;color:#374151;padding:4px 10px;border-radius:5px;font-size:11px;cursor:pointer">✏ Edit</span>
+          <span style="background:#fff;border:1px solid #fca5a5;color:#dc2626;padding:4px 8px;border-radius:5px;font-size:11px;cursor:pointer">🗑</span>
+        </div>
+      </div>
+      <!-- row 2 -->
+      <div style="display:grid;grid-template-columns:2fr 2.5fr 1fr 1fr 0.6fr 1.8fr;gap:0;border-bottom:1px solid #f3f4f6;padding:10px 14px;align-items:center;font-size:12px">
+        <div>
+          <div style="font-weight:500;color:#111827">exp-qwen</div>
+          <div style="color:#9ca3af;font-size:10px">Qwen experiment</div>
+        </div>
+        <div style="color:#374151;font-family:monospace;font-size:11px">Qwen2.5-1.5B</div>
+        <div style="color:#374151">kaggle</div>
+        <div style="color:#374151">10</div>
+        <div><span style="color:#d1d5db;font-size:12px">—</span></div>
+        <div style="display:flex;gap:6px">
+          <span style="background:#2563eb;color:#fff;padding:4px 10px;border-radius:5px;font-size:11px;font-weight:500">▶ Run</span>
+          <span style="background:#fff;border:1px solid #d1d5db;color:#374151;padding:4px 10px;border-radius:5px;font-size:11px">✏ Edit</span>
+          <span style="background:#fff;border:1px solid #fca5a5;color:#dc2626;padding:4px 8px;border-radius:5px;font-size:11px">🗑</span>
+        </div>
+      </div>
+      <!-- row 3 muted -->
+      <div style="display:grid;grid-template-columns:2fr 2.5fr 1fr 1fr 0.6fr 1.8fr;gap:0;padding:10px 14px;align-items:center;font-size:12px;color:#9ca3af">
+        <div style="font-weight:500">llama-pet</div>
+        <div style="font-family:monospace;font-size:11px">Llama-3.2-1B</div>
+        <div>ssh</div>
+        <div>8</div>
+        <div>—</div>
+        <div style="display:flex;gap:6px">
+          <span style="background:#e5e7eb;color:#9ca3af;padding:4px 10px;border-radius:5px;font-size:11px">▶ Run</span>
+          <span style="background:#fff;border:1px solid #e5e7eb;color:#9ca3af;padding:4px 10px;border-radius:5px;font-size:11px">✏ Edit</span>
+          <span style="background:#fff;border:1px solid #fce7f3;color:#9ca3af;padding:4px 8px;border-radius:5px;font-size:11px">🗑</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div style="margin-top:24px"></div>
+
+<!-- Run modal -->
+<div class="mockup" style="max-width:480px">
+  <div class="mockup-header">Run modal — triggered by clicking ▶ Run on "bunny-v1"</div>
+  <div class="mockup-body" style="background:#00000066;padding:30px;display:flex;align-items:center;justify-content:center">
+    <div style="background:#fff;border-radius:10px;padding:24px;width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
+      <div style="font-weight:600;font-size:15px;margin-bottom:4px">Trigger run — bunny-v1</div>
+      <div style="color:#6b7280;font-size:12px;margin-bottom:16px">Override any config values for this run only. Leave blank to use model defaults.</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div>
+          <div style="font-size:11px;font-weight:500;color:#374151;margin-bottom:3px">Epochs</div>
+          <div style="background:#f9fafb;border:1px solid #d1d5db;border-radius:5px;padding:6px 9px;font-size:12px;color:#9ca3af">5 (default)</div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:500;color:#374151;margin-bottom:3px">Patience</div>
+          <div style="background:#f9fafb;border:1px solid #d1d5db;border-radius:5px;padding:6px 9px;font-size:12px;color:#9ca3af">3 (default)</div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:500;color:#374151;margin-bottom:3px">Warmup ratio</div>
+          <div style="background:#f9fafb;border:1px solid #d1d5db;border-radius:5px;padding:6px 9px;font-size:12px;color:#9ca3af">0.05 (default)</div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:500;color:#374151;margin-bottom:3px">Remote backend</div>
+          <div style="background:#f9fafb;border:1px solid #d1d5db;border-radius:5px;padding:6px 9px;font-size:12px;color:#9ca3af">local (default)</div>
+        </div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:11px;font-weight:500;color:#374151;margin-bottom:3px">Base model</div>
+        <div style="background:#f9fafb;border:1px solid #d1d5db;border-radius:5px;padding:6px 9px;font-size:12px;color:#9ca3af;font-family:monospace">SmolLM2-360M (default)</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:18px">
+        <div style="width:14px;height:14px;border:1px solid #d1d5db;border-radius:3px;background:#fff"></div>
+        <div style="font-size:12px;color:#374151">Skip dataset generation</div>
+      </div>
+
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <div style="border:1px solid #d1d5db;padding:7px 14px;border-radius:6px;font-size:12px;color:#374151">Cancel</div>
+        <div style="background:#2563eb;color:#fff;padding:7px 16px;border-radius:6px;font-size:12px;font-weight:500">▶ Start run</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:16px">
+  Route changes: <strong>GET /api/runs/:id</strong> uses <code>run.id</code> (not workflow_id). Trigger changes to <strong>POST /api/runs/trigger</strong> with request body. RunStatus updated to lowercase API enum.
+</p>

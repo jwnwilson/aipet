@@ -68,3 +68,12 @@ CREATE TABLE IF NOT EXISTS "character_quests" (
     "qty" INTEGER DEFAULT 0,
     UNIQUE("id")
 );
+
+CREATE TABLE IF NOT EXISTS "npc_chat_history" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "character_id" INTEGER NOT NULL,
+    "npc_key" TEXT NOT NULL DEFAULT 'bunny',
+    "role" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "created_at" INTEGER NOT NULL DEFAULT (strftime('%s','now'))
+);

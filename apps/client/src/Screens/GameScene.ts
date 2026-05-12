@@ -11,6 +11,7 @@ import { UserInterface } from "../Controllers/UserInterface";
 import { Player } from "../Entities/Player";
 import { Entity } from "../Entities/Entity";
 import { Item } from "../Entities/Item";
+import { WorldObject } from "../Entities/WorldObject";
 import { Room } from "colyseus.js";
 import { NavMesh } from "../../../shared/Libs/yuka-min";
 
@@ -45,7 +46,7 @@ export class GameScene {
     public _loadedAssets: AssetContainer[] = [];
     public gameData;
 
-    public _entities: Map<string, Player | Entity | Item> = new Map();
+    public _entities: Map<string, Player | Entity | Item | WorldObject> = new Map();
 
     public toSpawnPlayer: Player;
     public toSpawnOthers: Map<string, Entity | Item> = new Map();
@@ -162,7 +163,10 @@ export class GameScene {
         if (this._game.currentChat) {
             this._game.currentChat.leave();
         }
-        this._game.currentChat = await this._game.client.joinChatRoom({ name: this._game._currentCharacter.name });
+        this._game.currentChat = await this._game.client.joinChatRoom({
+            name: this._game._currentCharacter.name,
+            character_id: this._game._currentCharacter.id,
+        });
 
         // join the game room and use chat room session ID
         this.room = await this._game.client.joinOrCreateRoom(
@@ -352,6 +356,11 @@ export class GameScene {
             // if item
             if (entity.type === "item") {
                 this._entities.set(entity.sessionId, new Item(entity.sessionId, this._scene, entity, this.room, this._ui, this._game));
+            }
+
+            // if world object (bowl, bed, toy, toilet)
+            if (entity.type === "worldobject") {
+                this._entities.set(entity.sessionId, new WorldObject(entity.sessionId, this._scene, entity, this._game));
             }
 
             // remove

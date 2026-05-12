@@ -2,17 +2,17 @@
     "compileOnSave": true,
     "compilerOptions": {
         "target": "ES6",
-        "module": "CommonJS",
+        "module": "ESNext",
         "sourceMap": false,
         "outDir": "./dist/server",
+        "rootDir": "..",
         "strict": false,
         "experimentalDecorators": true,
         "esModuleInterop": true,
         "allowJs": true,
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "types": ["node"],
         "typeRoots": ["node_modules/@types"],
-        "baseUrl": ".",
         "paths": {
             "@shared/*": ["../shared/*"]
         }

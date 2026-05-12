@@ -10,8 +10,11 @@ export default async function loadNavMeshFromFile(fileNameNavMesh: string): Prom
     const url = path.join(__dirname, "../../../client/public/models/navmesh/" + fileNameNavMesh + ".glb");
     console.log(url);
     const data = await fs.readFileSync(url);
+    // Node Buffers for small files share a pooled ArrayBuffer with byteOffset > 0.
+    // Yuka reads from offset 0 of the ArrayBuffer, so we must slice a clean copy.
+    const arrayBuffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
     const loader = new NavMeshLoader();
-    return loader.parse(data.buffer, "", { mergeConvexRegions: false }).then((navmesh) => {
+    return loader.parse(arrayBuffer, "", { mergeConvexRegions: false }).then((navmesh) => {
         return navmesh;
     });
 }

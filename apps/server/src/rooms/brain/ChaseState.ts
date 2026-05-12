@@ -1,5 +1,6 @@
-import { AI_STATE } from "../../../../shared/types";
+import { AI_STATE, ServerMsg } from "../../../../shared/types";
 import { State } from "../brain/StateManager";
+import { ChatSchema } from "../schema/ChatSchema";
 
 class ChaseState extends State {
     enter(owner) {
@@ -12,6 +13,30 @@ class ChaseState extends State {
         owner.AI_TARGET_WAYPOINTS = [];
 
         owner.ai_state = AI_STATE.SEEKING;
+
+        // Post "hello" message to chatroom
+        this.postToChatroom(owner, "Attack!");
+    }
+
+    generateMessage(sessionId: string = "system", incomingMsg: any) {
+        let msg = new ChatSchema();
+        msg.senderID = sessionId;
+        msg.name = incomingMsg.name;
+        msg.message = incomingMsg.message;
+        console.log(sessionId, msg);
+        return msg;
+    }
+
+    async postToChatroom(owner, message: string) {
+        try {
+            owner._state._gameroom.broadcast(ServerMsg.SERVER_MESSAGE, this.generateMessage("system", {
+                type: "system",
+                name: "skeleton",
+                message: message,
+            }));
+        } catch (error) {
+            console.error("[ChaseState] Error posting to chatroom:", error);
+        }
     }
 
     execute(owner) {

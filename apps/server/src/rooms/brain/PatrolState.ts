@@ -64,6 +64,7 @@ class PatrolState extends State {
 
         // once arrive at destination, stay idle a while
         if (owner.AI_TARGET_WAYPOINTS.length < 1) {
+            console.warn(`[PatrolState] no waypoints for ${owner.sessionId} (pending action: ${(owner as any).AI_PENDING_ACTION ?? "none"}) — returning to IDLE`);
             owner._stateMachine.changeTo("IDLE");
             return false;
         }

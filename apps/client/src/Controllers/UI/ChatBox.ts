@@ -35,6 +35,7 @@ export class ChatBox {
             event: "orange",
             system: "white",
             chat: "white",
+            npc: "#4caf50",
         };
 
         // create ui
@@ -138,10 +139,25 @@ export class ChatBox {
             this.addNotificationMessage("system", message.message, new Date());
         });
 
-        // receive message event
+        // receive player chat message
         this._chatRoom.onMessage(ServerMsg.CHAT_MESSAGE, (message: PlayerMessage) => {
             message.color = this._colors["chat"];
             this.processMessage(message);
+        });
+
+        // receive NPC (Bunny) message
+        this._chatRoom.onMessage(ServerMsg.NPC_MESSAGE, (data: { name: string; message: string }) => {
+            this._game.currentChats.push({
+                type: "npc",
+                senderID: "NPC",
+                name: data.name,
+                message: data.message,
+                timestamp: 0,
+                createdAt: new Date().toISOString(),
+                color: this._colors["npc"],
+            });
+            this._refreshChatBox();
+            this._showMessageAboveNpc(data.name, data.message);
         });
     }
 
@@ -174,6 +190,15 @@ export class ChatBox {
     public processNotificationMessage(message) {
         this._game.currentChats.push(message);
         this._refreshChatBox();
+    }
+
+    // show NPC response above the NPC's mesh in the 3D scene
+    private _showMessageAboveNpc(npcName: string, message: string) {
+        this._entities.forEach((entity) => {
+            if (entity.name === npcName && entity.nameplateController) {
+                entity.nameplateController.addChatMessage(message, 1.5, "#1b5e20");
+            }
+        });
     }
 
     // show chat message above player
@@ -231,7 +256,9 @@ export class ChatBox {
             this._chatUI.addControl(headlineRect);
 
             let prefix = "[GLOBAL] " + msg.name + ": ";
-            if (this._currentPlayer) {
+            if (msg.type === "npc") {
+                prefix = msg.name + " says: ";
+            } else if (this._currentPlayer) {
                 prefix = msg.senderID == this._currentPlayer.sessionId ? "You said: " : "[GLOBAL] " + msg.name + ": ";
             }
 

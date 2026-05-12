@@ -1,0 +1,67 @@
+<h2>Run modal — updated with dropdowns</h2>
+<p class="subtitle">Remote backend and base model are now select dropdowns pre-set to the model's defaults.</p>
+
+<div class="mockup" style="max-width:480px;margin:0 auto">
+  <div class="mockup-header">Trigger run — bunny-v1</div>
+  <div class="mockup-body" style="background:#00000066;padding:30px;display:flex;align-items:center;justify-content:center">
+    <div style="background:#fff;border-radius:10px;padding:24px;width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
+      <div style="font-weight:600;font-size:15px;margin-bottom:4px">Trigger run — bunny-v1</div>
+      <div style="color:#6b7280;font-size:12px;margin-bottom:16px">Override any config values for this run only. Leave blank to use model defaults.</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div>
+          <div style="font-size:11px;font-weight:500;color:#374151;margin-bottom:3px">Epochs</div>
+          <div style="background:#f9fafb;border:1px solid #d1d5db;border-radius:5px;padding:6px 9px;font-size:12px;color:#9ca3af">5 (default)</div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:500;color:#374151;margin-bottom:3px">Patience</div>
+          <div style="background:#f9fafb;border:1px solid #d1d5db;border-radius:5px;padding:6px 9px;font-size:12px;color:#9ca3af">3 (default)</div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:500;color:#374151;margin-bottom:3px">Warmup ratio</div>
+          <div style="background:#f9fafb;border:1px solid #d1d5db;border-radius:5px;padding:6px 9px;font-size:12px;color:#9ca3af">0.05 (default)</div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:500;color:#374151;margin-bottom:3px">Remote backend</div>
+          <!-- dropdown -->
+          <div style="background:#fff;border:1px solid #d1d5db;border-radius:5px;padding:6px 9px;font-size:12px;color:#374151;display:flex;align-items:center;justify-content:space-between">
+            <span>local</span>
+            <span style="color:#9ca3af;font-size:10px">▼</span>
+          </div>
+          <div style="background:#fff;border:1px solid #d1d5db;border-radius:5px;margin-top:2px;font-size:11px;box-shadow:0 4px 12px rgba(0,0,0,0.08)">
+            <div style="padding:5px 9px;background:#eff6ff;color:#1d4ed8;font-weight:500">local ✓</div>
+            <div style="padding:5px 9px;color:#374151">kaggle</div>
+            <div style="padding:5px 9px;color:#374151">ssh</div>
+            <div style="padding:5px 9px;color:#374151">colab</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <div style="font-size:11px;font-weight:500;color:#374151;margin-bottom:3px">Base model</div>
+        <!-- dropdown -->
+        <div style="background:#fff;border:1px solid #2563eb;border-radius:5px;padding:6px 9px;font-size:12px;color:#374151;display:flex;align-items:center;justify-content:space-between;font-family:monospace">
+          <span>HuggingFaceTB/SmolLM2-360M</span>
+          <span style="color:#9ca3af;font-size:10px;font-family:sans-serif">▼</span>
+        </div>
+        <div style="background:#fff;border:1px solid #d1d5db;border-radius:5px;margin-top:2px;font-size:11px;box-shadow:0 4px 12px rgba(0,0,0,0.08);font-family:monospace">
+          <div style="padding:5px 9px;background:#eff6ff;color:#1d4ed8;font-weight:500">SmolLM2-360M ✓</div>
+          <div style="padding:5px 9px;color:#374151">SmolLM2-1.7B</div>
+          <div style="padding:5px 9px;color:#374151">Qwen2.5-0.5B</div>
+          <div style="padding:5px 9px;color:#374151">Qwen2.5-1.5B</div>
+          <div style="padding:5px 9px;color:#9ca3af">…more</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:18px">
+        <div style="width:14px;height:14px;border:1px solid #d1d5db;border-radius:3px;background:#fff"></div>
+        <div style="font-size:12px;color:#374151">Skip dataset generation</div>
+      </div>
+
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <div style="border:1px solid #d1d5db;padding:7px 14px;border-radius:6px;font-size:12px;color:#374151">Cancel</div>
+        <div style="background:#2563eb;color:#fff;padding:7px 16px;border-radius:6px;font-size:12px;font-weight:500">▶ Start run</div>
+      </div>
+    </div>
+  </div>
+</div>
