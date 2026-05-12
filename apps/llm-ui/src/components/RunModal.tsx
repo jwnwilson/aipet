@@ -1,4 +1,5 @@
 import { useForm, Controller } from 'react-hook-form'
+import type { Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -44,7 +45,7 @@ export function RunModal({ model, onClose }: RunModalProps) {
   const queryClient = useQueryClient()
 
   const { register, handleSubmit, control } = useForm<FormValues>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema) as Resolver<FormValues>,
     defaultValues: {
       epochs:         model.epochs,
       patience:       model.patience,

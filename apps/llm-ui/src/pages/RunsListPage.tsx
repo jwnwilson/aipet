@@ -17,17 +17,15 @@ export function RunsListPage() {
         <div className="flex flex-col gap-2">
           {runs.map(run => (
             <Link
-              key={run.workflow_id}
-              to={`/runs/${run.workflow_id}`}
+              key={run.id}
+              to={`/runs/${run.id}`}
               className="flex items-center justify-between rounded-md border p-4 text-gray-900 hover:bg-gray-50"
             >
               <div>
                 <p className="font-mono text-sm font-medium text-gray-900">{run.workflow_id}</p>
-                {run.start_time && (
-                  <p className="text-xs text-gray-500 mt-0.5">
-                    {new Date(run.start_time).toLocaleString()}
-                  </p>
-                )}
+                <p className="text-xs text-gray-500 mt-0.5">
+                  {new Date(run.created_at).toLocaleString()}
+                </p>
               </div>
               <RunStatusBadge status={run.status} />
             </Link>

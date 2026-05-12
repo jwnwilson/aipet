@@ -30,7 +30,7 @@ export default function App() {
             <Route path="/models/:id" element={<ModelDetailPage />} />
             <Route path="/models/:id/edit" element={<ModelFormPage />} />
             <Route path="/runs" element={<RunsListPage />} />
-            <Route path="/runs/:workflowId" element={<RunDetailPage />} />
+            <Route path="/runs/:runId" element={<RunDetailPage />} />
           </Routes>
         </div>
       </BrowserRouter>

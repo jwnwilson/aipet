@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useParams } from 'react-router-dom'
-import { deleteModel, getModel, triggerRun } from '@/api/models'
-import { listRuns } from '@/api/runs'
+import { deleteModel, getModel } from '@/api/models'
+import { listRuns, triggerRun } from '@/api/runs'
 import { RunStatusBadge } from '@/components/RunStatusBadge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -19,10 +19,10 @@ export function ModelDetailPage() {
   })
 
   const { data: allRuns = [] } = useQuery({ queryKey: ['runs'], queryFn: listRuns })
-  const runs = allRuns.filter(r => r.workflow_id.includes(model?.name ?? ''))
+  const runs = allRuns.filter(r => r.model_id === id)
 
   const triggerMutation = useMutation({
-    mutationFn: () => triggerRun(id!),
+    mutationFn: () => triggerRun({ model_id: id! }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['runs'] }),
   })
 
@@ -71,6 +71,7 @@ export function ModelDetailPage() {
               ['Warmup ratio', model.warmup_ratio],
               ['Remote backend', model.remote_backend],
               ['Skip generate', model.skip_generate ? 'Yes' : 'No'],
+              ...(model.gguf_path ? [['GGUF path', model.gguf_path]] : []),
             ].map(([key, val]) => (
               <div key={String(key)} className="contents">
                 <dt className="text-gray-500">{key}</dt>
@@ -88,8 +89,8 @@ export function ModelDetailPage() {
         <div className="flex flex-col gap-2">
           {runs.map(run => (
             <Link
-              key={run.workflow_id}
-              to={`/runs/${run.workflow_id}`}
+              key={run.id}
+              to={`/runs/${run.id}`}
               className="flex items-center justify-between rounded-md border p-3 text-gray-900 hover:bg-gray-50"
             >
               <span className="font-mono text-sm truncate">{run.workflow_id}</span>
