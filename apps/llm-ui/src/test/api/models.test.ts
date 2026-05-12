@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { listModels, getModel, createModel, updateModel, deleteModel, triggerRun } from '@/api/models'
+import { listModels, getModel, createModel, updateModel, deleteModel } from '@/api/models'
 import { MODEL_FIXTURE } from '../msw/fixtures'
 
 describe('listModels', () => {
@@ -40,12 +40,5 @@ describe('updateModel', () => {
 describe('deleteModel', () => {
   it('resolves without error', async () => {
     await expect(deleteModel(MODEL_FIXTURE.id)).resolves.toBeUndefined()
-  })
-})
-
-describe('triggerRun', () => {
-  it('returns workflow_id', async () => {
-    const result = await triggerRun(MODEL_FIXTURE.id)
-    expect(result.workflow_id).toBeDefined()
   })
 })

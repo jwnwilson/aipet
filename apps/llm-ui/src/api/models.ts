@@ -1,4 +1,4 @@
-import type { TrainingModel, TrainingModelConfig, TriggerResponse } from '@/types'
+import type { TrainingModel, TrainingModelConfig } from '@/types'
 import { apiClient } from './client'
 
 export async function listModels(): Promise<TrainingModel[]> {
@@ -23,9 +23,4 @@ export async function updateModel(id: string, config: TrainingModelConfig): Prom
 
 export async function deleteModel(id: string): Promise<void> {
   await apiClient.delete(`/api/models/${id}`)
-}
-
-export async function triggerRun(id: string): Promise<TriggerResponse> {
-  const { data } = await apiClient.post<TriggerResponse>(`/api/models/${id}/trigger`)
-  return data
 }
