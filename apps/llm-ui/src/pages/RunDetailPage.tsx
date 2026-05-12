@@ -3,34 +3,41 @@ import { useParams } from 'react-router-dom'
 import { getRun, isRunActive } from '@/api/runs'
 import { RunStatusBadge } from '@/components/RunStatusBadge'
 import { PipelineStages } from '@/components/PipelineStages'
-import type { PipelineStage } from '@/components/PipelineStages'
+import type { PipelineStage, StageStatus } from '@/components/PipelineStages'
 import type { RunStatus } from '@/types'
 
 function buildStages(status: RunStatus): PipelineStage[] {
-  const stages: Array<PipelineStage['name']> = ['Generate', 'Train', 'Evaluate', 'Export']
-  const order: Record<string, number> = { Generate: 0, Train: 1, Evaluate: 2, Export: 3 }
+  const stageNames = ['Generate', 'Train', 'Evaluate', 'Export']
+  const activeMap: Partial<Record<RunStatus, number>> = {
+    generating: 0,
+    training:   1,
+    evaluating: 2,
+    exporting:  3,
+  }
 
-  if (status === 'FAILED') {
-    return stages.map(name => ({ name, status: order[name] < 2 ? 'completed' : name === 'Train' ? 'failed' : 'pending' }))
+  if (status === 'completed') {
+    return stageNames.map(name => ({ name, status: 'completed' as StageStatus }))
   }
-  if (status === 'COMPLETED') {
-    return stages.map(name => ({ name, status: 'completed' as const }))
-  }
-  if (status === 'RUNNING') {
-    return stages.map((name, i) => ({
+  if (status === 'failed') {
+    return stageNames.map((name, i): PipelineStage => ({
       name,
-      status: i === 0 ? 'active' : 'pending',
-    } as PipelineStage))
+      status: i === 0 ? 'failed' : 'pending',
+    }))
   }
-  return stages.map(name => ({ name, status: 'pending' as const }))
+
+  const activeIdx = activeMap[status] ?? -1
+  return stageNames.map((name, i): PipelineStage => ({
+    name,
+    status: i < activeIdx ? 'completed' : i === activeIdx ? 'active' : 'pending',
+  }))
 }
 
 export function RunDetailPage() {
-  const { workflowId } = useParams<{ workflowId: string }>()
+  const { runId } = useParams<{ runId: string }>()
 
   const { data: run, isLoading } = useQuery({
-    queryKey: ['runs', workflowId],
-    queryFn: () => getRun(workflowId!),
+    queryKey: ['runs', runId],
+    queryFn: () => getRun(runId!),
     refetchInterval: (query) => {
       const data = query.state.data
       return data && isRunActive(data) ? 5000 : false
@@ -54,17 +61,27 @@ export function RunDetailPage() {
 
       <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
         <dt className="text-gray-500">Run ID</dt>
-        <dd className="font-mono text-gray-900">{run.run_id}</dd>
-        {run.start_time && (
+        <dd className="font-mono text-gray-900">{run.id}</dd>
+        <dt className="text-gray-500">Started</dt>
+        <dd className="text-gray-900">{new Date(run.created_at).toLocaleString()}</dd>
+        <dt className="text-gray-500">Updated</dt>
+        <dd className="text-gray-900">{new Date(run.updated_at).toLocaleString()}</dd>
+        {run.progress != null && (
           <>
-            <dt className="text-gray-500">Started</dt>
-            <dd className="text-gray-900">{new Date(run.start_time).toLocaleString()}</dd>
+            <dt className="text-gray-500">Progress</dt>
+            <dd className="text-gray-900">{Math.round(run.progress * 100)}%</dd>
           </>
         )}
-        {run.close_time && (
+        {run.eval_valid_pct != null && (
           <>
-            <dt className="text-gray-500">Finished</dt>
-            <dd className="text-gray-900">{new Date(run.close_time).toLocaleString()}</dd>
+            <dt className="text-gray-500">Eval valid</dt>
+            <dd className="text-gray-900">{Math.round(run.eval_valid_pct * 100)}%</dd>
+          </>
+        )}
+        {run.progress_detail && (
+          <>
+            <dt className="text-gray-500">Detail</dt>
+            <dd className="text-gray-900">{run.progress_detail}</dd>
           </>
         )}
       </dl>

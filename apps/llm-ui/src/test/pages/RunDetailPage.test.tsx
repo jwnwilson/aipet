@@ -5,13 +5,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { RunDetailPage } from '@/pages/RunDetailPage'
 import { RUN_FIXTURE } from '../msw/fixtures'
 
-function renderPage(workflowId: string) {
+function renderPage(runId: string) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   render(
     <QueryClientProvider client={client}>
-      <MemoryRouter initialEntries={[`/runs/${workflowId}`]}>
+      <MemoryRouter initialEntries={[`/runs/${runId}`]}>
         <Routes>
-          <Route path="/runs/:workflowId" element={<RunDetailPage />} />
+          <Route path="/runs/:runId" element={<RunDetailPage />} />
         </Routes>
       </MemoryRouter>
     </QueryClientProvider>
@@ -19,15 +19,15 @@ function renderPage(workflowId: string) {
 }
 
 describe('RunDetailPage', () => {
-  it('renders workflow id and status badge', async () => {
-    renderPage(RUN_FIXTURE.workflow_id)
+  it('renders workflow_id and status badge', async () => {
+    renderPage(RUN_FIXTURE.id)
     await waitFor(() => {
       expect(screen.getByText(RUN_FIXTURE.workflow_id)).toBeInTheDocument()
       expect(screen.getByText('Running')).toBeInTheDocument()
     })
   })
 
-  it('shows not found message for unknown workflow id', async () => {
+  it('shows not found for unknown run id', async () => {
     renderPage('does-not-exist')
     await waitFor(() => expect(screen.getByText(/not found/i)).toBeInTheDocument())
   })
