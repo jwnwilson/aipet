@@ -64,14 +64,15 @@ export function RunModal({ model, onClose }: RunModalProps) {
   })
 
   function onSubmit(values: FormValues) {
-    const req: Record<string, unknown> = { model_id: model.id }
-    if (values.epochs         != null) req.epochs         = values.epochs
-    if (values.patience       != null) req.patience       = values.patience
-    if (values.warmup_ratio   != null) req.warmup_ratio   = values.warmup_ratio
-    if (values.remote_backend != null) req.remote_backend = values.remote_backend
-    if (values.base_model     != null) req.base_model     = values.base_model
-    if (values.skip_generate  != null) req.skip_generate  = values.skip_generate
-    mutation.mutate(req as Parameters<typeof triggerRun>[0])
+    mutation.mutate({
+      model_id: model.id,
+      ...(values.epochs        != null && { epochs:         values.epochs }),
+      ...(values.patience      != null && { patience:       values.patience }),
+      ...(values.warmup_ratio  != null && { warmup_ratio:   values.warmup_ratio }),
+      ...(values.remote_backend != null && { remote_backend: values.remote_backend }),
+      ...(values.base_model    != null && { base_model:     values.base_model }),
+      skip_generate: values.skip_generate,
+    })
   }
 
   return (
