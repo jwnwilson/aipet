@@ -47,7 +47,7 @@ export function RunDetailPage() {
   })
 
   const deleteMutation = useMutation({
-    mutationFn: () => deleteRun(run!.id),
+    mutationFn: () => deleteRun(runId!),
     onSuccess: () => {
       queryClient.removeQueries({ queryKey: ['runs', runId] })
       navigate('/runs')

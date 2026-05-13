@@ -78,8 +78,8 @@ export function RunModal({ model, onClose }: RunModalProps) {
       ...(values.warmup_ratio       != null && { warmup_ratio:      values.warmup_ratio }),
       ...(values.remote_backend     != null && { remote_backend:    values.remote_backend }),
       ...(values.base_model         != null && { base_model:        values.base_model }),
-      ...(values.num_train_samples  != null && { num_train_samples: values.num_train_samples }),
-      ...(values.num_eval_samples   != null && { num_eval_samples:  values.num_eval_samples }),
+      ...(!values.skip_generate && values.num_train_samples != null && { num_train_samples: values.num_train_samples }),
+      ...(!values.skip_generate && values.num_eval_samples  != null && { num_eval_samples:  values.num_eval_samples }),
       skip_generate: values.skip_generate,
     })
   }
