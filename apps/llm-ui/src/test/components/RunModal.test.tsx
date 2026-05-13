@@ -41,4 +41,33 @@ describe('RunModal', () => {
     await userEvent.click(screen.getByRole('button', { name: /cancel/i }))
     expect(onClose).toHaveBeenCalled()
   })
+
+  it('renders num_train_samples and num_eval_samples fields', () => {
+    renderModal()
+    expect(screen.getByLabelText(/train samples/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/eval samples/i)).toBeInTheDocument()
+  })
+
+  it('num_train_samples and num_eval_samples start enabled when skip_generate is false', () => {
+    renderModal()
+    expect(screen.getByLabelText(/train samples/i)).not.toBeDisabled()
+    expect(screen.getByLabelText(/eval samples/i)).not.toBeDisabled()
+  })
+
+  it('disables num_train_samples and num_eval_samples when skip_generate is checked', async () => {
+    renderModal()
+    const skipCheckbox = screen.getByLabelText(/skip dataset generation/i)
+    await userEvent.click(skipCheckbox)
+    expect(screen.getByLabelText(/train samples/i)).toBeDisabled()
+    expect(screen.getByLabelText(/eval samples/i)).toBeDisabled()
+  })
+
+  it('re-enables num_train_samples and num_eval_samples when skip_generate is unchecked', async () => {
+    renderModal()
+    const skipCheckbox = screen.getByLabelText(/skip dataset generation/i)
+    await userEvent.click(skipCheckbox) // check
+    await userEvent.click(skipCheckbox) // uncheck
+    expect(screen.getByLabelText(/train samples/i)).not.toBeDisabled()
+    expect(screen.getByLabelText(/eval samples/i)).not.toBeDisabled()
+  })
 })
