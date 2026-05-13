@@ -1,0 +1,90 @@
+<h2>Where should run deletion live?</h2>
+<p class="subtitle">Currently runs are shown in a list page and a detail page. Pick where the delete action should appear.</p>
+
+<div class="cards">
+  <div class="card" data-choice="list-only" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#0f172a;border-radius:8px;padding:12px;font-family:monospace;font-size:12px;color:#94a3b8;">
+        <div style="color:#64748b;font-size:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;">Runs</div>
+        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin-bottom:4px;display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="color:#e2e8ef;font-size:11px;">training-bunny-abc12345</div>
+            <div style="color:#64748b;font-size:10px;">May 13 · completed</div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <span style="background:#166534;color:#86efac;font-size:9px;padding:2px 6px;border-radius:9px;">completed</span>
+            <span style="color:#ef4444;font-size:14px;cursor:pointer;" title="Delete">🗑</span>
+          </div>
+        </div>
+        <div style="background:#1e293b;border-radius:6px;padding:8px 10px;margin-bottom:4px;display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="color:#e2e8ef;font-size:11px;">training-bunny-def98765</div>
+            <div style="color:#64748b;font-size:10px;">May 12 · failed</div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <span style="background:#7f1d1d;color:#fca5a5;font-size:9px;padding:2px 6px;border-radius:9px;">failed</span>
+            <span style="color:#ef4444;font-size:14px;cursor:pointer;" title="Delete">🗑</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Delete from list only</h3>
+      <p>Trash icon per row in the runs list. Quick bulk cleanup without navigating into each run.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="detail-only" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#0f172a;border-radius:8px;padding:12px;font-family:monospace;font-size:12px;color:#94a3b8;">
+        <div style="color:#64748b;font-size:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;">Run Detail</div>
+        <div style="background:#1e293b;border-radius:6px;padding:10px;">
+          <div style="color:#e2e8ef;margin-bottom:4px;">training-bunny-abc12345</div>
+          <div style="color:#64748b;font-size:10px;margin-bottom:8px;">model: bunny-v1 · May 13</div>
+          <div style="display:flex;gap:4px;margin-bottom:8px;">
+            <span style="background:#166534;color:#86efac;font-size:9px;padding:2px 6px;border-radius:9px;">completed</span>
+            <span style="color:#94a3b8;font-size:10px;">eval: 87.3%</span>
+          </div>
+          <div style="display:flex;gap:6px;justify-content:flex-end;">
+            <button style="background:#ef4444;color:#fff;border:none;border-radius:5px;padding:4px 10px;font-size:10px;cursor:pointer;">Delete Run</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Delete from detail page only</h3>
+      <p>Delete button on the run detail page. User must open the run before deleting — reduces accidental deletes.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="both" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#0f172a;border-radius:8px;padding:12px;font-family:monospace;font-size:12px;color:#94a3b8;">
+        <div style="display:flex;gap:8px;">
+          <div style="flex:1;">
+            <div style="color:#64748b;font-size:10px;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">List</div>
+            <div style="background:#1e293b;border-radius:6px;padding:6px 8px;margin-bottom:3px;display:flex;justify-content:space-between;align-items:center;">
+              <span style="color:#e2e8ef;font-size:10px;">training-abc…</span>
+              <span style="color:#ef4444;font-size:12px;">🗑</span>
+            </div>
+            <div style="background:#1e293b;border-radius:6px;padding:6px 8px;display:flex;justify-content:space-between;align-items:center;">
+              <span style="color:#e2e8ef;font-size:10px;">training-def…</span>
+              <span style="color:#ef4444;font-size:12px;">🗑</span>
+            </div>
+          </div>
+          <div style="flex:1;">
+            <div style="color:#64748b;font-size:10px;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Detail</div>
+            <div style="background:#1e293b;border-radius:6px;padding:6px 8px;">
+              <div style="color:#e2e8ef;font-size:10px;margin-bottom:4px;">training-abc12345</div>
+              <button style="background:#ef4444;color:#fff;border:none;border-radius:4px;padding:2px 8px;font-size:9px;">Delete Run</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Both list and detail page</h3>
+      <p>Trash icon in list rows + delete button on detail page. Most flexible — quick from list, also available when viewing a run.</p>
+    </div>
+  </div>
+</div>

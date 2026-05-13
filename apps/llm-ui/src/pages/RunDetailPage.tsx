@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query'
-import { useParams } from 'react-router-dom'
-import { getRun, isRunActive } from '@/api/runs'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useNavigate, useParams } from 'react-router-dom'
+import { deleteRun, getRun, isRunActive } from '@/api/runs'
 import { RunStatusBadge } from '@/components/RunStatusBadge'
 import { PipelineStages } from '@/components/PipelineStages'
 import type { PipelineStage, StageStatus } from '@/components/PipelineStages'
@@ -34,6 +34,8 @@ function buildStages(status: RunStatus): PipelineStage[] {
 
 export function RunDetailPage() {
   const { runId } = useParams<{ runId: string }>()
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const { data: run, isLoading } = useQuery({
     queryKey: ['runs', runId],
@@ -44,17 +46,42 @@ export function RunDetailPage() {
     },
   })
 
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteRun(runId!),
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: ['runs', runId] })
+      navigate('/runs')
+    },
+  })
+
+  function handleDelete() {
+    if (window.confirm('Delete this run? This cannot be undone.')) {
+      deleteMutation.mutate()
+    }
+  }
+
   if (isLoading) return <p className="p-8 text-gray-500">Loading…</p>
   if (!run) return <p className="p-8 text-red-600">Run not found.</p>
 
   return (
     <div className="p-8 max-w-2xl">
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3 mb-2">
         <h1 className="text-xl font-semibold font-mono truncate">{run.workflow_id}</h1>
         <RunStatusBadge status={run.status} />
+        <button
+          onClick={handleDelete}
+          disabled={deleteMutation.isPending}
+          className="ml-auto text-sm text-red-600 border border-red-300 rounded px-3 py-1 hover:bg-red-50 disabled:opacity-50"
+        >
+          {deleteMutation.isPending ? 'Deleting…' : 'Delete run'}
+        </button>
       </div>
 
-      <div className="mb-8">
+      {deleteMutation.isError && (
+        <p className="text-sm text-red-600 mb-4">Failed to delete run. Please try again.</p>
+      )}
+
+      <div className="mb-8 mt-6">
         <h2 className="text-sm font-medium text-gray-500 mb-3">Pipeline stages</h2>
         <PipelineStages stages={buildStages(run.status)} />
       </div>

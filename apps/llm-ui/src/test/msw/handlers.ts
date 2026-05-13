@@ -57,6 +57,11 @@ export const handlers = [
     if (params.id === RUN_FIXTURE.id) return HttpResponse.json(RUN_FIXTURE)
     return HttpResponse.json({ detail: 'Not found' }, { status: 404 })
   }),
+
+  http.delete(`${BASE}/api/runs/:id`, ({ params }) => {
+    if (params.id === RUN_FIXTURE.id) return new HttpResponse(null, { status: 204 })
+    return HttpResponse.json({ detail: 'Not found' }, { status: 404 })
+  }),
 ]
 
 export function resetHandlerState() {

@@ -26,12 +26,14 @@ const BASE_MODEL_OPTIONS = [
 ]
 
 const schema = z.object({
-  epochs:         z.coerce.number().int().positive().nullable(),
-  patience:       z.coerce.number().int().positive().nullable(),
-  warmup_ratio:   z.coerce.number().min(0).max(1).nullable(),
-  remote_backend: z.string().nullable(),
-  base_model:     z.string().nullable(),
-  skip_generate:  z.boolean(),
+  epochs:             z.coerce.number().int().positive().nullable(),
+  patience:           z.coerce.number().int().positive().nullable(),
+  warmup_ratio:       z.coerce.number().min(0).max(1).nullable(),
+  remote_backend:     z.string().nullable(),
+  base_model:         z.string().nullable(),
+  skip_generate:      z.boolean(),
+  num_train_samples:  z.coerce.number().int().positive().nullable(),
+  num_eval_samples:   z.coerce.number().int().positive().nullable(),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -44,17 +46,21 @@ interface RunModalProps {
 export function RunModal({ model, onClose }: RunModalProps) {
   const queryClient = useQueryClient()
 
-  const { register, handleSubmit, control } = useForm<FormValues>({
+  const { register, handleSubmit, control, watch } = useForm<FormValues>({
     resolver: zodResolver(schema) as Resolver<FormValues>,
     defaultValues: {
-      epochs:         model.epochs,
-      patience:       model.patience,
-      warmup_ratio:   model.warmup_ratio,
-      remote_backend: model.remote_backend,
-      base_model:     model.base_model,
-      skip_generate:  model.skip_generate,
+      epochs:            model.epochs,
+      patience:          model.patience,
+      warmup_ratio:      model.warmup_ratio,
+      remote_backend:    model.remote_backend,
+      base_model:        model.base_model,
+      skip_generate:     model.skip_generate,
+      num_train_samples: null,
+      num_eval_samples:  null,
     },
   })
+
+  const skipGenerate = watch('skip_generate')
 
   const mutation = useMutation({
     mutationFn: triggerRun,
@@ -67,11 +73,13 @@ export function RunModal({ model, onClose }: RunModalProps) {
   function onSubmit(values: FormValues) {
     mutation.mutate({
       model_id: model.id,
-      ...(values.epochs        != null && { epochs:         values.epochs }),
-      ...(values.patience      != null && { patience:       values.patience }),
-      ...(values.warmup_ratio  != null && { warmup_ratio:   values.warmup_ratio }),
-      ...(values.remote_backend != null && { remote_backend: values.remote_backend }),
-      ...(values.base_model    != null && { base_model:     values.base_model }),
+      ...(values.epochs             != null && { epochs:            values.epochs }),
+      ...(values.patience           != null && { patience:          values.patience }),
+      ...(values.warmup_ratio       != null && { warmup_ratio:      values.warmup_ratio }),
+      ...(values.remote_backend     != null && { remote_backend:    values.remote_backend }),
+      ...(values.base_model         != null && { base_model:        values.base_model }),
+      ...(!values.skip_generate && values.num_train_samples != null && { num_train_samples: values.num_train_samples }),
+      ...(!values.skip_generate && values.num_eval_samples  != null && { num_eval_samples:  values.num_eval_samples }),
       skip_generate: values.skip_generate,
     })
   }
@@ -131,6 +139,24 @@ export function RunModal({ model, onClose }: RunModalProps) {
                     </SelectContent>
                   </Select>
                 )}
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="num_train_samples">Train samples</Label>
+              <Input
+                id="num_train_samples"
+                type="number"
+                {...register('num_train_samples')}
+                disabled={skipGenerate}
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="num_eval_samples">Eval samples</Label>
+              <Input
+                id="num_eval_samples"
+                type="number"
+                {...register('num_eval_samples')}
+                disabled={skipGenerate}
               />
             </div>
           </div>

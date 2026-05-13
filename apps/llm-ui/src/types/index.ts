@@ -50,4 +50,6 @@ export interface TriggerRunRequest {
   skip_generate?: boolean | null
   remote_backend?: string | null
   base_model?: string | null
+  num_train_samples?: number | null
+  num_eval_samples?: number | null
 }

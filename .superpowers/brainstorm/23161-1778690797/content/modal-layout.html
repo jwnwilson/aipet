@@ -1,0 +1,109 @@
+<h2>Where should num_train / num_eval go in the run modal?</h2>
+<p class="subtitle">The fields should be disabled when "Skip dataset generation" is checked.</p>
+
+<div class="cards">
+  <div class="card" data-choice="grid" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#fff;border-radius:8px;padding:12px;font-size:11px;color:#374151;border:1px solid #e5e7eb;max-width:320px;margin:0 auto;">
+        <div style="font-weight:600;margin-bottom:8px;font-size:12px;">Trigger run — bunny-v1</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
+          <div>
+            <div style="font-size:10px;color:#6b7280;margin-bottom:2px;">Epochs</div>
+            <div style="border:1px solid #d1d5db;border-radius:4px;padding:4px 6px;background:#f9fafb;">3</div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:#6b7280;margin-bottom:2px;">Patience</div>
+            <div style="border:1px solid #d1d5db;border-radius:4px;padding:4px 6px;background:#f9fafb;">2</div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:#6b7280;margin-bottom:2px;">Warmup ratio</div>
+            <div style="border:1px solid #d1d5db;border-radius:4px;padding:4px 6px;background:#f9fafb;">0.1</div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:#6b7280;margin-bottom:2px;">Remote backend</div>
+            <div style="border:1px solid #d1d5db;border-radius:4px;padding:4px 6px;background:#f9fafb;">local</div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:#6b7280;margin-bottom:2px;">Num train samples</div>
+            <div style="border:1px solid #6366f1;border-radius:4px;padding:4px 6px;background:#f9fafb;">1000</div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:#6b7280;margin-bottom:2px;">Num eval samples</div>
+            <div style="border:1px solid #6366f1;border-radius:4px;padding:4px 6px;background:#f9fafb;">200</div>
+          </div>
+        </div>
+        <div style="margin-bottom:6px;">
+          <div style="font-size:10px;color:#6b7280;margin-bottom:2px;">Base model</div>
+          <div style="border:1px solid #d1d5db;border-radius:4px;padding:4px 6px;background:#f9fafb;">HuggingFaceTB/SmolLM2-360M</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
+          <div style="width:12px;height:12px;border:1px solid #d1d5db;border-radius:2px;"></div>
+          <span style="font-size:10px;">Skip dataset generation</span>
+        </div>
+        <div style="display:flex;gap:6px;justify-content:flex-end;">
+          <div style="border:1px solid #d1d5db;border-radius:4px;padding:4px 10px;font-size:10px;color:#374151;">Cancel</div>
+          <div style="background:#6366f1;color:#fff;border-radius:4px;padding:4px 10px;font-size:10px;">▶ Start run</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Inline in the grid</h3>
+      <p>num_train and num_eval added as the 5th and 6th cells in the existing 2-col grid. Simple, compact. Disabled when skip_generate is checked.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="section" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#fff;border-radius:8px;padding:12px;font-size:11px;color:#374151;border:1px solid #e5e7eb;max-width:320px;margin:0 auto;">
+        <div style="font-weight:600;margin-bottom:8px;font-size:12px;">Trigger run — bunny-v1</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
+          <div>
+            <div style="font-size:10px;color:#6b7280;margin-bottom:2px;">Epochs</div>
+            <div style="border:1px solid #d1d5db;border-radius:4px;padding:4px 6px;background:#f9fafb;">3</div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:#6b7280;margin-bottom:2px;">Patience</div>
+            <div style="border:1px solid #d1d5db;border-radius:4px;padding:4px 6px;background:#f9fafb;">2</div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:#6b7280;margin-bottom:2px;">Warmup ratio</div>
+            <div style="border:1px solid #d1d5db;border-radius:4px;padding:4px 6px;background:#f9fafb;">0.1</div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:#6b7280;margin-bottom:2px;">Remote backend</div>
+            <div style="border:1px solid #d1d5db;border-radius:4px;padding:4px 6px;background:#f9fafb;">local</div>
+          </div>
+        </div>
+        <div style="margin-bottom:6px;">
+          <div style="font-size:10px;color:#6b7280;margin-bottom:2px;">Base model</div>
+          <div style="border:1px solid #d1d5db;border-radius:4px;padding:4px 6px;background:#f9fafb;">HuggingFaceTB/SmolLM2-360M</div>
+        </div>
+        <!-- Data generation section -->
+        <div style="border:1px solid #e0e7ff;border-radius:6px;padding:8px;background:#f5f3ff;margin-bottom:6px;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+            <div style="width:12px;height:12px;border:1px solid #d1d5db;border-radius:2px;background:#fff;"></div>
+            <span style="font-size:10px;font-weight:500;color:#4338ca;">Skip dataset generation</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+            <div>
+              <div style="font-size:10px;color:#6b7280;margin-bottom:2px;">Num train samples</div>
+              <div style="border:1px solid #6366f1;border-radius:4px;padding:4px 6px;background:#fff;">1000</div>
+            </div>
+            <div>
+              <div style="font-size:10px;color:#6b7280;margin-bottom:2px;">Num eval samples</div>
+              <div style="border:1px solid #6366f1;border-radius:4px;padding:4px 6px;background:#fff;">200</div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;justify-content:flex-end;">
+          <div style="border:1px solid #d1d5db;border-radius:4px;padding:4px 10px;font-size:10px;color:#374151;">Cancel</div>
+          <div style="background:#6366f1;color:#fff;border-radius:4px;padding:4px 10px;font-size:10px;">▶ Start run</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Data generation section</h3>
+      <p>skip_generate + num_train + num_eval grouped in a tinted box. Visually communicates that the counts are only relevant when generating. Counts hidden/disabled when skipping.</p>
+    </div>
+  </div>
+</div>
