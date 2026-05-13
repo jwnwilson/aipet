@@ -1,10 +1,12 @@
-import { describe, it, expect, vi } from 'vitest'
+import { afterEach, describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { http, HttpResponse } from 'msw'
 import { RunDetailPage } from '@/pages/RunDetailPage'
 import { RUN_FIXTURE } from '../msw/fixtures'
+import { server } from '../msw/server'
 
 function renderPage(runId: string) {
   const client = new QueryClient({
@@ -23,6 +25,8 @@ function renderPage(runId: string) {
 }
 
 describe('RunDetailPage', () => {
+  afterEach(() => vi.restoreAllMocks())
+
   it('renders workflow_id and status badge', async () => {
     renderPage(RUN_FIXTURE.id)
     await waitFor(() => {
@@ -58,5 +62,20 @@ describe('RunDetailPage', () => {
     await userEvent.click(screen.getByRole('button', { name: /delete run/i }))
     expect(screen.queryByText('runs-list')).not.toBeInTheDocument()
     expect(screen.getByText(RUN_FIXTURE.workflow_id)).toBeInTheDocument()
+  })
+
+  it('shows error message when delete fails', async () => {
+    server.use(
+      http.delete('http://localhost:8000/api/runs/:id', () =>
+        HttpResponse.json({ detail: 'Server error' }, { status: 500 })
+      )
+    )
+    vi.spyOn(window, 'confirm').mockReturnValue(true)
+    renderPage(RUN_FIXTURE.id)
+    await waitFor(() => screen.getByRole('button', { name: /delete run/i }))
+    await userEvent.click(screen.getByRole('button', { name: /delete run/i }))
+    await waitFor(() =>
+      expect(screen.getByText(/failed to delete run/i)).toBeInTheDocument()
+    )
   })
 })
