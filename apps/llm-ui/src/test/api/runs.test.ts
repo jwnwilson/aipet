@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { listRuns, getRun, isRunActive, triggerRun } from '@/api/runs'
+import { listRuns, getRun, isRunActive, triggerRun, deleteRun } from '@/api/runs'
 import { MODEL_FIXTURE, RUN_FIXTURE } from '../msw/fixtures'
 
 describe('listRuns', () => {
@@ -40,5 +40,15 @@ describe('isRunActive', () => {
 
   it('returns false for failed status', () => {
     expect(isRunActive({ ...RUN_FIXTURE, status: 'failed' })).toBe(false)
+  })
+})
+
+describe('deleteRun', () => {
+  it('resolves for an existing run id', async () => {
+    await expect(deleteRun(RUN_FIXTURE.id)).resolves.toBeUndefined()
+  })
+
+  it('throws for an unknown run id', async () => {
+    await expect(deleteRun('does-not-exist')).rejects.toThrow()
   })
 })

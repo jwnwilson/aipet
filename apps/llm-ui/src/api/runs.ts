@@ -16,6 +16,10 @@ export async function triggerRun(req: TriggerRunRequest): Promise<{ run_id: stri
   return data
 }
 
+export async function deleteRun(id: string): Promise<void> {
+  await apiClient.delete(`/api/runs/${id}`)
+}
+
 export function isRunActive(run: RunRecord): boolean {
   return run.status === 'running'
 }
