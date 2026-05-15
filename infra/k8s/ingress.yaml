@@ -9,10 +9,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - aipet-api.jwnwilson.co.uk
+        - aipet-api-v2.jwnwilson.co.uk
       secretName: aipet-server-tls
   rules:
-    - host: "aipet-api.jwnwilson.co.uk"
+    - host: "aipet-api-v2.jwnwilson.co.uk"
       http:
         paths:
           - path: /
