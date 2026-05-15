@@ -25,22 +25,18 @@ aws-env: ## Refresh AWS credentials in .env from current AWS profile
 	@echo "Written to apps/server/.env.aws"
 
 tf-init: ## Initialise Terraform working directory
-	set -a && . ./apps/server/.env && set +a && terraform -chdir=$(TF_DIR) init
+	terraform -chdir=$(TF_DIR) init
 
 tf-plan: ## Preview infrastructure changes
-	set -a && . ./apps/server/.env && set +a && \
-	terraform -chdir=$(TF_DIR) plan -var="github_repo=$(GITHUB_REPO)"
+	terraform -chdir=$(TF_DIR) plan
 
 tf-apply: ## Apply infrastructure changes
-	set -a && . ./apps/server/.env && set +a && \
-	terraform -chdir=$(TF_DIR) apply -var="github_repo=$(GITHUB_REPO)"
+	terraform -chdir=$(TF_DIR) apply
 
 tf-destroy: ## Destroy all infrastructure
-	set -a && . ./apps/server/.env && set +a && \
-	terraform -chdir=$(TF_DIR) destroy -var="github_repo=$(GITHUB_REPO)"
+	terraform -chdir=$(TF_DIR) destroy
 
 tf-deploy: tf-apply ## Apply infra then push all terraform outputs as GitHub secrets
-	set -a && . ./apps/server/.env && set +a && \
 	gh secret set AWS_ROLE_ARN \
 		--repo $(GITHUB_REPO) \
 		--body "$$(terraform -chdir=$(TF_DIR) output -raw github_actions_role_arn)" && \
