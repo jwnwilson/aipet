@@ -14,3 +14,6 @@ public/dist
 .terraform/
 *.tfstate
 *.tfstate.backup
+
+# Database
+*.db
