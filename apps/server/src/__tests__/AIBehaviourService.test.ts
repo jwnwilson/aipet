@@ -16,6 +16,7 @@ const makeBunny = (overrides: Record<string, any> = {}) => ({
     sessionId: "bunny-1",
     type: "entity",
     AI_TICK_PENDING: false,
+    AI_PENDING_ACTION: null as string | null,
     AI_SPAWN_INFO: { key: "bunny" },
     IDLE_TIMER: 0,
     IDLE_TIMER_LENGTH: 3000,
@@ -92,23 +93,23 @@ it("sets AI_TICK_PENDING to true during call and false after", async () => {
 
 // ── Action dispatch ───────────────────────────────────────────────────────────
 
-it("EXPLORE: calls setRandomDestination and changeTo PATROL", async () => {
+it("EXPLORE: sets AI_PENDING_ACTION and changeTo PATROL", async () => {
     const bunny = makeBunny();
     mockPost.mockResolvedValue({ data: { action: "EXPLORE", target_object_id: null } });
 
     await svc.requestTick(bunny, makeState());
 
-    expect(bunny.setRandomDestination).toHaveBeenCalledTimes(1);
+    expect(bunny.AI_PENDING_ACTION).toBe("EXPLORE");
     expect(bunny._stateMachine.changeTo).toHaveBeenCalledWith("PATROL");
 });
 
-it("TOILET: calls setRandomDestination and changeTo PATROL (no target needed)", async () => {
+it("TOILET: sets AI_PENDING_ACTION and changeTo PATROL (no target needed)", async () => {
     const bunny = makeBunny();
     mockPost.mockResolvedValue({ data: { action: "TOILET", target_object_id: null } });
 
     await svc.requestTick(bunny, makeState());
 
-    expect(bunny.setRandomDestination).toHaveBeenCalledTimes(1);
+    expect(bunny.AI_PENDING_ACTION).toBe("TOILET");
     expect(bunny._stateMachine.changeTo).toHaveBeenCalledWith("PATROL");
 });
 
