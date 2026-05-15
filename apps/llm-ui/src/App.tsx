@@ -12,23 +12,13 @@ import { TokenSync } from './components/TokenSync'
 const queryClient = new QueryClient()
 
 function AuthButton() {
-  const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0()
-  if (isAuthenticated) {
-    return (
-      <button
-        onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
-        className="ml-auto text-gray-700 hover:text-gray-900"
-      >
-        {user?.email} · Logout
-      </button>
-    )
-  }
+  const { logout, user } = useAuth0()
   return (
     <button
-      onClick={() => loginWithRedirect()}
+      onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
       className="ml-auto text-gray-700 hover:text-gray-900"
     >
-      Login
+      {user?.email} · Logout
     </button>
   )
 }
@@ -44,13 +34,21 @@ function Nav() {
 }
 
 function AppContent() {
-  const { isAuthenticated, isLoading, loginWithRedirect } = useAuth0()
+  const { isAuthenticated, isLoading, loginWithRedirect, error } = useAuth0()
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       loginWithRedirect()
     }
   }, [isLoading, isAuthenticated, loginWithRedirect])
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen text-red-500">
+        Authentication error: {error.message}
+      </div>
+    )
+  }
 
   if (isLoading || !isAuthenticated) {
     return (

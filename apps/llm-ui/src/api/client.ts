@@ -16,8 +16,8 @@ apiClient.interceptors.request.use(async (config) => {
     try {
       const token = await _tokenGetter()
       config.headers.Authorization = `Bearer ${token}`
-    } catch {
-      // token refresh failed — send request without auth so API returns 401
+    } catch (err) {
+      console.error('[apiClient] Token getter failed — sending request without auth', err)
     }
   }
   return config
