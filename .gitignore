@@ -9,3 +9,8 @@ dist-ssr
 .cache
 server/dist
 public/dist
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
