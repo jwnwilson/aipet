@@ -41,7 +41,13 @@ resource "aws_cloudfront_distribution" "this" {
     }
   }
 
-  # SPA routing: 404s from S3 served as index.html so React Router works
+  # SPA routing: S3+OAC returns 403 for missing paths, not 404
+  custom_error_response {
+    error_code         = 403
+    response_code      = 200
+    response_page_path = "/index.html"
+  }
+
   custom_error_response {
     error_code         = 404
     response_code      = 200
