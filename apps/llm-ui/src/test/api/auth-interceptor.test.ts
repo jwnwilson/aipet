@@ -54,3 +54,48 @@ describe('auth interceptor', () => {
     expect(capturedAuth).toBeNull()
   })
 })
+
+describe('403 response interceptor', () => {
+  it('dispatches auth:access-denied event on 403 response', async () => {
+    server.use(
+      http.get('http://localhost:8000/api/models', () =>
+        new HttpResponse(null, { status: 403 })
+      )
+    )
+    let eventFired = false
+    const handler = () => { eventFired = true }
+    window.addEventListener('auth:access-denied', handler)
+    try {
+      await apiClient.get('/api/models').catch(() => {})
+    } finally {
+      window.removeEventListener('auth:access-denied', handler)
+    }
+    expect(eventFired).toBe(true)
+  })
+
+  it('does not dispatch event on non-403 errors', async () => {
+    server.use(
+      http.get('http://localhost:8000/api/models', () =>
+        new HttpResponse(null, { status: 401 })
+      )
+    )
+    let eventFired = false
+    const handler = () => { eventFired = true }
+    window.addEventListener('auth:access-denied', handler)
+    try {
+      await apiClient.get('/api/models').catch(() => {})
+    } finally {
+      window.removeEventListener('auth:access-denied', handler)
+    }
+    expect(eventFired).toBe(false)
+  })
+
+  it('still rejects the promise on 403', async () => {
+    server.use(
+      http.get('http://localhost:8000/api/models', () =>
+        new HttpResponse(null, { status: 403 })
+      )
+    )
+    await expect(apiClient.get('/api/models')).rejects.toThrow()
+  })
+})

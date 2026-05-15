@@ -12,4 +12,9 @@ describe('AccessPending', () => {
     render(<AccessPending />)
     expect(screen.getByText(/contact an administrator/i)).toBeInTheDocument()
   })
+
+  it('renders a refresh button', () => {
+    render(<AccessPending />)
+    expect(screen.getByRole('button', { name: /refresh/i })).toBeInTheDocument()
+  })
 })
