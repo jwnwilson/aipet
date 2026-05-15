@@ -13,8 +13,12 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use(async (config) => {
   if (_tokenGetter) {
-    const token = await _tokenGetter()
-    config.headers.Authorization = `Bearer ${token}`
+    try {
+      const token = await _tokenGetter()
+      config.headers.Authorization = `Bearer ${token}`
+    } catch {
+      // token refresh failed — send request without auth so API returns 401
+    }
   }
   return config
 })

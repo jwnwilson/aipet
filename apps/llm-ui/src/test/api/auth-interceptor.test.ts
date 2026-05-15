@@ -1,13 +1,56 @@
-import { describe, it, expect, vi, afterEach } from 'vitest'
+import { describe, it, expect, afterEach } from 'vitest'
+import { http, HttpResponse } from 'msw'
 import { setTokenGetter, apiClient } from '@/api/client'
+import { server } from '../msw/server'
 
 afterEach(() => {
   // Reset to no token getter between tests
-  setTokenGetter(null as unknown as () => Promise<string>)
+  setTokenGetter(null)
 })
 
 describe('setTokenGetter', () => {
   it('is exported from api/client', () => {
     expect(typeof setTokenGetter).toBe('function')
+  })
+})
+
+describe('auth interceptor', () => {
+  it('injects Authorization header when token getter is set', async () => {
+    let capturedAuth: string | null = null
+    server.use(
+      http.get('http://localhost:8000/api/models', ({ request }) => {
+        capturedAuth = request.headers.get('authorization')
+        return HttpResponse.json([])
+      })
+    )
+    setTokenGetter(() => Promise.resolve('my-jwt'))
+    await apiClient.get('/api/models')
+    expect(capturedAuth).toBe('Bearer my-jwt')
+  })
+
+  it('does not inject Authorization header when token getter is null', async () => {
+    let capturedAuth: string | null | undefined = undefined
+    server.use(
+      http.get('http://localhost:8000/api/models', ({ request }) => {
+        capturedAuth = request.headers.get('authorization')
+        return HttpResponse.json([])
+      })
+    )
+    // token getter is already null (afterEach resets it)
+    await apiClient.get('/api/models')
+    expect(capturedAuth).toBeNull()
+  })
+
+  it('sends request without auth header when token getter throws', async () => {
+    let capturedAuth: string | null | undefined = undefined
+    server.use(
+      http.get('http://localhost:8000/api/models', ({ request }) => {
+        capturedAuth = request.headers.get('authorization')
+        return HttpResponse.json([])
+      })
+    )
+    setTokenGetter(() => Promise.reject(new Error('token refresh failed')))
+    await apiClient.get('/api/models')
+    expect(capturedAuth).toBeNull()
   })
 })
