@@ -43,4 +43,4 @@ jobs:
         run: pnpm install --frozen-lockfile --filter llm-ui
 
       - name: Run llm-ui tests
-        run: pnpm --filter llm-ui test -- --run
+        run: pnpm --filter llm-ui exec vitest run
