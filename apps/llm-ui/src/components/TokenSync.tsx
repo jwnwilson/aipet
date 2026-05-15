@@ -13,6 +13,8 @@ export function TokenSync() {
           },
         })
       )
+    } else {
+      setTokenGetter(null)
     }
   }, [isAuthenticated, getAccessTokenSilently])
   return null

@@ -2,9 +2,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render } from '@testing-library/react'
 import { TokenSync } from '@/components/TokenSync'
 
-const { mockSetTokenGetter, mockGetToken } = vi.hoisted(() => ({
+const { mockSetTokenGetter, mockGetToken, mockAuth0State } = vi.hoisted(() => ({
   mockSetTokenGetter: vi.fn(),
   mockGetToken: vi.fn().mockResolvedValue('test-access-token'),
+  mockAuth0State: { isAuthenticated: true },
 }))
 
 vi.mock('@/api/client', () => ({
@@ -14,7 +15,7 @@ vi.mock('@/api/client', () => ({
 
 vi.mock('@auth0/auth0-react', () => ({
   useAuth0: () => ({
-    isAuthenticated: true,
+    isAuthenticated: mockAuth0State.isAuthenticated,
     getAccessTokenSilently: mockGetToken,
   }),
 }))
@@ -23,6 +24,7 @@ describe('TokenSync', () => {
   beforeEach(() => {
     mockSetTokenGetter.mockClear()
     mockGetToken.mockClear()
+    mockAuth0State.isAuthenticated = true
   })
 
   it('calls setTokenGetter when user is authenticated', () => {
@@ -35,5 +37,12 @@ describe('TokenSync', () => {
     const getter: () => Promise<string> = mockSetTokenGetter.mock.calls[0][0]
     const token = await getter()
     expect(token).toBe('test-access-token')
+  })
+
+  it('calls setTokenGetter(null) when user is not authenticated', () => {
+    mockAuth0State.isAuthenticated = false
+    render(<TokenSync />)
+    expect(mockSetTokenGetter).toHaveBeenCalledOnce()
+    expect(mockSetTokenGetter).toHaveBeenCalledWith(null)
   })
 })
