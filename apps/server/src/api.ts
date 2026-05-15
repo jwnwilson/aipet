@@ -12,6 +12,11 @@ class Api {
         let indexPath = "dist/client/";
         let clientFile = "index.html";
 
+        // health check
+        app.get("/health", function (_req, res) {
+            res.status(200).json({ status: "ok" });
+        });
+
         // serve client
         app.use(express.static(indexPath));
         let indexFile = path.resolve(indexPath + clientFile);

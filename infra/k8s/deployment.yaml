@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aipet-server
+  labels:
+    app: aipet-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aipet-server
+  template:
+    metadata:
+      labels:
+        app: aipet-server
+    spec:
+      imagePullSecrets:
+        - name: ecr-credentials
+      containers:
+        - name: aipet-server
+          # Replace with: terraform -chdir=infra/terraform output -raw ecr_repository_url
+          image: <ECR_REPOSITORY_URL>:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: ANTHROPIC_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aipet-secrets
+                  key: anthropic-api-key
+            - name: AIPET_LLM_URL
+              valueFrom:
+                secretKeyRef:
+                  name: aipet-secrets
+                  key: aipet-llm-url
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+            limits:
+              cpu: "1"
+              memory: "512Mi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
