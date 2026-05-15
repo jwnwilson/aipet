@@ -23,9 +23,8 @@ test: ## Run all tests
 
 aws-env: ## Write current AWS session credentials into apps/server/.env
 	@grep -v '^AWS_' $(ENV_FILE) > $(ENV_FILE).tmp && mv $(ENV_FILE).tmp $(ENV_FILE) || true
-	@echo "AWS_ACCESS_KEY_ID=$$(aws configure get aws_access_key_id)" >> $(ENV_FILE)
-	@echo "AWS_SECRET_ACCESS_KEY=$$(aws configure get aws_secret_access_key)" >> $(ENV_FILE)
-	@echo "AWS_SESSION_TOKEN=$$(aws configure get aws_session_token)" >> $(ENV_FILE)
+	@aws configure export-credentials --format env-no-export \
+		| grep -v '^AWS_CREDENTIAL_EXPIRATION' >> $(ENV_FILE)
 	@echo "AWS_DEFAULT_REGION=$(AWS_REGION)" >> $(ENV_FILE)
 	@echo "AWS credentials written to $(ENV_FILE)"
 
