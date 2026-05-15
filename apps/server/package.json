@@ -7,7 +7,7 @@
     "debug": "ts-node-dev --respawn --inspect --transpile-only src/index.ts",
     "dev": "ts-node-dev --respawn --inspect --transpile-only src/index.ts",
     "start": "ts-node --transpile-only src/index.ts",
-    "build": "tsc && cp -r public dist",
+    "build": "tsc && (cp -r public dist 2>/dev/null || true)",
     "test": "jest",
     "test:integration": "jest --config jest.integration.config.js"
   },

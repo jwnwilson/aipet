@@ -7,7 +7,7 @@ import { NavMesh } from "../../../shared/Libs/yuka-min";
 import { Auth } from "./commands";
 import { PlayerSchema } from "./schema";
 import { Config } from "../../../shared/Config";
-import { Database } from "../Database";
+import { Database } from "../database/index";
 
 export class GameRoom extends Room<GameRoomState> {
     public maxClients = 64;

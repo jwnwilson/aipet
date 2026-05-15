@@ -11,7 +11,7 @@ import { InventorySchema, EquipmentSchema, AbilitySchema, LootSchema, BrainSchem
 import { GameRoomState } from "../state/GameRoomState";
 import { Entity } from "../schema/Entity";
 import { EntityState, ItemClass, CalculationTypes } from "../../../../shared/types";
-import { Database } from "../../Database";
+import { Database } from "../../database/index";
 import Logger from "../../utils/Logger";
 
 export class PlayerData extends Schema {

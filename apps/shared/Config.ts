@@ -1,5 +1,3 @@
-import State from "../client/src/Screens/Screens";
-
 class Config {
     // general settings
     title = "T5C";

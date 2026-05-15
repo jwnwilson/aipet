@@ -3,8 +3,8 @@ import path from "path";
 import Logger from "./utils/Logger";
 import { generateRandomPlayerName } from "../../shared/Utils";
 import { GameData } from "./gameData";
-import { Database } from "./Database";
-import { generateId } from "colyseus";
+import { Database } from "./database/index";
+import { generateId } from "@colyseus/core";
 
 class Api {
     constructor(app, database: Database) {
