@@ -8,18 +8,28 @@ module "ecr" {
   image_retention_count = var.image_retention_count
 }
 
+module "acm_client" {
+  source  = "./modules/acm"
+  domain  = "aipet-v2.jwnwilson.co.uk"
+}
+
+module "acm_llm_ui" {
+  source  = "./modules/acm"
+  domain  = "aipet-admin.jwnwilson.co.uk"
+}
+
 module "s3_client" {
   source              = "./modules/s3_static"
   name                = "${var.repo_name}-client"
   domain              = "aipet-v2.jwnwilson.co.uk"
-  acm_certificate_arn = var.acm_certificate_arn
+  acm_certificate_arn = module.acm_client.certificate_arn
 }
 
 module "s3_llm_ui" {
   source              = "./modules/s3_static"
   name                = "${var.repo_name}-llm-ui"
   domain              = "aipet-admin.jwnwilson.co.uk"
-  acm_certificate_arn = var.acm_certificate_arn
+  acm_certificate_arn = module.acm_llm_ui.certificate_arn
 }
 
 module "iam" {

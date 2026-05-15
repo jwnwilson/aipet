@@ -27,7 +27,3 @@ variable "vps_ip" {
   default     = "165.22.115.52"
 }
 
-variable "acm_certificate_arn" {
-  description = "ARN of the wildcard ACM certificate (*.jwnwilson.co.uk) in us-east-1"
-  type        = string
-}

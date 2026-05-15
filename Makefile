@@ -1,6 +1,10 @@
 GITHUB_REPO     ?= jwnwilson/aipet
 TF_DIR          ?= infra/terraform
 AWS_REGION      ?= us-east-1
+ENV_FILE        ?= apps/server/.env
+
+# Load .env before running a command
+LOAD_ENV = set -a && . $(ENV_FILE) && set +a &&
 
 .PHONY: dev build test aws-env tf-init tf-plan tf-apply tf-destroy tf-deploy help
 
@@ -17,26 +21,28 @@ build: ## Build all apps
 test: ## Run all tests
 	pnpm test
 
-aws-env: ## Refresh AWS credentials in .env from current AWS profile
-	@echo "AWS_ACCESS_KEY_ID=$$(aws configure get aws_access_key_id)" > apps/server/.env.aws
-	@echo "AWS_SECRET_ACCESS_KEY=$$(aws configure get aws_secret_access_key)" >> apps/server/.env.aws
-	@echo "AWS_SESSION_TOKEN=$$(aws configure get aws_session_token)" >> apps/server/.env.aws
-	@echo "AWS_DEFAULT_REGION=$(AWS_REGION)" >> apps/server/.env.aws
-	@echo "Written to apps/server/.env.aws"
+aws-env: ## Write current AWS session credentials into apps/server/.env
+	@grep -v '^AWS_' $(ENV_FILE) > $(ENV_FILE).tmp && mv $(ENV_FILE).tmp $(ENV_FILE) || true
+	@echo "AWS_ACCESS_KEY_ID=$$(aws configure get aws_access_key_id)" >> $(ENV_FILE)
+	@echo "AWS_SECRET_ACCESS_KEY=$$(aws configure get aws_secret_access_key)" >> $(ENV_FILE)
+	@echo "AWS_SESSION_TOKEN=$$(aws configure get aws_session_token)" >> $(ENV_FILE)
+	@echo "AWS_DEFAULT_REGION=$(AWS_REGION)" >> $(ENV_FILE)
+	@echo "AWS credentials written to $(ENV_FILE)"
 
 tf-init: ## Initialise Terraform working directory
-	terraform -chdir=$(TF_DIR) init
+	$(LOAD_ENV) terraform -chdir=$(TF_DIR) init
 
 tf-plan: ## Preview infrastructure changes
-	terraform -chdir=$(TF_DIR) plan
+	$(LOAD_ENV) terraform -chdir=$(TF_DIR) plan
 
 tf-apply: ## Apply infrastructure changes
-	terraform -chdir=$(TF_DIR) apply
+	$(LOAD_ENV) terraform -chdir=$(TF_DIR) apply
 
 tf-destroy: ## Destroy all infrastructure
-	terraform -chdir=$(TF_DIR) destroy
+	$(LOAD_ENV) terraform -chdir=$(TF_DIR) destroy
 
 tf-deploy: tf-apply ## Apply infra then push all terraform outputs as GitHub secrets
+	$(LOAD_ENV) \
 	gh secret set AWS_ROLE_ARN \
 		--repo $(GITHUB_REPO) \
 		--body "$$(terraform -chdir=$(TF_DIR) output -raw github_actions_role_arn)" && \
