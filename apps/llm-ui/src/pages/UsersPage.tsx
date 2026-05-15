@@ -21,6 +21,7 @@ export function UsersPage() {
     mutationFn: (user: UserContext) => approveUser(user.user_id, user.email),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users', 'pending'] })
+      queryClient.invalidateQueries({ queryKey: ['users', 'approved'] })
     },
   })
 

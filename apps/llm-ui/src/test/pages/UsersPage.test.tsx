@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -67,8 +67,9 @@ describe('UsersPage', () => {
         name: new RegExp(`approve ${PENDING_USER_FIXTURE.email}`, 'i'),
       })
     )
-    await waitFor(() =>
-      expect(screen.queryByText(PENDING_USER_FIXTURE.email!)).not.toBeInTheDocument()
-    )
+    await waitFor(() => {
+      const section = screen.getByRole('heading', { name: /awaiting approval/i }).closest('section')!
+      expect(within(section).queryByText(PENDING_USER_FIXTURE.email!)).not.toBeInTheDocument()
+    })
   })
 })
