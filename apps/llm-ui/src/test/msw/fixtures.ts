@@ -1,5 +1,5 @@
 // apps/llm-ui/src/test/msw/fixtures.ts
-import type { TrainingModel, RunRecord } from '@/types'
+import type { TrainingModel, RunRecord, UserContext } from '@/types'
 
 export const MODEL_FIXTURE: TrainingModel = {
   id: 'test-id-1',
@@ -29,4 +29,16 @@ export const RUN_FIXTURE: RunRecord = {
   progress_detail: null,
   created_at: '2024-01-01T00:00:00Z',
   updated_at: '2024-01-01T00:00:00Z',
+}
+
+export const PENDING_USER_FIXTURE: UserContext = {
+  user_id: 'auth0|pending-user',
+  email: 'pending@example.com',
+  status: 'pending',
+}
+
+export const APPROVED_USER_FIXTURE: UserContext = {
+  user_id: 'auth0|approved-user',
+  email: 'approved@example.com',
+  status: 'approved',
 }

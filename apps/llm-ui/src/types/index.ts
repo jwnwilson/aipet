@@ -53,3 +53,9 @@ export interface TriggerRunRequest {
   num_train_samples?: number | null
   num_eval_samples?: number | null
 }
+
+export interface UserContext {
+  user_id: string
+  email: string | null
+  status: 'pending' | 'approved'
+}

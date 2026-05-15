@@ -1,11 +1,13 @@
 // apps/llm-ui/src/test/msw/handlers.ts
 import { http, HttpResponse } from 'msw'
-import type { TrainingModel, TrainingModelConfig, TriggerRunRequest } from '@/types'
-import { MODEL_FIXTURE, RUN_FIXTURE } from './fixtures'
+import type { TrainingModel, TrainingModelConfig, TriggerRunRequest, UserContext } from '@/types'
+import { MODEL_FIXTURE, RUN_FIXTURE, PENDING_USER_FIXTURE, APPROVED_USER_FIXTURE } from './fixtures'
 
 const BASE = 'http://localhost:8000'
 
 let models: TrainingModel[] = [MODEL_FIXTURE]
+let pendingUsers: UserContext[] = [PENDING_USER_FIXTURE]
+let approvedUsers: UserContext[] = [APPROVED_USER_FIXTURE]
 
 export const handlers = [
   http.get(`${BASE}/api/models`, () => HttpResponse.json(models)),
@@ -62,8 +64,31 @@ export const handlers = [
     if (params.id === RUN_FIXTURE.id) return new HttpResponse(null, { status: 204 })
     return HttpResponse.json({ detail: 'Not found' }, { status: 404 })
   }),
+
+  http.get(`${BASE}/api/admin/users`, ({ request }) => {
+    const url = new URL(request.url)
+    const status = url.searchParams.get('status') ?? 'approved'
+    return HttpResponse.json(status === 'pending' ? pendingUsers : approvedUsers)
+  }),
+
+  http.post(`${BASE}/api/admin/users`, async ({ request }) => {
+    const body = await request.json() as { user_id: string; email?: string | null }
+    const user: UserContext = { user_id: body.user_id, email: body.email ?? null, status: 'approved' }
+    approvedUsers = [...approvedUsers, user]
+    pendingUsers = pendingUsers.filter(u => u.user_id !== body.user_id)
+    return HttpResponse.json({ approved: body.user_id }, { status: 201 })
+  }),
+
+  http.delete(`${BASE}/api/admin/users/:userId`, ({ params }) => {
+    approvedUsers = approvedUsers.filter(
+      u => u.user_id !== decodeURIComponent(params.userId as string)
+    )
+    return new HttpResponse(null, { status: 204 })
+  }),
 ]
 
 export function resetHandlerState() {
   models = [MODEL_FIXTURE]
+  pendingUsers = [PENDING_USER_FIXTURE]
+  approvedUsers = [APPROVED_USER_FIXTURE]
 }
