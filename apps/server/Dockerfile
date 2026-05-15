@@ -16,8 +16,8 @@ RUN pnpm install --filter server --frozen-lockfile
 COPY apps/server ./apps/server
 COPY apps/shared ./apps/shared
 
-WORKDIR /app/apps/server
-RUN pnpm build
+# Run build from workspace root so pnpm can resolve workspace binaries (tsc, etc.)
+RUN pnpm --filter server build
 
 FROM node:18-alpine AS runner
 WORKDIR /app/apps/server
