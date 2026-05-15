@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
@@ -8,6 +8,7 @@ import { ModelDetailPage } from './pages/ModelDetailPage'
 import { RunsListPage } from './pages/RunsListPage'
 import { RunDetailPage } from './pages/RunDetailPage'
 import { TokenSync } from './components/TokenSync'
+import { AccessPending } from './components/AccessPending'
 
 const queryClient = new QueryClient()
 
@@ -36,6 +37,14 @@ function Nav() {
 function AppContent() {
   const { isAuthenticated, isLoading, loginWithRedirect, error } = useAuth0()
 
+  const [accessDenied, setAccessDenied] = useState(false)
+
+  useEffect(() => {
+    const handler = () => setAccessDenied(true)
+    window.addEventListener('auth:access-denied', handler)
+    return () => window.removeEventListener('auth:access-denied', handler)
+  }, [])
+
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       loginWithRedirect()
@@ -49,6 +58,8 @@ function AppContent() {
       </div>
     )
   }
+
+  if (accessDenied) return <AccessPending />
 
   if (isLoading || !isAuthenticated) {
     return (

@@ -22,3 +22,13 @@ apiClient.interceptors.request.use(async (config) => {
   }
   return config
 })
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 403) {
+      window.dispatchEvent(new CustomEvent('auth:access-denied'))
+    }
+    return Promise.reject(error)
+  }
+)
