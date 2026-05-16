@@ -25,11 +25,6 @@ class Api {
             app.get("/", function (_req, res) {
                 res.sendFile(indexFile);
             });
-        } else {
-            const clientUrl = process.env.CLIENT_URL ?? "https://aipet-v2.jwnwilson.co.uk";
-            app.get("/", function (_req, res) {
-                res.redirect(clientUrl);
-            });
         }
 
         //////////////////////////////////////////////////
