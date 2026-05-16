@@ -22,8 +22,13 @@ class Api {
         let indexFile = path.resolve(indexPath + clientFile);
         if (fs.existsSync(indexFile)) {
             app.use(express.static(indexPath));
-            app.get("/", function (req, res) {
+            app.get("/", function (_req, res) {
                 res.sendFile(indexFile);
+            });
+        } else {
+            const clientUrl = process.env.CLIENT_URL ?? "https://aipet-v2.jwnwilson.co.uk";
+            app.get("/", function (_req, res) {
+                res.redirect(clientUrl);
             });
         }
 
