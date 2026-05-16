@@ -7,10 +7,14 @@ export class Network {
     public _client: Client;
 
     constructor(port) {
-        // create colyseus client
-        let url = "wss://" + window.location.hostname;
+        let url: string;
         if (isLocal()) {
             url = "ws://localhost:" + port;
+        } else {
+            const serverUrl = process.env.VITE_SERVER_URL;
+            url = serverUrl
+                ? serverUrl.replace(/^https:\/\//, "wss://").replace(/^http:\/\//, "ws://")
+                : "wss://" + window.location.hostname;
         }
         this._client = new Client(url);
     }
