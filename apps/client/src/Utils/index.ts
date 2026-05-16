@@ -6,8 +6,8 @@ const apiUrl = function (port) {
     if (isLocal()) {
         return "http://localhost:" + port;
     }
-    const serverUrl = import.meta.env.VITE_SERVER_URL;
-    return serverUrl ?? "https://" + window.location.hostname;
+    const serverUrl = process.env.VITE_SERVER_URL;
+    return serverUrl || "https://" + window.location.hostname;
 };
 
 export { isLocal, apiUrl };
