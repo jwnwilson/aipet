@@ -1,4 +1,5 @@
 import express from "express";
+import fs from "fs";
 import path from "path";
 import Logger from "./utils/Logger";
 import { generateRandomPlayerName } from "../../shared/Utils";
@@ -17,12 +18,14 @@ class Api {
             res.status(200).json({ status: "ok" });
         });
 
-        // serve client
-        app.use(express.static(indexPath));
+        // serve client (only if built locally; in production the client is on CloudFront)
         let indexFile = path.resolve(indexPath + clientFile);
-        app.get("/", function (req, res) {
-            res.sendFile(indexFile);
-        });
+        if (fs.existsSync(indexFile)) {
+            app.use(express.static(indexPath));
+            app.get("/", function (req, res) {
+                res.sendFile(indexFile);
+            });
+        }
 
         //////////////////////////////////////////////////
         ///////////// ESPRESS MINI API ///////////////////

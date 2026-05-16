@@ -3,10 +3,9 @@ kind: Ingress
 metadata:
   name: aipet-server
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls: "true"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/cluster-issuer: "letsencrypt"
 spec:
+  ingressClassName: nginx
   tls:
     - hosts:
         - aipet-api-v2.jwnwilson.co.uk
