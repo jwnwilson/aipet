@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
@@ -25,15 +25,27 @@ function AuthButton() {
   )
 }
 
+function useIsAdmin(): boolean {
+  const { user } = useAuth0()
+  const roles: string[] = user?.['https://aipet/roles'] ?? []
+  return roles.includes('admin')
+}
+
 function Nav() {
+  const isAdmin = useIsAdmin()
   return (
     <nav className="border-b bg-white px-8 py-3 flex gap-6 text-sm font-medium items-center">
       <Link to="/models" className="text-gray-700 hover:text-gray-900">Models</Link>
       <Link to="/runs" className="text-gray-700 hover:text-gray-900">Runs</Link>
-      <Link to="/admin/users" className="text-gray-700 hover:text-gray-900">Users</Link>
+      {isAdmin && <Link to="/admin/users" className="text-gray-700 hover:text-gray-900">Users</Link>}
       <AuthButton />
     </nav>
   )
+}
+
+function AdminRoute({ children }: { children: ReactNode }) {
+  const isAdmin = useIsAdmin()
+  return isAdmin ? <>{children}</> : <Navigate to="/models" replace />
 }
 
 function AppContent() {
@@ -83,7 +95,7 @@ function AppContent() {
         <Route path="/models/:id/edit" element={<ModelFormPage />} />
         <Route path="/runs" element={<RunsListPage />} />
         <Route path="/runs/:runId" element={<RunDetailPage />} />
-        <Route path="/admin/users" element={<UsersPage />} />
+        <Route path="/admin/users" element={<AdminRoute><UsersPage /></AdminRoute>} />
       </Routes>
     </div>
   )
