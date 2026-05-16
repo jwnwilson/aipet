@@ -3,11 +3,11 @@ const isLocal = function () {
 };
 
 const apiUrl = function (port) {
-    let url = "https://" + window.location.hostname;
     if (isLocal()) {
-        url = "http://localhost:" + port;
+        return "http://localhost:" + port;
     }
-    return url;
+    const serverUrl = import.meta.env.VITE_SERVER_URL;
+    return serverUrl ?? "https://" + window.location.hostname;
 };
 
 export { isLocal, apiUrl };

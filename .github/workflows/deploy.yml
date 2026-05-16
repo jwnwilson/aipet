@@ -120,6 +120,8 @@ jobs:
         run: pnpm install --frozen-lockfile --filter client
 
       - name: Build client
+        env:
+          VITE_SERVER_URL: ${{ secrets.CLIENT_SERVER_URL }}
         run: pnpm --filter client build
 
       - name: Configure AWS credentials via OIDC
