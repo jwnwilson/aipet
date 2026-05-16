@@ -7,8 +7,7 @@ import path from "path";
 import { NavMeshLoader, NavMesh } from "../../../shared/Libs/yuka-min";
 
 export default async function loadNavMeshFromFile(fileNameNavMesh: string): Promise<NavMesh> {
-    const url = path.join(__dirname, "../../../client/public/models/navmesh/" + fileNameNavMesh + ".glb");
-    console.log(url);
+    const url = path.join(process.cwd(), "public/navmesh/" + fileNameNavMesh + ".glb");
     const data = await fs.readFileSync(url);
     // Node Buffers for small files share a pooled ArrayBuffer with byteOffset > 0.
     // Yuka reads from offset 0 of the ArrayBuffer, so we must slice a clean copy.

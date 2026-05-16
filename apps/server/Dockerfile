@@ -31,5 +31,8 @@ COPY --from=builder /app/apps/server/node_modules ./node_modules
 # Runtime data files read relative to CWD (./src/database/...)
 COPY --from=builder /app/apps/server/src/database/sqllite.sql ./src/database/sqllite.sql
 
+# Navmesh files loaded by the server at runtime via process.cwd()/public/navmesh/
+COPY apps/client/public/models/navmesh/ ./public/navmesh/
+
 EXPOSE 3000
 CMD ["node", "dist/server/server/src/index.js"]
