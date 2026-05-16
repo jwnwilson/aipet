@@ -25,9 +25,11 @@ function AuthButton() {
   )
 }
 
+const ROLES_CLAIM = 'https://aipet/roles'
+
 function useIsAdmin(): boolean {
   const { user } = useAuth0()
-  const roles: string[] = user?.['https://aipet/roles'] ?? []
+  const roles: string[] = user?.[ROLES_CLAIM] ?? []
   return roles.includes('admin')
 }
 
@@ -44,7 +46,9 @@ function Nav() {
 }
 
 function AdminRoute({ children }: { children: ReactNode }) {
+  const { isLoading } = useAuth0()
   const isAdmin = useIsAdmin()
+  if (isLoading) return null
   return isAdmin ? <>{children}</> : <Navigate to="/models" replace />
 }
 
