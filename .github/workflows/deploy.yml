@@ -78,9 +78,9 @@ jobs:
           echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ~/.kube/config
           chmod 600 ~/.kube/config
 
-      - name: Sync aipet-secrets in k8s
+      - name: Sync aipet-server-secrets in k8s
         run: |
-          kubectl create secret generic aipet-secrets \
+          kubectl create secret generic aipet-server-secrets \
             --from-literal=anthropic-api-key=${{ secrets.ANTHROPIC_API_KEY }} \
             --from-literal=aipet-llm-url=${{ secrets.AIPET_LLM_URL }} \
             --dry-run=client -o yaml | kubectl apply -f -
