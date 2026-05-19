@@ -83,6 +83,10 @@ jobs:
           kubectl create secret generic aipet-server-secrets \
             --from-literal=anthropic-api-key=${{ secrets.ANTHROPIC_API_KEY }} \
             --from-literal=aipet-llm-url=${{ secrets.AIPET_LLM_URL }} \
+            --from-literal=auth0-domain=${{ secrets.AUTH0_DOMAIN }} \
+            --from-literal=auth0-m2m-client-id=${{ secrets.AUTH0_M2M_CLIENT_ID }} \
+            --from-literal=auth0-m2m-client-secret=${{ secrets.AUTH0_M2M_CLIENT_SECRET }} \
+            --from-literal=auth0-m2m-audience=${{ secrets.AUTH0_M2M_AUDIENCE }} \
             --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Refresh ECR pull credentials in k8s
