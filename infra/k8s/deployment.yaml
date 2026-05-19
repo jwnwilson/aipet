@@ -33,6 +33,26 @@ spec:
                 secretKeyRef:
                   name: aipet-server-secrets
                   key: aipet-llm-url
+            - name: AUTH0_DOMAIN
+              valueFrom:
+                secretKeyRef:
+                  name: aipet-server-secrets
+                  key: auth0-domain
+            - name: AUTH0_M2M_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aipet-server-secrets
+                  key: auth0-m2m-client-id
+            - name: AUTH0_M2M_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: aipet-server-secrets
+                  key: auth0-m2m-client-secret
+            - name: AUTH0_M2M_AUDIENCE
+              valueFrom:
+                secretKeyRef:
+                  name: aipet-server-secrets
+                  key: auth0-m2m-audience
           resources:
             requests:
               cpu: "200m"

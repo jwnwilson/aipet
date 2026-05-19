@@ -17,6 +17,7 @@ export class AIBehaviourService {
     private _petStats: PetStatsService;
     private _axios: AxiosInstance;
     private _tick = 0;
+    private _tokenCache: { token: string; expiresAt: number } | null = null;
 
     constructor(
         petStats: PetStatsService,
@@ -25,6 +26,31 @@ export class AIBehaviourService {
     ) {
         this._petStats = petStats;
         this._axios = axios.create({ baseURL: llmUrl, timeout: timeoutMs });
+    }
+
+    private async _getAccessToken(): Promise<string | null> {
+        if (!process.env.AUTH0_M2M_CLIENT_ID) return null;
+
+        const now = Date.now();
+        if (this._tokenCache && this._tokenCache.expiresAt - 60_000 > now) {
+            return this._tokenCache.token;
+        }
+
+        const res = await axios.post(
+            `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
+            {
+                grant_type: "client_credentials",
+                client_id: process.env.AUTH0_M2M_CLIENT_ID,
+                client_secret: process.env.AUTH0_M2M_CLIENT_SECRET,
+                audience: process.env.AUTH0_M2M_AUDIENCE,
+            },
+            { timeout: 5000 },
+        );
+        this._tokenCache = {
+            token: res.data.access_token,
+            expiresAt: now + res.data.expires_in * 1000,
+        };
+        return this._tokenCache.token;
     }
 
     static async checkHealth(url: string): Promise<void> {
@@ -54,7 +80,9 @@ export class AIBehaviourService {
             };
             Logger.info(`LLM Request: ${JSON.stringify(requestBody)}`);
 
-            const response = await this._axios.post("/infer", requestBody);
+            const token = await this._getAccessToken();
+            const headers = token ? { Authorization: `Bearer ${token}` } : {};
+            const response = await this._axios.post("/infer", requestBody, { headers });
 
             Logger.info(`LLM Response: ${JSON.stringify(response.data)}`);
 
