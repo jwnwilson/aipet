@@ -21,7 +21,7 @@ export class AIBehaviourService {
     constructor(
         petStats: PetStatsService,
         llmUrl: string,
-        timeoutMs = parseInt(process.env.AIPET_LLM_TIMEOUT_MS ?? "10000", 10),
+        timeoutMs = parseInt(process.env.AIPET_LLM_TIMEOUT_MS ?? "20000", 10),
     ) {
         this._petStats = petStats;
         this._axios = axios.create({ baseURL: llmUrl, timeout: timeoutMs });
