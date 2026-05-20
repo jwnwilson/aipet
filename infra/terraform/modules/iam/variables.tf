@@ -18,17 +18,7 @@ variable "client_bucket_arn" {
   type        = string
 }
 
-variable "llm_ui_bucket_arn" {
-  description = "ARN of the llm-ui S3 bucket"
-  type        = string
-}
-
 variable "client_distribution_arn" {
   description = "ARN of the game client CloudFront distribution"
-  type        = string
-}
-
-variable "llm_ui_distribution_arn" {
-  description = "ARN of the llm-ui CloudFront distribution"
   type        = string
 }

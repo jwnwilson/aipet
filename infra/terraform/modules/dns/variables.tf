@@ -13,8 +13,3 @@ variable "client_cf_domain" {
   description = "CloudFront domain name for the game client (output of s3_static module)"
   type        = string
 }
-
-variable "llm_ui_cf_domain" {
-  description = "CloudFront domain name for llm-ui (output of s3_static module)"
-  type        = string
-}

@@ -18,22 +18,9 @@ output "client_distribution_id" {
   value       = module.s3_client.distribution_id
 }
 
-output "llm_ui_bucket_name" {
-  description = "S3 bucket for llm-ui — set as LLM_UI_BUCKET GitHub secret"
-  value       = module.s3_llm_ui.bucket_name
-}
-
-output "llm_ui_distribution_id" {
-  description = "CloudFront distribution ID for llm-ui — set as LLM_UI_CF_DISTRIBUTION_ID GitHub secret"
-  value       = module.s3_llm_ui.distribution_id
-}
 
 output "client_fqdn" {
   value = module.dns.client_fqdn
-}
-
-output "llm_ui_fqdn" {
-  value = module.dns.llm_ui_fqdn
 }
 
 output "server_fqdn" {

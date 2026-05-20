@@ -11,14 +11,6 @@ resource "aws_route53_record" "client" {
   records = [var.client_cf_domain]
 }
 
-resource "aws_route53_record" "llm_ui" {
-  zone_id = data.aws_route53_zone.zone.zone_id
-  name    = "aipet-admin.${trimsuffix(var.zone_name, ".")}"
-  type    = "CNAME"
-  ttl     = 300
-  records = [var.llm_ui_cf_domain]
-}
-
 resource "aws_route53_record" "server" {
   zone_id = data.aws_route53_zone.zone.zone_id
   name    = "aipet-api-v2.${trimsuffix(var.zone_name, ".")}"

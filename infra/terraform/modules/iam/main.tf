@@ -51,19 +51,19 @@ data "aws_iam_policy_document" "ui_deploy" {
   statement {
     effect    = "Allow"
     actions   = ["s3:ListBucket"]
-    resources = [var.client_bucket_arn, var.llm_ui_bucket_arn]
+    resources = [var.client_bucket_arn]
   }
 
   statement {
     effect    = "Allow"
     actions   = ["s3:PutObject", "s3:DeleteObject"]
-    resources = ["${var.client_bucket_arn}/*", "${var.llm_ui_bucket_arn}/*"]
+    resources = ["${var.client_bucket_arn}/*"]
   }
 
   statement {
     effect    = "Allow"
     actions   = ["cloudfront:CreateInvalidation"]
-    resources = [var.client_distribution_arn, var.llm_ui_distribution_arn]
+    resources = [var.client_distribution_arn]
   }
 }
 
