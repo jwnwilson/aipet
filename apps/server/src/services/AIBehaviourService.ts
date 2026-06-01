@@ -16,6 +16,7 @@ const SCENE_RADIUS = 30;
 export class AIBehaviourService {
     private _petStats: PetStatsService;
     private _axios: AxiosInstance;
+    private _inferPath: string;
     private _tick = 0;
     private _tokenCache: { token: string; expiresAt: number } | null = null;
 
@@ -25,6 +26,7 @@ export class AIBehaviourService {
         timeoutMs = parseInt(process.env.AIPET_LLM_TIMEOUT_MS ?? "20000", 10),
     ) {
         this._petStats = petStats;
+        this._inferPath = process.env.AIPET_LLM_INFER_PATH ?? "/infer";
         this._axios = axios.create({ baseURL: llmUrl, timeout: timeoutMs });
     }
 
@@ -82,7 +84,7 @@ export class AIBehaviourService {
 
             const token = await this._getAccessToken();
             const headers = token ? { Authorization: `Bearer ${token}` } : {};
-            const response = await this._axios.post("/infer", requestBody, { headers });
+            const response = await this._axios.post(this._inferPath, requestBody, { headers });
 
             Logger.info(`LLM Response: ${JSON.stringify(response.data)}`);
 

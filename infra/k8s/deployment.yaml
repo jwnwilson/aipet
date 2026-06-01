@@ -53,6 +53,11 @@ spec:
                 secretKeyRef:
                   name: aipet-server-secrets
                   key: auth0-m2m-audience
+            - name: AIPET_LLM_INFER_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: aipet-server-secrets
+                  key: aipet-llm-infer-path
           resources:
             requests:
               cpu: "200m"
