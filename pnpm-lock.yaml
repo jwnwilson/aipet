@@ -51,18 +51,30 @@ importers:
       '@babylonjs/inspector':
         specifier: ^6.0.0
         version: 6.49.0(@babylonjs/core@6.49.0)(@babylonjs/gui-editor@6.49.0)(@babylonjs/gui@6.49.0)(@babylonjs/loaders@6.49.0)(@babylonjs/materials@6.49.0)(@babylonjs/serializers@6.49.0)(@types/react-dom@19.2.3)(@types/react@19.2.14)
+      '@types/jest':
+        specifier: ^30.0.0
+        version: 30.0.0
       '@types/node':
         specifier: ^20.0.0
         version: 20.19.27
       copy-webpack-plugin:
         specifier: ^14.0.0
         version: 14.0.0(webpack@5.104.1)
+      jest:
+        specifier: ^30.3.0
+        version: 30.3.0(@types/node@20.19.27)(ts-node@10.9.2)
       sharp:
         specifier: ^0.33.0
         version: 0.33.5
+      ts-jest:
+        specifier: ^29.4.9
+        version: 29.4.9(@babel/core@7.29.0)(jest@30.3.0)(typescript@6.0.3)
       ts-loader:
         specifier: ^9.5.4
         version: 9.5.4(typescript@6.0.3)(webpack@5.104.1)
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
       webpack:
         specifier: ^5.104.1
         version: 5.104.1(webpack-cli@6.0.1)
