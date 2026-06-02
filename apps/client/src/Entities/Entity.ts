@@ -137,10 +137,12 @@ export class Entity extends TransformNode {
         this.debugMaterialActive = this._scene.getMaterialByName("debug_entity_active");
         this.debugMaterialNeutral = this._scene.getMaterialByName("debug_entity_neutral");
 
-        // spawn player
-        this._game._vatController.prepareMesh(entity);
+        // spawn mesh — skipped for sprite-based entities (e.g. Pet) that have no race data
+        if (race) {
+            this._game._vatController.prepareMesh(entity);
+        }
 
-        // wait for vat to be ready
+        // wait for vat to be ready then spawn
         setTimeout(() => {
             this.spawn(entity);
         }, 250);
