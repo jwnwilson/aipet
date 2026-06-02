@@ -57,6 +57,12 @@ export class Pet extends Entity {
     this._spriteRenderer?.playAnimation(animState, rot);
   }
 
+  public update(delta?: number): void {
+    super.update(delta);
+    // Sync sprite to interpolated TransformNode position each frame
+    this._spriteRenderer?.setPosition(this.position);
+  }
+
   public remove(): void {
     this._spriteRenderer?.dispose();
 

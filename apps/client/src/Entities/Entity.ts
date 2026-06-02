@@ -149,6 +149,10 @@ export class Entity extends TransformNode {
     }
 
     public async spawn(entity) {
+        // Sprite-based entities (e.g. Pet) override this method entirely.
+        // Guard prevents crash if super.spawn() is ever called with no VAT data.
+        if (!this.vat) return;
+
         // set default vat animation
         this.entityData = this._game._vatController.entityData.get(this.vat.key);
 
