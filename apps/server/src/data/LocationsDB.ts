@@ -36,7 +36,7 @@ let LocationsDB = {
                         new Vector3(4, 0.06, -4),
                     ],
                     amount: 1,
-                    race: "humanoid", // placeholder until bunny mesh is ready
+                    race: "bunny",
                     material: 4,
                     head: "Head_Base",
                     name: "Bunny",
