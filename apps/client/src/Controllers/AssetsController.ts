@@ -109,15 +109,19 @@ export class AssetsController {
         if (races) {
             for (let key in races) {
                 let el = races[key];
-                this.assetDatabase.push({ name: "RACE_" + el.key, filename: "races/" + el.key + ".glb", extension: "glb", type: "mesh", instantiate: true });
-                this.assetDatabase.push({
-                    name: "VAT_" + el.vat.key,
-                    filename: "races/" + el.vat.key + ".glb",
-                    extension: "glb",
-                    type: "mesh",
-                    instantiate: true,
-                });
-                this.assetDatabase.push({ name: el.icon, filename: "portrait/" + el.icon + ".png", extension: "png", type: "image" });
+                if (el.vat) {
+                    this.assetDatabase.push({ name: "RACE_" + el.key, filename: "races/" + el.key + ".glb", extension: "glb", type: "mesh", instantiate: true });
+                    this.assetDatabase.push({
+                        name: "VAT_" + el.vat.key,
+                        filename: "races/" + el.vat.key + ".glb",
+                        extension: "glb",
+                        type: "mesh",
+                        instantiate: true,
+                    });
+                }
+                if (el.icon) {
+                    this.assetDatabase.push({ name: el.icon, filename: "portrait/" + el.icon + ".png", extension: "png", type: "image" });
+                }
             }
         }
     }
@@ -163,14 +167,16 @@ export class AssetsController {
         if (races) {
             for (let key in races) {
                 let el = races[key];
-                this.assetDatabase.push({ name: "RACE_" + el.key, filename: "races/" + el.key + ".glb", extension: "glb", type: "mesh", instantiate: true });
-                this.assetDatabase.push({
-                    name: "VAT_" + el.vat.key,
-                    filename: "races/" + el.vat.key + ".glb",
-                    extension: "glb",
-                    type: "mesh",
-                    instantiate: true,
-                });
+                if (el.vat) {
+                    this.assetDatabase.push({ name: "RACE_" + el.key, filename: "races/" + el.key + ".glb", extension: "glb", type: "mesh", instantiate: true });
+                    this.assetDatabase.push({
+                        name: "VAT_" + el.vat.key,
+                        filename: "races/" + el.vat.key + ".glb",
+                        extension: "glb",
+                        type: "mesh",
+                        instantiate: true,
+                    });
+                }
             }
         }
         this.assetToPreload = this.assetDatabase;

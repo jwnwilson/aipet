@@ -137,8 +137,8 @@ export class Entity extends TransformNode {
         this.debugMaterialActive = this._scene.getMaterialByName("debug_entity_active");
         this.debugMaterialNeutral = this._scene.getMaterialByName("debug_entity_neutral");
 
-        // spawn mesh — skipped for sprite-based entities (e.g. Pet) that have no race data
-        if (race) {
+        // spawn mesh — skipped for sprite-based entities (e.g. Pet) that have no vat data
+        if (race && race.vat) {
             this._game._vatController.prepareMesh(entity);
         }
 
