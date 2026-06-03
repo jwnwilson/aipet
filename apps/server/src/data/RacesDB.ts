@@ -95,6 +95,23 @@ let RacesDB: raceDataMap = {
         ],
     },
 
+    bunny: {
+        key: "bunny",
+        title: "Bunny",
+        description: "A small, curious bunny with an AI-powered mind of its own.",
+        icon: "",
+        speed: 0.2,
+        scale: 1,
+        rotationFix: 0,
+        baseHealth: 10,
+        baseMana: 0,
+        healthRegen: 1,
+        manaRegen: 0,
+        drops: [],
+        default_abilities: [],
+        // no vat — rendered by BunnySpriteRenderer on the client
+    },
+
     skeleton_01: {
         key: "skeleton_01",
         title: "Skeleton",
