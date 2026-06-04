@@ -50,7 +50,7 @@ const ATLAS_JSON_URL = '/sprites/bunny/atlas.json';
 /** Maps entity Y-rotation (radians, Babylon.js convention) to nearest 8-direction string. */
 export function directionFromAngle(rot: number): string {
   const normalized = ((rot % TAU) + TAU) % TAU;
-  const index = Math.round((normalized / TAU) * 8) % 8;
+  const index = (Math.round((normalized / TAU) * 8) + 4) % 8;
   return DIRECTIONS[index];
 }
 
