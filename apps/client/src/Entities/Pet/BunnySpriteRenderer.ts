@@ -91,6 +91,7 @@ export class BunnySpriteRenderer {
       { width: this._atlasData.frameSize, height: this._atlasData.frameSize },
       this._scene
     );
+    this._manager.isPickable = true;
 
     this._sprite = new Sprite('bunny', this._manager);
     this._sprite.width = SPRITE_WORLD_SIZE;

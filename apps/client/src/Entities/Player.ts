@@ -78,12 +78,14 @@ export class Player extends Entity {
     }
 
     getMeshMetadata(pointerInfo) {
+        const pick = pointerInfo.pickInfo ?? pointerInfo._pickInfo;
+
         // 3D mesh pick
-        const meshMeta = pointerInfo._pickInfo.pickedMesh?.metadata;
+        const meshMeta = pick?.pickedMesh?.metadata;
         if (meshMeta != null) return meshMeta;
 
-        // 2D sprite pick (e.g. bunny)
-        const spriteMeta = (pointerInfo._pickInfo.pickedSprite as any)?.metadata;
+        // 2D sprite pick (e.g. bunny) — requires SpriteManager.isPickable = true
+        const spriteMeta = (pick?.pickedSprite as any)?.metadata;
         if (spriteMeta != null) return spriteMeta;
 
         return false;
