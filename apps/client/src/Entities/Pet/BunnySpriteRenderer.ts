@@ -98,8 +98,8 @@ export class BunnySpriteRenderer {
 
   setPosition(pos: Vector3): void {
     if (!this._sprite) return;
-    // Babylon.js engine API — copyFrom is the idiomatic way to update a Vector3 in-place
-    this._sprite.position.copyFrom(pos);
+    // Lift by half the sprite height so the bottom edge sits at ground level
+    this._sprite.position.set(pos.x, pos.y + SPRITE_WORLD_SIZE / 2, pos.z);
   }
 
   playAnimation(state: AnimationState, rot: number): void {
