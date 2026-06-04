@@ -26,6 +26,8 @@ export class Pet extends Entity {
       return;
     }
 
+    this._spriteRenderer.setMetadata({ type: 'entity', sessionId: entity.sessionId });
+
     this.position = new Vector3(entity.x, entity.y, entity.z);
     this._spriteRenderer.setPosition(this.position);
 

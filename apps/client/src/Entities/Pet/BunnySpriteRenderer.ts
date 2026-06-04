@@ -98,6 +98,10 @@ export class BunnySpriteRenderer {
     this._sprite.isPickable = true;
   }
 
+  setMetadata(metadata: unknown): void {
+    if (this._sprite) (this._sprite as any).metadata = metadata;
+  }
+
   setPosition(pos: Vector3): void {
     if (!this._sprite) return;
     // Lift by half the sprite height so the bottom edge sits at ground level
