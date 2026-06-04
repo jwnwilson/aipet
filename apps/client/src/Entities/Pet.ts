@@ -7,10 +7,11 @@ import { EntityNamePlate } from './Entity/EntityNamePlate';
 import { BunnySpriteRenderer, AnimationState } from './Pet/BunnySpriteRenderer';
 import { GameScene } from '../Screens/GameScene';
 
+const MOVE_THRESHOLD = 0.001;
+
 export class Pet extends Entity {
   private _spriteRenderer: BunnySpriteRenderer | null = null;
-  private _prevX: number = 0;
-  private _prevZ: number = 0;
+  private _serverRot: number = 0;
 
   constructor(name: string, scene: Scene, gamescene: GameScene, entity) {
     super(name, scene, gamescene, entity);
@@ -27,8 +28,6 @@ export class Pet extends Entity {
 
     this.position = new Vector3(entity.x, entity.y, entity.z);
     this._spriteRenderer.setPosition(this.position);
-    this._prevX = entity.x;
-    this._prevZ = entity.z;
 
     this.moveController = new EntityMove(this);
     this.moveController.setPositionAndRotation(entity);
@@ -44,23 +43,20 @@ export class Pet extends Entity {
   }
 
   private _syncFromServer(entity): void {
-    const isMoving = entity.x !== this._prevX || entity.z !== this._prevZ;
-    this._prevX = entity.x;
-    this._prevZ = entity.z;
-
-    // Feed new server position to the move controller for smooth interpolation,
-    // matching the base Entity onChange pattern (Entity.ts:197).
+    this._serverRot = entity.rot ?? 0;
     this.moveController?.setPositionAndRotation(entity);
-
-    const animState: AnimationState = isMoving ? 'walk' : 'idle';
-    const rot = entity.rot ?? 0;
-    this._spriteRenderer?.playAnimation(animState, rot);
   }
 
   public update(delta?: number): void {
+    const prevX = this.position.x;
+    const prevZ = this.position.z;
     super.update(delta);
-    // Sync sprite to interpolated TransformNode position each frame
     this._spriteRenderer?.setPosition(this.position);
+    const dx = this.position.x - prevX;
+    const dz = this.position.z - prevZ;
+    const isMoving = dx * dx + dz * dz > MOVE_THRESHOLD * MOVE_THRESHOLD;
+    const animState: AnimationState = isMoving ? 'walk' : 'idle';
+    this._spriteRenderer?.playAnimation(animState, this._serverRot);
   }
 
   public remove(): void {

@@ -58,6 +58,8 @@ export class BunnySpriteRenderer {
   private _manager: SpriteManager | null = null;
   private _sprite: Sprite | null = null;
   private _atlasData: AtlasDescriptor | null = null;
+  private _currentState: AnimationState | null = null;
+  private _currentDir: string | null = null;
 
   constructor(private readonly _scene: Scene) {}
 
@@ -105,8 +107,11 @@ export class BunnySpriteRenderer {
   playAnimation(state: AnimationState, rot: number): void {
     if (!this._sprite || !this._atlasData) return;
     const dir = directionFromAngle(rot);
+    if (state === this._currentState && dir === this._currentDir) return;
     const cell = this._atlasData.layout[state]?.[dir];
     if (!cell) return;
+    this._currentState = state;
+    this._currentDir = dir;
     this._sprite.playAnimation(cell.startCell, cell.startCell + cell.frameCount - 1, true, FRAME_MS);
   }
 
