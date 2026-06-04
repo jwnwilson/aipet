@@ -48,9 +48,9 @@ export class Pet extends Entity {
     this._prevX = entity.x;
     this._prevZ = entity.z;
 
-    // Babylon.js TransformNode.position must be updated in-place for the engine to observe the change
-    this.position.set(entity.x, entity.y, entity.z);
-    this._spriteRenderer?.setPosition(this.position);
+    // Feed new server position to the move controller for smooth interpolation,
+    // matching the base Entity onChange pattern (Entity.ts:197).
+    this.moveController?.setPositionAndRotation(entity);
 
     const animState: AnimationState = isMoving ? 'walk' : 'idle';
     const rot = entity.rot ?? 0;
