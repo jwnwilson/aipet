@@ -43,7 +43,7 @@ const DIRECTIONS = [
 
 const TAU = 2 * Math.PI;
 const FRAME_MS = 150;
-const SPRITE_WORLD_SIZE = 1.5;
+const SPRITE_WORLD_SIZE = 3.0;
 const ATLAS_URL = '/sprites/bunny/atlas.png';
 const ATLAS_JSON_URL = '/sprites/bunny/atlas.json';
 
