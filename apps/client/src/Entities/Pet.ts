@@ -4,7 +4,7 @@ import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Entity } from './Entity';
 import { EntityMove } from './Entity/EntityMove';
 import { EntityNamePlate } from './Entity/EntityNamePlate';
-import { BunnySpriteRenderer, AnimationState } from './Pet/BunnySpriteRenderer';
+import { BunnySpriteRenderer, AnimationState, SPRITE_WORLD_SIZE } from './Pet/BunnySpriteRenderer';
 import { GameScene } from '../Screens/GameScene';
 
 const MOVE_THRESHOLD = 0.001;
@@ -33,6 +33,10 @@ export class Pet extends Entity {
     this.moveController.setPositionAndRotation(entity);
     this.nameplateController = new EntityNamePlate(this);
     this.nameplate = this.nameplateController.addNamePlate();
+    // getEntityheight() returns 1 when there is no mesh; lift above the sprite top instead
+    if (this.nameplate) {
+      this.nameplate.position.y = SPRITE_WORLD_SIZE + 0.3;
+    }
 
     const rot = entity.rot ?? 0;
     this._spriteRenderer.playAnimation('idle', rot);
