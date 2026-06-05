@@ -36,7 +36,7 @@ export class Pet extends Entity {
     this.nameplateController = new EntityNamePlate(this);
     // getEntityheight() returns hardcoded 1 when there is no mesh, ignoring offset_y.
     // Override on this instance so nameplate and chat both stack above the sprite.
-    this.nameplateController.getEntityheight = (offset_y: number) => SPRITE_WORLD_SIZE + offset_y;
+    this.nameplateController.getEntityheight = (offset_y: number) => SPRITE_WORLD_SIZE + offset_y + 1.5;
     this.nameplate = this.nameplateController.addNamePlate();
 
     const rot = entity.rot ?? 0;
