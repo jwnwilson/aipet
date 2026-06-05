@@ -106,7 +106,7 @@ export class BunnySpriteRenderer {
   setPosition(pos: Vector3): void {
     if (!this._sprite) return;
     // Lift by half the sprite height so the bottom edge sits at ground level
-    this._sprite.position.set(pos.x, pos.y + SPRITE_WORLD_SIZE / 2, pos.z);
+    this._sprite.position.set(pos.x, pos.y + SPRITE_WORLD_SIZE * 0.25, pos.z);
   }
 
   playAnimation(state: AnimationState, rot: number): void {

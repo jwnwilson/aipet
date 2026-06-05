@@ -12,6 +12,7 @@ const MOVE_THRESHOLD = 0.001;
 export class Pet extends Entity {
   private _spriteRenderer: BunnySpriteRenderer | null = null;
   private _serverRot: number = 0;
+  private _fakeShadow: any = null;
 
   constructor(name: string, scene: Scene, gamescene: GameScene, entity) {
     super(name, scene, gamescene, entity);
@@ -35,9 +36,21 @@ export class Pet extends Entity {
     this.moveController.setPositionAndRotation(entity);
     this.nameplateController = new EntityNamePlate(this);
     // getEntityheight() returns hardcoded 1 when there is no mesh, ignoring offset_y.
-    // Override on this instance so nameplate and chat both stack above the sprite.
-    this.nameplateController.getEntityheight = (offset_y: number) => SPRITE_WORLD_SIZE + offset_y + 1.5;
+    // Override so nameplate and chat stack above the sprite.
+    // offset_y=0.5 → nameplate, offset_y=1.5 → chat; only boost chat to clear nameplate
+    this.nameplateController.getEntityheight = (offset_y: number) =>
+      SPRITE_WORLD_SIZE + offset_y + (offset_y >= 1.0 ? 0.5 : -0.75);
     this.nameplate = this.nameplateController.addNamePlate();
+
+    const shadowAsset = this._game._loadedAssets['DYNAMIC_shadow_01'];
+    if (shadowAsset) {
+      this._fakeShadow = shadowAsset.createInstance('shadow_' + entity.sessionId);
+      this._fakeShadow.parent = this;
+      this._fakeShadow.isPickable = false;
+      this._fakeShadow.checkCollisions = false;
+      this._fakeShadow.doNotSyncBoundingInfo = true;
+      this._fakeShadow.position = new Vector3(0, 0.04, 0);
+    }
 
     const rot = entity.rot ?? 0;
     this._spriteRenderer.playAnimation('idle', rot);
@@ -66,8 +79,8 @@ export class Pet extends Entity {
 
   public remove(): void {
     this._spriteRenderer?.dispose();
+    this._fakeShadow?.dispose();
 
-    // dispose the nameplate mesh (addNamePlate returns the mesh/instance)
     if (this.nameplate) {
       this.nameplate.dispose();
     }
