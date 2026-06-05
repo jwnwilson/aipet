@@ -1,0 +1,109 @@
+{
+  "frameSize": 84,
+  "cols": 8,
+  "rows": 24,
+  "layout": {
+    "idle": {
+      "south": {
+        "startCell": 0,
+        "frameCount": 8
+      },
+      "south-east": {
+        "startCell": 8,
+        "frameCount": 8
+      },
+      "east": {
+        "startCell": 16,
+        "frameCount": 8
+      },
+      "north-east": {
+        "startCell": 24,
+        "frameCount": 8
+      },
+      "north": {
+        "startCell": 32,
+        "frameCount": 8
+      },
+      "north-west": {
+        "startCell": 40,
+        "frameCount": 8
+      },
+      "west": {
+        "startCell": 48,
+        "frameCount": 8
+      },
+      "south-west": {
+        "startCell": 56,
+        "frameCount": 8
+      }
+    },
+    "walk": {
+      "south": {
+        "startCell": 64,
+        "frameCount": 4
+      },
+      "south-east": {
+        "startCell": 72,
+        "frameCount": 4
+      },
+      "east": {
+        "startCell": 80,
+        "frameCount": 4
+      },
+      "north-east": {
+        "startCell": 88,
+        "frameCount": 4
+      },
+      "north": {
+        "startCell": 96,
+        "frameCount": 4
+      },
+      "north-west": {
+        "startCell": 104,
+        "frameCount": 4
+      },
+      "west": {
+        "startCell": 112,
+        "frameCount": 4
+      },
+      "south-west": {
+        "startCell": 120,
+        "frameCount": 4
+      }
+    },
+    "jump": {
+      "south": {
+        "startCell": 128,
+        "frameCount": 5
+      },
+      "south-east": {
+        "startCell": 136,
+        "frameCount": 5
+      },
+      "east": {
+        "startCell": 144,
+        "frameCount": 5
+      },
+      "north-east": {
+        "startCell": 152,
+        "frameCount": 5
+      },
+      "north": {
+        "startCell": 160,
+        "frameCount": 5
+      },
+      "north-west": {
+        "startCell": 168,
+        "frameCount": 5
+      },
+      "west": {
+        "startCell": 176,
+        "frameCount": 5
+      },
+      "south-west": {
+        "startCell": 184,
+        "frameCount": 5
+      }
+    }
+  }
+}
