@@ -1,0 +1,287 @@
+{
+  "group_id": "28844c1f-5753-4617-a1a7-07f5b0a533cd",
+  "states": [
+    {
+      "character": {
+        "id": "5288946c-4c10-48a6-9834-f38891e40d38",
+        "name": "Idle",
+        "prompt": "cute bunny",
+        "size": {
+          "width": 84,
+          "height": 84
+        },
+        "template_id": "dog",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-05-25T17:03:09.305644+00:00"
+      },
+      "folder": "5288946c",
+      "frames": {
+        "rotations": {
+          "south": "5288946c/rotations/south.png",
+          "south-east": "5288946c/rotations/south-east.png",
+          "east": "5288946c/rotations/east.png",
+          "north-east": "5288946c/rotations/north-east.png",
+          "north": "5288946c/rotations/north.png",
+          "north-west": "5288946c/rotations/north-west.png",
+          "west": "5288946c/rotations/west.png",
+          "south-west": "5288946c/rotations/south-west.png"
+        },
+        "animations": {
+          "animation-eb4ae751": {
+            "east": [
+              "5288946c/animations/animation-eb4ae751/east/frame_000.png",
+              "5288946c/animations/animation-eb4ae751/east/frame_001.png",
+              "5288946c/animations/animation-eb4ae751/east/frame_002.png",
+              "5288946c/animations/animation-eb4ae751/east/frame_003.png",
+              "5288946c/animations/animation-eb4ae751/east/frame_004.png",
+              "5288946c/animations/animation-eb4ae751/east/frame_005.png",
+              "5288946c/animations/animation-eb4ae751/east/frame_006.png",
+              "5288946c/animations/animation-eb4ae751/east/frame_007.png"
+            ],
+            "north": [
+              "5288946c/animations/animation-eb4ae751/north/frame_000.png",
+              "5288946c/animations/animation-eb4ae751/north/frame_001.png",
+              "5288946c/animations/animation-eb4ae751/north/frame_002.png",
+              "5288946c/animations/animation-eb4ae751/north/frame_003.png",
+              "5288946c/animations/animation-eb4ae751/north/frame_004.png",
+              "5288946c/animations/animation-eb4ae751/north/frame_005.png",
+              "5288946c/animations/animation-eb4ae751/north/frame_006.png",
+              "5288946c/animations/animation-eb4ae751/north/frame_007.png"
+            ],
+            "south": [
+              "5288946c/animations/animation-eb4ae751/south/frame_000.png",
+              "5288946c/animations/animation-eb4ae751/south/frame_001.png",
+              "5288946c/animations/animation-eb4ae751/south/frame_002.png",
+              "5288946c/animations/animation-eb4ae751/south/frame_003.png",
+              "5288946c/animations/animation-eb4ae751/south/frame_004.png",
+              "5288946c/animations/animation-eb4ae751/south/frame_005.png",
+              "5288946c/animations/animation-eb4ae751/south/frame_006.png",
+              "5288946c/animations/animation-eb4ae751/south/frame_007.png"
+            ],
+            "west": [
+              "5288946c/animations/animation-eb4ae751/west/frame_000.png",
+              "5288946c/animations/animation-eb4ae751/west/frame_001.png",
+              "5288946c/animations/animation-eb4ae751/west/frame_002.png",
+              "5288946c/animations/animation-eb4ae751/west/frame_003.png",
+              "5288946c/animations/animation-eb4ae751/west/frame_004.png",
+              "5288946c/animations/animation-eb4ae751/west/frame_005.png",
+              "5288946c/animations/animation-eb4ae751/west/frame_006.png",
+              "5288946c/animations/animation-eb4ae751/west/frame_007.png"
+            ],
+            "north-west": [
+              "5288946c/animations/animation-eb4ae751/north-west/frame_000.png",
+              "5288946c/animations/animation-eb4ae751/north-west/frame_001.png",
+              "5288946c/animations/animation-eb4ae751/north-west/frame_002.png",
+              "5288946c/animations/animation-eb4ae751/north-west/frame_003.png",
+              "5288946c/animations/animation-eb4ae751/north-west/frame_004.png",
+              "5288946c/animations/animation-eb4ae751/north-west/frame_005.png",
+              "5288946c/animations/animation-eb4ae751/north-west/frame_006.png",
+              "5288946c/animations/animation-eb4ae751/north-west/frame_007.png"
+            ],
+            "south-west": [
+              "5288946c/animations/animation-eb4ae751/south-west/frame_000.png",
+              "5288946c/animations/animation-eb4ae751/south-west/frame_001.png",
+              "5288946c/animations/animation-eb4ae751/south-west/frame_002.png",
+              "5288946c/animations/animation-eb4ae751/south-west/frame_003.png",
+              "5288946c/animations/animation-eb4ae751/south-west/frame_004.png",
+              "5288946c/animations/animation-eb4ae751/south-west/frame_005.png",
+              "5288946c/animations/animation-eb4ae751/south-west/frame_006.png",
+              "5288946c/animations/animation-eb4ae751/south-west/frame_007.png"
+            ],
+            "north-east": [
+              "5288946c/animations/animation-eb4ae751/north-east/frame_000.png",
+              "5288946c/animations/animation-eb4ae751/north-east/frame_001.png",
+              "5288946c/animations/animation-eb4ae751/north-east/frame_002.png",
+              "5288946c/animations/animation-eb4ae751/north-east/frame_003.png",
+              "5288946c/animations/animation-eb4ae751/north-east/frame_004.png",
+              "5288946c/animations/animation-eb4ae751/north-east/frame_005.png",
+              "5288946c/animations/animation-eb4ae751/north-east/frame_006.png",
+              "5288946c/animations/animation-eb4ae751/north-east/frame_007.png"
+            ],
+            "south-east": [
+              "5288946c/animations/animation-eb4ae751/south-east/frame_000.png",
+              "5288946c/animations/animation-eb4ae751/south-east/frame_001.png",
+              "5288946c/animations/animation-eb4ae751/south-east/frame_002.png",
+              "5288946c/animations/animation-eb4ae751/south-east/frame_003.png",
+              "5288946c/animations/animation-eb4ae751/south-east/frame_004.png",
+              "5288946c/animations/animation-eb4ae751/south-east/frame_005.png",
+              "5288946c/animations/animation-eb4ae751/south-east/frame_006.png",
+              "5288946c/animations/animation-eb4ae751/south-east/frame_007.png"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "character": {
+        "id": "ac09788b-e791-498f-b3e4-3b752858ed67",
+        "name": "walking",
+        "prompt": "cute bunny",
+        "size": {
+          "width": 84,
+          "height": 84
+        },
+        "template_id": "dog",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-05-26T14:39:20.604323+00:00"
+      },
+      "folder": "walking",
+      "frames": {
+        "rotations": {
+          "south": "walking/rotations/south.png",
+          "south-east": "walking/rotations/south-east.png",
+          "east": "walking/rotations/east.png",
+          "north-east": "walking/rotations/north-east.png",
+          "north": "walking/rotations/north.png",
+          "north-west": "walking/rotations/north-west.png",
+          "west": "walking/rotations/west.png",
+          "south-west": "walking/rotations/south-west.png"
+        },
+        "animations": {
+          "animation-85860275": {
+            "south": [
+              "walking/animations/animation-85860275/south/frame_000.png",
+              "walking/animations/animation-85860275/south/frame_001.png",
+              "walking/animations/animation-85860275/south/frame_002.png",
+              "walking/animations/animation-85860275/south/frame_003.png"
+            ],
+            "north-east": [
+              "walking/animations/animation-85860275/north-east/frame_000.png",
+              "walking/animations/animation-85860275/north-east/frame_001.png",
+              "walking/animations/animation-85860275/north-east/frame_002.png",
+              "walking/animations/animation-85860275/north-east/frame_003.png"
+            ],
+            "west": [
+              "walking/animations/animation-85860275/west/frame_000.png",
+              "walking/animations/animation-85860275/west/frame_001.png",
+              "walking/animations/animation-85860275/west/frame_002.png",
+              "walking/animations/animation-85860275/west/frame_003.png"
+            ],
+            "east": [
+              "walking/animations/animation-85860275/east/frame_000.png",
+              "walking/animations/animation-85860275/east/frame_001.png",
+              "walking/animations/animation-85860275/east/frame_002.png",
+              "walking/animations/animation-85860275/east/frame_003.png"
+            ],
+            "north": [
+              "walking/animations/animation-85860275/north/frame_000.png",
+              "walking/animations/animation-85860275/north/frame_001.png",
+              "walking/animations/animation-85860275/north/frame_002.png",
+              "walking/animations/animation-85860275/north/frame_003.png"
+            ],
+            "north-west": [
+              "walking/animations/animation-85860275/north-west/frame_000.png",
+              "walking/animations/animation-85860275/north-west/frame_001.png",
+              "walking/animations/animation-85860275/north-west/frame_002.png",
+              "walking/animations/animation-85860275/north-west/frame_003.png"
+            ],
+            "south-east": [
+              "walking/animations/animation-85860275/south-east/frame_000.png",
+              "walking/animations/animation-85860275/south-east/frame_001.png",
+              "walking/animations/animation-85860275/south-east/frame_002.png",
+              "walking/animations/animation-85860275/south-east/frame_003.png"
+            ],
+            "south-west": [
+              "walking/animations/animation-85860275/south-west/frame_000.png",
+              "walking/animations/animation-85860275/south-west/frame_001.png",
+              "walking/animations/animation-85860275/south-west/frame_002.png",
+              "walking/animations/animation-85860275/south-west/frame_003.png"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "character": {
+        "id": "a7395dc7-8c8a-48d5-bd32-fb11be273b59",
+        "name": "jumping",
+        "prompt": "cute bunny",
+        "size": {
+          "width": 84,
+          "height": 84
+        },
+        "template_id": "dog",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-05-26T20:06:45.039387+00:00"
+      },
+      "folder": "jumping",
+      "frames": {
+        "rotations": {
+          "south": "jumping/rotations/south.png",
+          "south-east": "jumping/rotations/south-east.png",
+          "east": "jumping/rotations/east.png",
+          "north-east": "jumping/rotations/north-east.png",
+          "north": "jumping/rotations/north.png",
+          "north-west": "jumping/rotations/north-west.png",
+          "west": "jumping/rotations/west.png",
+          "south-west": "jumping/rotations/south-west.png"
+        },
+        "animations": {
+          "hopping_like_a_rabbit-ed56bfbf": {
+            "south": [
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/south/frame_000.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/south/frame_001.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/south/frame_002.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/south/frame_003.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/south/frame_004.png"
+            ],
+            "east": [
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/east/frame_000.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/east/frame_001.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/east/frame_002.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/east/frame_003.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/east/frame_004.png"
+            ],
+            "south-east": [
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/south-east/frame_000.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/south-east/frame_001.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/south-east/frame_002.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/south-east/frame_003.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/south-east/frame_004.png"
+            ],
+            "south-west": [
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/south-west/frame_000.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/south-west/frame_001.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/south-west/frame_002.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/south-west/frame_003.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/south-west/frame_004.png"
+            ],
+            "west": [
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/west/frame_000.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/west/frame_001.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/west/frame_002.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/west/frame_003.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/west/frame_004.png"
+            ],
+            "north-west": [
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/north-west/frame_000.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/north-west/frame_001.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/north-west/frame_002.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/north-west/frame_003.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/north-west/frame_004.png"
+            ],
+            "north-east": [
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/north-east/frame_000.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/north-east/frame_001.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/north-east/frame_002.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/north-east/frame_003.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/north-east/frame_004.png"
+            ],
+            "north": [
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/north/frame_000.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/north/frame_001.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/north/frame_002.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/north/frame_003.png",
+              "jumping/animations/hopping_like_a_rabbit-ed56bfbf/north/frame_004.png"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "export_version": "3.0",
+  "export_date": "2026-06-02T11:52:40.881414"
+}
