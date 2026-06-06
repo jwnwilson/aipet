@@ -127,16 +127,16 @@ export class AssetsController {
 
         // world object models (scene props)
         const WORLD_OBJECT_MODELS = [
-            { name: "OBJECT_bed",    filename: "objects/bed/scene.gltf" },
-            { name: "OBJECT_food",   filename: "objects/food/scene.gltf" },
-            { name: "OBJECT_toy",    filename: "objects/toy/scene.gltf" },
-            { name: "OBJECT_toilet", filename: "objects/toilet/scene.gltf" },
+            { name: "OBJECT_bed",    filename: "objects/bed.glb" },
+            { name: "OBJECT_food",   filename: "objects/food.glb" },
+            { name: "OBJECT_toy",    filename: "objects/toy.glb" },
+            { name: "OBJECT_toilet", filename: "objects/toilet.glb" },
         ];
         for (const obj of WORLD_OBJECT_MODELS) {
             this.assetDatabase.push({
                 name: obj.name,
                 filename: obj.filename,
-                extension: "gltf",
+                extension: "glb",
                 type: "mesh",
                 instantiate: true,
             });
