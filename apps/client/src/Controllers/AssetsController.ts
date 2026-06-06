@@ -27,6 +27,7 @@ import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator"
 import { RenderTargetTexture } from "@babylonjs/core/Materials/Textures/renderTargetTexture";
 import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 import { VatController } from "./VatController";
+import { GrassController } from "./GrassController";
 
 type AssetEntry = {
     name: string;
@@ -372,6 +373,9 @@ export class AssetsController {
             grassMat.diffuseColor = new Color3(0.35, 0.6, 0.25);
             grassMat.specularColor = new Color3(0, 0, 0);
             ground.material = grassMat;
+
+            const grassSprites = new GrassController(this._game.scene);
+            grassSprites.spawn(200, 300);
             return;
         }
 
