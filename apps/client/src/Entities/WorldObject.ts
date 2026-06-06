@@ -6,6 +6,7 @@ import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { DynamicTexture } from "@babylonjs/core/Materials/Textures/dynamicTexture";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
+import { InstantiatedEntries } from "@babylonjs/core/assetContainer";
 import { GameController } from "../Controllers/GameController";
 
 // Maps the server-side subtype to the AssetsController asset key.
@@ -48,6 +49,7 @@ export class WorldObject extends TransformNode {
     public sessionId: string;
     public mesh: Mesh;
     public type: string = "worldobject";
+    private _instantiatedEntries: InstantiatedEntries | null = null;
 
     public x: number;
     public y: number;
@@ -70,18 +72,18 @@ export class WorldObject extends TransformNode {
         const container = modelKey ? this._game._loadedAssets[modelKey] : null;
 
         if (container) {
-            const result = container.instantiateModelsToScene(
+            this._instantiatedEntries = container.instantiateModelsToScene(
                 (name: string) => `${name}_${this.sessionId}`
             );
-            const root = result.rootNodes[0] as TransformNode;
+            const root = this._instantiatedEntries.rootNodes[0] as TransformNode;
             if (root) {
                 root.parent = this;
                 root.position.setAll(0);
                 root.scaling.setAll(SUBTYPE_SCALE[subtype] ?? 1.0);
-                for (const m of root.getChildMeshes(false)) {
+                const childMeshes = root.getChildMeshes(true);
+                for (const m of childMeshes) {
                     m.isPickable = false;
                 }
-                const childMeshes = root.getChildMeshes(false);
                 if (childMeshes.length > 0) {
                     this.mesh = childMeshes[0] as Mesh;
                 }
@@ -159,6 +161,7 @@ export class WorldObject extends TransformNode {
     }
 
     public remove() {
+        this._instantiatedEntries?.dispose();
         this.dispose();
     }
 }
