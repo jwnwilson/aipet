@@ -6,13 +6,40 @@ import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { DynamicTexture } from "@babylonjs/core/Materials/Textures/dynamicTexture";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
+import { InstantiatedEntries } from "@babylonjs/core/assetContainer";
 import { GameController } from "../Controllers/GameController";
 
+// Maps the server-side subtype to the AssetsController asset key.
+// "bowl" uses the "food" model (a food dish); all others match their folder name.
+export const SUBTYPE_TO_MODEL: Record<string, string> = {
+    bowl:   "OBJECT_food",
+    bed:    "OBJECT_bed",
+    toy:    "OBJECT_toy",
+    toilet: "OBJECT_toilet",
+};
+
+// Uniform scale applied to each instantiated model root node.
+// Tune these after visual inspection in Task 5.
+export const SUBTYPE_SCALE: Record<string, number> = {
+    bowl:   1.0,
+    bed:    1.0,
+    toy:    1.0,
+    toilet: 1.0,
+};
+
+const SUBTYPE_LABEL_HEIGHT: Record<string, number> = {
+    bowl:   0.8,
+    bed:    1.5,
+    toy:    0.8,
+    toilet: 1.2,
+};
+
+// Fallback colors used when the GLTF container is not yet in _loadedAssets
 const SUBTYPE_COLORS: Record<string, Color3> = {
-    bowl:   new Color3(0.2, 0.4, 0.9),   // blue
-    bed:    new Color3(0.55, 0.27, 0.07), // brown
-    toy:    new Color3(0.95, 0.85, 0.1),  // yellow
-    toilet: new Color3(0.9, 0.9, 0.9),   // white
+    bowl:   new Color3(0.2, 0.4, 0.9),
+    bed:    new Color3(0.55, 0.27, 0.07),
+    toy:    new Color3(0.95, 0.85, 0.1),
+    toilet: new Color3(0.9, 0.9, 0.9),
 };
 
 export class WorldObject extends TransformNode {
@@ -22,6 +49,7 @@ export class WorldObject extends TransformNode {
     public sessionId: string;
     public mesh: Mesh;
     public type: string = "worldobject";
+    private _instantiatedEntries: InstantiatedEntries | null = null;
 
     public x: number;
     public y: number;
@@ -40,33 +68,50 @@ export class WorldObject extends TransformNode {
 
     private _spawn() {
         const subtype: string = this.entity.subtype ?? "toy";
-        const color = SUBTYPE_COLORS[subtype] ?? Color3.Gray();
+        const modelKey = SUBTYPE_TO_MODEL[subtype];
+        const container = modelKey ? this._game._loadedAssets[modelKey] : null;
 
-        // box mesh
-        this.mesh = MeshBuilder.CreateBox(`worldobj_${this.sessionId}`, { size: 0.6 }, this._scene);
-        this.mesh.parent = this;
-        this.mesh.position.y = 0.3;
-        this.mesh.isPickable = false;
+        if (container) {
+            this._instantiatedEntries = container.instantiateModelsToScene(
+                (name: string) => `${name}_${this.sessionId}`
+            );
+            const root = this._instantiatedEntries.rootNodes[0] as TransformNode;
+            if (root) {
+                root.parent = this;
+                root.position.setAll(0);
+                root.scaling.setAll(SUBTYPE_SCALE[subtype] ?? 1.0);
+                const childMeshes = root.getChildMeshes(true);
+                for (const m of childMeshes) {
+                    m.isPickable = false;
+                }
+                if (childMeshes.length > 0) {
+                    this.mesh = childMeshes[0] as Mesh;
+                }
+            }
+        } else {
+            // fallback: colored cube
+            const color = SUBTYPE_COLORS[subtype] ?? Color3.Gray();
+            this.mesh = MeshBuilder.CreateBox(`worldobj_${this.sessionId}`, { size: 0.6 }, this._scene);
+            this.mesh.parent = this;
+            this.mesh.position.y = 0.3;
+            this.mesh.isPickable = false;
+            const mat = new StandardMaterial(`worldobj_mat_${this.sessionId}`, this._scene);
+            mat.diffuseColor = color;
+            mat.specularColor = Color3.Black();
+            this.mesh.material = mat;
+        }
 
-        const mat = new StandardMaterial(`worldobj_mat_${this.sessionId}`, this._scene);
-        mat.diffuseColor = color;
-        mat.specularColor = Color3.Black();
-        this.mesh.material = mat;
-
-        // billboard label
-        this._addLabel(this.entity.name ?? subtype);
-
-        // position
+        const labelHeight = SUBTYPE_LABEL_HEIGHT[subtype] ?? 1.0;
+        this._addLabel(this.entity.name ?? subtype, labelHeight);
         this.setPosition();
 
-        // listen for server changes
         this.entity.onChange(() => {
             Object.assign(this, this.entity);
             this.setPosition();
         });
     }
 
-    private _addLabel(text: string) {
+    private _addLabel(text: string, yOffset: number = 1.0) {
         const fontSize = 48;
         const font = `bold ${fontSize}px Arial`;
 
@@ -95,7 +140,7 @@ export class WorldObject extends TransformNode {
             this._scene,
         );
         plane.parent = this;
-        plane.position.y = 1.0;
+        plane.position.y = yOffset;
         plane.billboardMode = Mesh.BILLBOARDMODE_ALL;
         plane.material = mat;
         plane.isPickable = false;
@@ -116,6 +161,7 @@ export class WorldObject extends TransformNode {
     }
 
     public remove() {
+        this._instantiatedEntries?.dispose();
         this.dispose();
     }
 }
