@@ -5,7 +5,7 @@ import { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture
 import { Control } from "@babylonjs/gui/2D/controls/control";
 import { Rectangle } from "@babylonjs/gui/2D/controls/rectangle";
 
-import { ChatBox, DebugBox, MainMenu, Panel_Dialog, Cursor, Watermark } from "./UI";
+import { ChatBox, DebugBox, MainMenu, Panel_Dialog, Panel_PetStats, Cursor, Watermark } from "./UI";
 
 import { Room } from "colyseus.js";
 
@@ -39,6 +39,7 @@ export class UserInterface {
 
     // active panel
     public panelDialog: Panel_Dialog;
+    public _PetStatsPanel: Panel_PetStats;
 
     // stub references so Panel base class and MainMenu compile without errors
     public panelInventory = null;
@@ -94,6 +95,8 @@ export class UserInterface {
             vertical_position: Control.VERTICAL_ALIGNMENT_CENTER,
         });
 
+        this._PetStatsPanel = new Panel_PetStats(this._playerUI);
+
         this.resize();
     }
 
@@ -109,6 +112,9 @@ export class UserInterface {
         }
         if (this.panelDialog) {
             this.panelDialog.update();
+        }
+        if (this._PetStatsPanel) {
+            this._PetStatsPanel.update(this._entities);
         }
     }
 
