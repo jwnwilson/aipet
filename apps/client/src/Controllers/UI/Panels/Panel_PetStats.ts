@@ -38,10 +38,10 @@ export class Panel_PetStats {
             `${PANEL_WIDTH_PX}px;`,
             `${PANEL_HEIGHT_PX}px`,
             "10px",
-            "-10px"
+            "10px"
         );
         this._panel.verticalAlignment   = Control.VERTICAL_ALIGNMENT_TOP;
-        this._panel.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
+        this._panel.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
         playerUI.addControl(this._panel);
 
         this._buildUI();
