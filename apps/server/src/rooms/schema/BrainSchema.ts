@@ -11,6 +11,7 @@ import { randomNumberInRange } from "../../../../shared/Utils";
 import { EquipmentSchema } from "./player/EquipmentSchema";
 import { GameRoomState } from "../state/GameRoomState";
 import { animationCTRL } from "../controllers/animationCTRL";
+import { PetStatsSchema } from "./PetStatsSchema";
 
 export class BrainSchema extends Entity {
     /////////////////////////////////////////////////////////////
@@ -40,6 +41,7 @@ export class BrainSchema extends Entity {
     @type("number") public spawn_id = 0;
 
     @type({ map: EquipmentSchema }) equipment = new MapSchema<EquipmentSchema>();
+    @type(PetStatsSchema) petStats: PetStatsSchema = new PetStatsSchema();
 
     // PARENTS
     public _navMesh;
