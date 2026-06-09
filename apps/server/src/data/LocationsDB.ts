@@ -17,7 +17,7 @@ let LocationsDB = {
         worldobjects: [
             { key: "bowl_01",   subtype: "bowl",   name: "Bowl",   x:  8, y: 0, z:  0 },
             { key: "bed_01",    subtype: "bed",    name: "Bed",    x: -8, y: 0, z: -8 },
-            { key: "toy_01",    subtype: "toy",    name: "Toy",    x:  0, y: 0, z:  8 },
+            { key: "toy_01",    subtype: "toy",    name: "Toy",    x:  0, y: 0.5, z:  8 },
             { key: "toilet_01", subtype: "toilet", name: "Toilet", x:  8, y: 0, z:  8 },
         ],
         dynamic: {

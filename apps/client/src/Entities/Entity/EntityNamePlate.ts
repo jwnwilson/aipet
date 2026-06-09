@@ -1,3 +1,4 @@
+import { ICanvasRenderingContext } from "@babylonjs/core/Engines/ICanvas";
 import { DynamicTexture } from "@babylonjs/core/Materials/Textures/dynamicTexture";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
@@ -14,6 +15,11 @@ export class EntityNamePlate {
     private damageBubbles: any = [];
     private font_size = 50;
     private font = "bold 50px gamefont";
+
+    private readonly BUBBLE_PAD_X = 24;
+    private readonly BUBBLE_PAD_Y = 16;
+    private readonly BUBBLE_TAIL  = 22;
+    private readonly BUBBLE_RADIUS = 14;
 
     private currentMessage;
     private messageTimeout;
@@ -53,16 +59,16 @@ export class EntityNamePlate {
      * @param text
      * @returns
      */
-    createMaterial(height = 0.5, t_height = 2, text = "Hello World", scale = 1) {
+    createMaterial(height = 0.5, t_height = 2, text = "Hello World", scale = 1, extraWidth = 0, extraHeight = 0) {
         // set a few vars
         let uuid = generateRandomId(6);
         var planeHeight = height; //Set height for plane
-        var DTHeight = t_height * this.font_size; //Set height for dynamic textur
+        var DTHeight = t_height * this.font_size + extraHeight; //Set height for dynamic texture
         var ratio = planeHeight / DTHeight; //Calculate ratio
         var text = "" + text; //Set text
 
         //Use a temporay dynamic texture to calculate the length of the text on the dynamic texture canvas
-        var DTWidth = this.getWidthForDynamicTexture(text);
+        var DTWidth = this.getWidthForDynamicTexture(text) + extraWidth;
 
         //Calculate width the plane has to be
         var planeWidth = DTWidth * ratio;
@@ -105,6 +111,30 @@ export class EntityNamePlate {
      */
     drawDynamicTexture(text, texture, color = "#FFFFFF") {
         texture.drawText(text, null, null, this.font, color, "transparent", true);
+    }
+
+    private _drawSpeechBubble(ctx: ICanvasRenderingContext, w: number, h: number) {
+        const bodyH = h - this.BUBBLE_TAIL;
+        const r     = this.BUBBLE_RADIUS;
+        const tailX = w / 2;
+
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.moveTo(r, 0);
+        ctx.lineTo(w - r, 0);
+        ctx.quadraticCurveTo(w, 0, w, r);
+        ctx.lineTo(w, bodyH - r);
+        ctx.quadraticCurveTo(w, bodyH, w - r, bodyH);
+        ctx.lineTo(tailX + this.BUBBLE_TAIL, bodyH);
+        ctx.lineTo(tailX, h);
+        ctx.lineTo(tailX - this.BUBBLE_TAIL, bodyH);
+        ctx.lineTo(r, bodyH);
+        ctx.quadraticCurveTo(0, bodyH, 0, bodyH - r);
+        ctx.lineTo(0, r);
+        ctx.quadraticCurveTo(0, 0, r, 0);
+        ctx.closePath();
+        ctx.fill();
     }
 
     getEntityheight(offset_y) {
@@ -157,18 +187,25 @@ export class EntityNamePlate {
         const numLines = lines.length;
         const longestLine = lines.reduce((a, b) => (a.length > b.length ? a : b), "");
 
-        // create mesh + texture sized for all lines
+        // create mesh + texture sized for all lines plus speech-bubble padding
+        const extraW = 2 * this.BUBBLE_PAD_X;
+        const extraH = 2 * this.BUBBLE_PAD_Y + this.BUBBLE_TAIL;
+        const textDTHeight = numLines * this.font_size;
+        const totalDTHeight = textDTHeight + extraH;
+        const scaledPlaneHeight = 0.4 * numLines * (totalDTHeight / textDTHeight);
         let entity_height = this.getEntityheight(offset_y);
-        let { planeWidth, planeHeight, texture, material } = this.createMaterial(0.4 * numLines, numLines, longestLine, this._entity.scale);
+        let { planeWidth, planeHeight, texture, material } = this.createMaterial(scaledPlaneHeight, numLines, longestLine, this._entity.scale, extraW, extraH);
 
-        // draw each line manually onto the canvas
         const size = texture.getSize();
-        const ctx = texture.getContext();
-        ctx.font = this.font;
+        const ctx  = texture.getContext();
+        ctx.font   = this.font;
+
+        // draw white rounded-rect bubble with downward tail, then text on top
+        this._drawSpeechBubble(ctx, size.width, size.height);
         ctx.fillStyle = color;
-        const lineHeight = size.height / numLines;
+        const lineHeight = (size.height - this.BUBBLE_TAIL - 2 * this.BUBBLE_PAD_Y) / numLines;
         lines.forEach((line, i) => {
-            ctx.fillText(line, 4, (i + 0.85) * lineHeight);
+            ctx.fillText(line, this.BUBBLE_PAD_X, this.BUBBLE_PAD_Y + (i + 0.85) * lineHeight);
         });
         texture.update();
 
