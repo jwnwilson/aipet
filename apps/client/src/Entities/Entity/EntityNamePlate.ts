@@ -1,3 +1,4 @@
+import { ICanvasRenderingContext } from "@babylonjs/core/Engines/ICanvas";
 import { DynamicTexture } from "@babylonjs/core/Materials/Textures/dynamicTexture";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
@@ -112,7 +113,7 @@ export class EntityNamePlate {
         texture.drawText(text, null, null, this.font, color, "transparent", true);
     }
 
-    private _drawSpeechBubble(ctx: CanvasRenderingContext2D, w: number, h: number) {
+    private _drawSpeechBubble(ctx: ICanvasRenderingContext, w: number, h: number) {
         const bodyH = h - this.BUBBLE_TAIL;
         const r     = this.BUBBLE_RADIUS;
         const tailX = w / 2;
