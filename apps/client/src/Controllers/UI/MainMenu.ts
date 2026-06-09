@@ -115,7 +115,7 @@ export class MainMenu {
         drowpdownMenu.left = "-15px;";
         drowpdownMenu.width = "150px;";
         drowpdownMenu.height = "100px";
-        drowpdownMenu.isVisible = true;
+        drowpdownMenu.isVisible = false;
         drowpdownMenu.adaptHeightToChildren = true;
         drowpdownMenu.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
         drowpdownMenu.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
