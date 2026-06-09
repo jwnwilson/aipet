@@ -1,2 +1,2 @@
 github_repo = "jwnwilson/aipet"
-vps_ip      = "165.22.115.52"
+vps_ip      = "104.248.160.76"
