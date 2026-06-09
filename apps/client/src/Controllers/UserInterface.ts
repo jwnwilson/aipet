@@ -5,7 +5,7 @@ import { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture
 import { Control } from "@babylonjs/gui/2D/controls/control";
 import { Rectangle } from "@babylonjs/gui/2D/controls/rectangle";
 
-import { ChatBox, DebugBox, MainMenu, Panel_Dialog, Panel_PetStats, Cursor, Watermark } from "./UI";
+import { DOMChatBox, DebugBox, MainMenu, Panel_Dialog, Panel_PetStats, Cursor, Watermark } from "./UI";
 
 import { Room } from "colyseus.js";
 
@@ -31,7 +31,7 @@ export class UserInterface {
 
     public _loadedAssets; // delegated from _game._loadedAssets; consumed by Panel base class
 
-    public _ChatBox: ChatBox;
+    public _ChatBox: DOMChatBox;
     public _DebugBox: DebugBox;
     public _MainMenu: MainMenu;
     public _Cursor: Cursor;
@@ -83,7 +83,7 @@ export class UserInterface {
         this._Watermark = new Watermark(this);
         this._DebugBox = new DebugBox(this._playerUI, this._engine, this._scene, this._room, this._currentPlayer, this._entities);
         this._MainMenu = new MainMenu(this, currentPlayer);
-        this._ChatBox = new ChatBox(this._playerUI, this._chatRoom, currentPlayer, this._entities, this._game);
+        this._ChatBox = new DOMChatBox(this._playerUI, this._chatRoom, currentPlayer, this._entities, this._game);
 
         this.panelDialog = new Panel_Dialog(this, currentPlayer, {
             name: "Dialog Panel",

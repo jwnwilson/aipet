@@ -22,6 +22,10 @@ export class ChatBox {
     private _chatInput;
     public chatPanel;
 
+    private _renderedCount: number = 0;
+    private _scrollObserver = null;
+    private _scrollFramesLeft: number = 0;
+
     public messages: PlayerMessage[] = [];
 
     constructor(_playerUI, _chatRoom, _currentPlayer, _entities, _game) {
@@ -229,31 +233,22 @@ export class ChatBox {
         this._refreshChatBox();
     }
 
-    // chat refresh
+    // chat refresh — append-only to preserve existing layout heights
     private _refreshChatBox() {
         if (!this._chatUI) {
             return false;
         }
 
-        // remove all chat and refresh
-        let elements = this._chatUI.getDescendants();
-        elements.forEach((element) => {
-            element.dispose();
-        });
+        const chats = this._game.currentChats;
 
-        this._chatUIScroll.verticalBar.value = 1;
+        // Full rebuild only if history was cleared (count went backwards)
+        if (chats.length < this._renderedCount) {
+            this._chatUI.getDescendants().forEach((el) => el.dispose());
+            this._renderedCount = 0;
+        }
 
-        this._game.currentChats.slice().forEach((msg: PlayerMessage) => {
-            // container
-            var headlineRect = new Rectangle("chatMsgRect_" + msg.createdAt);
-            headlineRect.width = "100%";
-            headlineRect.thickness = 0;
-            headlineRect.paddingBottom = "1px";
-            headlineRect.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
-            headlineRect.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-            headlineRect.height = "50px;";
-            headlineRect.adaptHeightToChildren = true;
-            this._chatUI.addControl(headlineRect);
+        for (let i = this._renderedCount; i < chats.length; i++) {
+            const msg = chats[i];
 
             let prefix = "[GLOBAL] " + msg.name + ": ";
             if (msg.type === "npc") {
@@ -262,19 +257,45 @@ export class ChatBox {
                 prefix = msg.senderID == this._currentPlayer.sessionId ? "You said: " : "[GLOBAL] " + msg.name + ": ";
             }
 
-            // message
-            var roomTxt = new TextBlock("chatMsgTxt_" + msg.createdAt);
+            const roomTxt = new TextBlock("chatMsgTxt_" + msg.createdAt);
+            roomTxt.width = "100%";
             roomTxt.paddingLeft = "5px";
+            roomTxt.paddingBottom = "2px";
             roomTxt.text = prefix + msg.message;
             roomTxt.textHorizontalAlignment = 0;
             roomTxt.fontSize = "12px";
             roomTxt.color = msg.color;
-            roomTxt.left = "0px";
             roomTxt.textWrapping = TextWrapping.WordWrap;
             roomTxt.resizeToFit = true;
             roomTxt.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
             roomTxt.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-            headlineRect.addControl(roomTxt);
+            this._chatUI.addControl(roomTxt);
+        }
+
+        this._renderedCount = chats.length;
+        this._scheduleScrollToBottom();
+    }
+
+    // Each call resets the countdown to 5 frames. A single persistent observer
+    // counts down and fires scroll only after 5 consecutive frames with no new
+    // messages. This handles the first-overflow case: scrollbar appears in frame
+    // ~3 (stealing 20px of content width), TextBlocks reflow in frame ~4,
+    // ScrollViewerWindow reads stabilised heights in frame ~5.
+    // Resetting on every message means an NPC reply that arrives mid-countdown
+    // (e.g. during the player-message countdown) gets its own full 5-frame wait.
+    private _scheduleScrollToBottom() {
+        this._scrollFramesLeft = 5;
+        if (this._scrollObserver) return;
+
+        this._scrollObserver = this._game.scene.onAfterRenderObservable.add(() => {
+            this._scrollFramesLeft--;
+            if (this._scrollFramesLeft > 0) return;
+
+            this._game.scene.onAfterRenderObservable.remove(this._scrollObserver);
+            this._scrollObserver = null;
+            if (this._chatUIScroll) {
+                this._chatUIScroll.verticalBar.value = 1;
+            }
         });
     }
 }
