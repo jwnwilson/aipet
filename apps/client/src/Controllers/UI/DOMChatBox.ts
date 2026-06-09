@@ -25,6 +25,7 @@ export class DOMChatBox {
 
     private _userScrolled: boolean = false;
     private _autoScrolling: boolean = false;
+    private _minimized: boolean = false;
 
     // Shim so UserInterface.resize() can write chatPanel.top without errors.
     // Translates Babylon-style negative-top offset into a CSS bottom value.
@@ -72,6 +73,7 @@ export class DOMChatBox {
             "padding:6px",
             "gap:4px",
             "border:1px solid #000",
+            "overflow:hidden",
         ].join(";");
         this._container = container;
         document.body.appendChild(container);
@@ -103,6 +105,30 @@ export class DOMChatBox {
         ].join(";");
         container.appendChild(resizeHandle);
         this._attachResizeLogic(container, resizeHandle);
+
+        // Minimise button — top-left corner, mirrors the resize handle
+        const minimizeBtn = document.createElement("button");
+        minimizeBtn.textContent = "−";
+        minimizeBtn.title = "Minimise chat";
+        minimizeBtn.style.cssText = [
+            "position:absolute",
+            "top:0",
+            "left:0",
+            "width:22px",
+            "height:22px",
+            "cursor:pointer",
+            "z-index:10",
+            "background:transparent",
+            "border:none",
+            "color:rgba(255,255,255,0.55)",
+            "font-size:18px",
+            "line-height:1",
+            "padding:0",
+            "display:flex",
+            "align-items:center",
+            "justify-content:center",
+        ].join(";");
+        container.appendChild(minimizeBtn);
 
         // Scrollable message area
         const messageList = document.createElement("div");
@@ -158,6 +184,31 @@ export class DOMChatBox {
             "flex-shrink:0",
         ].join(";");
         inputRow.appendChild(sendBtn);
+
+        // Minimise / expand toggle
+        let expandedHeight = INIT_H;
+        minimizeBtn.addEventListener("click", () => {
+            this._minimized = !this._minimized;
+            if (this._minimized) {
+                expandedHeight = container.offsetHeight;
+                container.style.height = "22px";
+                messageList.style.display = "none";
+                inputRow.style.display = "none";
+                minimizeBtn.textContent = "+";
+                minimizeBtn.title = "Expand chat";
+                resizeHandle.style.pointerEvents = "none";
+                resizeHandle.style.opacity = "0";
+            } else {
+                container.style.height = expandedHeight + "px";
+                messageList.style.display = "flex";
+                inputRow.style.display = "flex";
+                minimizeBtn.textContent = "−";
+                minimizeBtn.title = "Minimise chat";
+                resizeHandle.style.pointerEvents = "";
+                resizeHandle.style.opacity = "";
+                this._scrollToBottom();
+            }
+        });
 
         // Prevent Babylon.js canvas from receiving typing keystrokes
         input.addEventListener("keydown", (e) => {
