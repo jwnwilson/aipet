@@ -15,6 +15,13 @@ const SUBTYPE_COLORS: Record<string, Color3> = {
     toilet: new Color3(0.9, 0.9, 0.9),   // white
 };
 
+const DEFAULT_SIZE = 0.6;
+const SUBTYPE_SIZES: Record<string, number> = {
+    bowl:   1.2,
+    toy:    1.2,
+    toilet: 1.2,
+};
+
 export class WorldObject extends TransformNode {
     public _game: GameController;
     public _scene: Scene;
@@ -41,11 +48,12 @@ export class WorldObject extends TransformNode {
     private _spawn() {
         const subtype: string = this.entity.subtype ?? "toy";
         const color = SUBTYPE_COLORS[subtype] ?? Color3.Gray();
+        const size = SUBTYPE_SIZES[subtype] ?? DEFAULT_SIZE;
 
         // box mesh
-        this.mesh = MeshBuilder.CreateBox(`worldobj_${this.sessionId}`, { size: 0.6 }, this._scene);
+        this.mesh = MeshBuilder.CreateBox(`worldobj_${this.sessionId}`, { size }, this._scene);
         this.mesh.parent = this;
-        this.mesh.position.y = 0.3;
+        this.mesh.position.y = size / 2;
         this.mesh.isPickable = false;
 
         const mat = new StandardMaterial(`worldobj_mat_${this.sessionId}`, this._scene);

@@ -1,6 +1,6 @@
 class Config {
     // general settings
-    title = "T5C";
+    title = "Pet Bunny Simulator";
     version = "Version 0.5.0";
     lang = "en";
 
