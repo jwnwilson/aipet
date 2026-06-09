@@ -195,7 +195,8 @@ class Database {
             ]);
         }
 
-        // no default equipment
+        // default equipment
+        await this.querier.run("INSERT INTO character_equipment (`owner_id`,`slot`, `key`) VALUES (?,?,?) ", [characterId, PlayerSlots.CHEST, "armor_01"]);
 
         // default quests
         //const sql_quests = `INSERT INTO character_quests ("owner_id", "key", "status", "qty") VALUES ("${c.id}", "LH_DANGEROUS_ERRANDS_01", "0", "5")`;
