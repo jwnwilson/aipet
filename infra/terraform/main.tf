@@ -8,15 +8,25 @@ module "ecr" {
   image_retention_count = var.image_retention_count
 }
 
+data "aws_route53_zone" "jwnwilson" {
+  name         = "jwnwilson.co.uk."
+  private_zone = false
+}
+
 module "acm_client" {
-  source  = "./modules/acm"
-  domain  = "aipet-v2.jwnwilson.co.uk"
+  source                    = "./modules/acm"
+  domain                    = "aipet-v2.jwnwilson.co.uk"
+  subject_alternative_names = ["pet-simulator.co.uk"]
+  zone_ids = {
+    "aipet-v2.jwnwilson.co.uk" = data.aws_route53_zone.jwnwilson.zone_id
+    "pet-simulator.co.uk"       = aws_route53_zone.pet_simulator.zone_id
+  }
 }
 
 module "s3_client" {
   source              = "./modules/s3_static"
   name                = "${var.repo_name}-client"
-  domain              = "aipet-v2.jwnwilson.co.uk"
+  domains             = ["aipet-v2.jwnwilson.co.uk", "pet-simulator.co.uk"]
   acm_certificate_arn = module.acm_client.certificate_arn
 }
 
@@ -35,31 +45,17 @@ module "dns" {
   client_cf_domain = module.s3_client.cloudfront_domain
 }
 
-module "acm_pet_simulator" {
-  source    = "./modules/acm"
-  domain    = "pet-simulator.co.uk"
-  zone_name = "pet-simulator.co.uk."
-}
-
-module "s3_pet_simulator" {
-  source              = "./modules/s3_static"
-  name                = "${var.repo_name}-pet-simulator"
-  domain              = "pet-simulator.co.uk"
-  acm_certificate_arn = module.acm_pet_simulator.certificate_arn
-}
-
-data "aws_route53_zone" "pet_simulator" {
-  name         = "pet-simulator.co.uk."
-  private_zone = false
+resource "aws_route53_zone" "pet_simulator" {
+  name = "pet-simulator.co.uk"
 }
 
 resource "aws_route53_record" "pet_simulator_client" {
-  zone_id = data.aws_route53_zone.pet_simulator.zone_id
+  zone_id = aws_route53_zone.pet_simulator.zone_id
   name    = "pet-simulator.co.uk"
   type    = "A"
 
   alias {
-    name                   = module.s3_pet_simulator.cloudfront_domain
+    name                   = module.s3_client.cloudfront_domain
     zone_id                = "Z2FDTNDATAQYW2"
     evaluate_target_health = false
   }

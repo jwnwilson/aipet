@@ -20,7 +20,7 @@ resource "aws_cloudfront_origin_access_control" "this" {
 resource "aws_cloudfront_distribution" "this" {
   enabled             = true
   default_root_object = "index.html"
-  aliases             = [var.domain]
+  aliases             = var.domains
 
   origin {
     domain_name              = aws_s3_bucket.this.bucket_regional_domain_name

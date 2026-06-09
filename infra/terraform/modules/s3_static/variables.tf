@@ -3,12 +3,12 @@ variable "name" {
   type        = string
 }
 
-variable "domain" {
-  description = "Full domain name served by this CloudFront distribution (e.g. aipet-v2.jwnwilson.co.uk)"
-  type        = string
+variable "domains" {
+  description = "List of domain names for CloudFront aliases (first entry is the primary)"
+  type        = list(string)
 }
 
 variable "acm_certificate_arn" {
-  description = "ARN of the ACM certificate in us-east-1 covering this domain (e.g. wildcard *.jwnwilson.co.uk)"
+  description = "ARN of the ACM certificate in us-east-1 covering all domains in var.domains"
   type        = string
 }

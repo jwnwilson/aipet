@@ -51,9 +51,4 @@ tf-deploy: tf-apply ## Apply infra then push all terraform outputs as GitHub sec
 	gh secret set CLIENT_CF_DISTRIBUTION_ID \
 		--repo $(GITHUB_REPO) \
 		--body "$$(terraform -chdir=$(TF_DIR) output -raw client_distribution_id)" && \
-	gh secret set LLM_UI_BUCKET \
-		--repo $(GITHUB_REPO) \
-		--body "$$(terraform -chdir=$(TF_DIR) output -raw llm_ui_bucket_name)" && \
-	gh secret set LLM_UI_CF_DISTRIBUTION_ID \
-		--repo $(GITHUB_REPO) \
-		--body "$$(terraform -chdir=$(TF_DIR) output -raw llm_ui_distribution_id)"
+	@echo "GitHub secrets updated."

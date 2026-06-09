@@ -26,3 +26,4 @@ output "client_fqdn" {
 output "server_fqdn" {
   value = module.dns.server_fqdn
 }
+
