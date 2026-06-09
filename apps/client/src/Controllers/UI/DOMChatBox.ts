@@ -7,6 +7,11 @@ const COLORS: Record<string, string> = {
     npc: "#4caf50",
 };
 
+const MIN_W = 250;
+const MIN_H = 150;
+const MAX_W = 900;
+const MAX_H = 700;
+
 export class DOMChatBox {
     private _container: HTMLDivElement;
     private _messageList: HTMLDivElement;
@@ -21,7 +26,7 @@ export class DOMChatBox {
     private _autoScrolling: boolean = false;
 
     // Shim so UserInterface.resize() can write chatPanel.top without errors.
-    // The setter translates the Babylon-style negative-top offset into a CSS bottom value.
+    // Translates Babylon-style negative-top offset into a CSS bottom value.
     public chatPanel: { top: string };
 
     // Exposes a focus() shim so PlayerInput can call this._ui._ChatBox.chatInput.focus()
@@ -40,17 +45,21 @@ export class DOMChatBox {
     }
 
     private _buildDOM() {
+        // 25% bigger than the original 350×200
+        const INIT_W = 438;
+        const INIT_H = 250;
+
         const container = document.createElement("div");
         container.id = "dom-chat-box";
         container.style.cssText = [
             "position:fixed",
-            "bottom:35px",
+            `bottom:35px`,
             "left:15px",
-            "width:350px",
-            "height:200px",
+            `width:${INIT_W}px`,
+            `height:${INIT_H}px`,
             "display:flex",
             "flex-direction:column",
-            "background:rgba(0,0,0,0.5)",
+            "background:rgba(0,0,0,0.82)",
             "border-radius:4px",
             "font-family:Arial,sans-serif",
             "font-size:12px",
@@ -64,18 +73,36 @@ export class DOMChatBox {
         document.body.appendChild(container);
 
         // chatPanel shim — maps Babylon-style top="-30px;" → bottom:30px
-        const container_ = container;
+        const c = container;
         this.chatPanel = {
-            get top() {
-                return container_.style.bottom;
-            },
+            get top() { return c.style.bottom; },
             set top(v: string) {
                 const px = Math.abs(parseInt(v, 10));
-                if (!isNaN(px)) container_.style.bottom = px + "px";
+                if (!isNaN(px)) c.style.bottom = px + "px";
             },
         };
 
-        // scrollable message area
+        // Resize handle — top-right corner, L-shaped border as visual cue.
+        // Dragging right widens; dragging up tallens (panel is bottom-anchored).
+        const resizeHandle = document.createElement("div");
+        resizeHandle.title = "Drag to resize";
+        resizeHandle.style.cssText = [
+            "position:absolute",
+            "top:0",
+            "right:0",
+            "width:22px",
+            "height:22px",
+            "cursor:nesw-resize",
+            "z-index:10",
+            "box-sizing:border-box",
+            "border-top:3px solid rgba(255,255,255,0.35)",
+            "border-right:3px solid rgba(255,255,255,0.35)",
+            "border-top-right-radius:4px",
+        ].join(";");
+        container.appendChild(resizeHandle);
+        this._attachResizeLogic(container, resizeHandle);
+
+        // Scrollable message area
         const messageList = document.createElement("div");
         messageList.style.cssText = [
             "flex:1",
@@ -95,7 +122,7 @@ export class DOMChatBox {
             this._userScrolled = el.scrollHeight - el.scrollTop - el.clientHeight > 50;
         });
 
-        // input row
+        // Input row
         const inputRow = document.createElement("div");
         inputRow.style.cssText = "display:flex;gap:4px;height:24px;flex-shrink:0";
         container.appendChild(inputRow);
@@ -126,10 +153,11 @@ export class DOMChatBox {
             "cursor:pointer",
             "font-size:12px",
             "padding:0 8px",
+            "flex-shrink:0",
         ].join(";");
         inputRow.appendChild(sendBtn);
 
-        // Stop keydown from reaching Babylon.js canvas listeners while typing
+        // Prevent Babylon.js canvas from receiving typing keystrokes
         input.addEventListener("keydown", (e) => {
             e.stopPropagation();
             if (e.key === "Enter" && input.value.trim()) {
@@ -142,6 +170,32 @@ export class DOMChatBox {
         });
 
         input.focus();
+    }
+
+    private _attachResizeLogic(container: HTMLDivElement, handle: HTMLDivElement) {
+        handle.addEventListener("mousedown", (e) => {
+            e.preventDefault();
+            const startX = e.clientX;
+            const startY = e.clientY;
+            const startW = container.offsetWidth;
+            const startH = container.offsetHeight;
+
+            const onMove = (ev: MouseEvent) => {
+                const w = Math.min(MAX_W, Math.max(MIN_W, startW + (ev.clientX - startX)));
+                // Panel anchored at bottom → drag up increases height
+                const h = Math.min(MAX_H, Math.max(MIN_H, startH - (ev.clientY - startY)));
+                container.style.width = w + "px";
+                container.style.height = h + "px";
+            };
+
+            const onUp = () => {
+                document.removeEventListener("mousemove", onMove);
+                document.removeEventListener("mouseup", onUp);
+            };
+
+            document.addEventListener("mousemove", onMove);
+            document.addEventListener("mouseup", onUp);
+        });
     }
 
     private _bindRoomEvents() {
