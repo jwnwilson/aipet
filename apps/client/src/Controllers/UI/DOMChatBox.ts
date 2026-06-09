@@ -56,6 +56,7 @@ export class DOMChatBox {
             `bottom:35px`,
             "left:15px",
             `width:${INIT_W}px`,
+            `max-width:calc(100vw - 30px)`,
             `height:${INIT_H}px`,
             "display:flex",
             "flex-direction:column",
@@ -72,14 +73,12 @@ export class DOMChatBox {
         this._container = container;
         document.body.appendChild(container);
 
-        // chatPanel shim — maps Babylon-style top="-30px;" → bottom:30px
-        const c = container;
+        // chatPanel shim — UserInterface.resize() writes chatPanel.top to reposition
+        // Babylon GUI panels on narrow screens, but the DOM chatbox uses CSS fixed
+        // positioning that doesn't need that adjustment, so the setter is a no-op.
         this.chatPanel = {
-            get top() { return c.style.bottom; },
-            set top(v: string) {
-                const px = Math.abs(parseInt(v, 10));
-                if (!isNaN(px)) c.style.bottom = px + "px";
-            },
+            get top() { return container.style.bottom; },
+            set top(_v: string) { /* no-op: DOM layout is stable across width changes */ },
         };
 
         // Resize handle — top-right corner, L-shaped border as visual cue.

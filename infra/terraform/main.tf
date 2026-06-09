@@ -34,3 +34,33 @@ module "dns" {
   vps_ip           = var.vps_ip
   client_cf_domain = module.s3_client.cloudfront_domain
 }
+
+module "acm_pet_simulator" {
+  source    = "./modules/acm"
+  domain    = "pet-simulator.co.uk"
+  zone_name = "pet-simulator.co.uk."
+}
+
+module "s3_pet_simulator" {
+  source              = "./modules/s3_static"
+  name                = "${var.repo_name}-pet-simulator"
+  domain              = "pet-simulator.co.uk"
+  acm_certificate_arn = module.acm_pet_simulator.certificate_arn
+}
+
+data "aws_route53_zone" "pet_simulator" {
+  name         = "pet-simulator.co.uk."
+  private_zone = false
+}
+
+resource "aws_route53_record" "pet_simulator_client" {
+  zone_id = data.aws_route53_zone.pet_simulator.zone_id
+  name    = "pet-simulator.co.uk"
+  type    = "A"
+
+  alias {
+    name                   = module.s3_pet_simulator.cloudfront_domain
+    zone_id                = "Z2FDTNDATAQYW2"
+    evaluate_target_health = false
+  }
+}

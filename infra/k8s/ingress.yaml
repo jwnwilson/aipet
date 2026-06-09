@@ -10,21 +10,8 @@ spec:
     - hosts:
         - aipet-api-v2.jwnwilson.co.uk
       secretName: aipet-server-tls
-    - hosts:
-        - pet-simulator.co.uk
-      secretName: pet-simulator-tls
   rules:
     - host: "aipet-api-v2.jwnwilson.co.uk"
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: aipet-server
-                port:
-                  number: 80
-    - host: "pet-simulator.co.uk"
       http:
         paths:
           - path: /
