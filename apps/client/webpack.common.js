@@ -2,6 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const appDirectory = fs.realpathSync(process.cwd());
 const CopyPlugin = require("copy-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
     entry: path.resolve(appDirectory, "src/index.ts"),
@@ -36,8 +37,13 @@ module.exports = {
         ],
     },
     plugins: [
+        new HtmlWebpackPlugin({
+            template: "public/index.html",
+            inject: "body",
+            scriptLoading: "blocking",
+        }),
         new CopyPlugin({
-            patterns: [{ from: "public/", to: "./" }],
+            patterns: [{ from: "public/", to: "./", globOptions: { ignore: ["**/index.html"] } }],
         }),
     ],
     mode: "development",
