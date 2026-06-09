@@ -196,12 +196,16 @@ export class DOMChatBox {
                 inputRow.style.display = "none";
                 minimizeBtn.textContent = "+";
                 minimizeBtn.title = "Expand chat";
+                resizeHandle.style.pointerEvents = "none";
+                resizeHandle.style.opacity = "0";
             } else {
                 container.style.height = expandedHeight + "px";
                 messageList.style.display = "flex";
                 inputRow.style.display = "flex";
                 minimizeBtn.textContent = "−";
                 minimizeBtn.title = "Minimise chat";
+                resizeHandle.style.pointerEvents = "";
+                resizeHandle.style.opacity = "";
                 this._scrollToBottom();
             }
         });
