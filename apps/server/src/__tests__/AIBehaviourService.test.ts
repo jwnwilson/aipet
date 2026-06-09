@@ -36,6 +36,7 @@ const makeState = (extras: any[] = []) => {
     return {
         entities: all,
         entityCTRL: { get: (id: string) => all.get(id) },
+        _gameroom: { broadcast: jest.fn() },
     };
 };
 
@@ -249,4 +250,54 @@ it("sends current pet stats in the request body", async () => {
 
     const body = mockPost.mock.calls[0][1] as any;
     expect(body.pet_stats.hunger).toBeCloseTo(0.8);
+});
+
+// ── NPC chat announcements ────────────────────────────────────────────────────
+
+it.each([
+    ["EAT", "I'm hungry, I'm going to try find food!"],
+    ["DRINK", "I'm hungry, I'm going to try find food!"],
+    ["SLEEP", "zzzzz..."],
+    ["SOCIAL", "I want some company!"],
+    ["FOLLOW", "I want some company!"],
+    ["PLAY", "I'm bored, let's play!"],
+    ["FETCH", "I'm bored, let's play!"],
+    ["TOILET", "Nature is calling..."],
+    ["EXPLORE", "Let me explore around here..."],
+] as const)(
+    "%s: broadcasts NPC_MESSAGE with expected announcement",
+    async (action, expectedMsg) => {
+        const player = makePlayer("player-1", 5);
+        const bowl = makeWorldObject("bowl-1", "bowl", 5);
+        const toy = makeWorldObject("toy-1", "toy", 5);
+        const bed = makeWorldObject("bed-1", "bed", 5);
+        const state = makeState([player, bowl, toy, bed]);
+        const bunny = makeBunny({ name: "Bunny" });
+
+        const targetMap: Record<string, string> = {
+            EAT: "bowl-1", DRINK: "bowl-1",
+            SLEEP: "bed-1",
+            SOCIAL: "player-1", FOLLOW: "player-1",
+            PLAY: "toy-1", FETCH: "toy-1",
+            TOILET: null, EXPLORE: null,
+        };
+
+        mockPost.mockResolvedValue({ data: { action, target_object_id: targetMap[action] ?? null } });
+        await svc.requestTick(bunny, state);
+
+        expect(state._gameroom.broadcast).toHaveBeenCalledWith(
+            expect.anything(),
+            expect.objectContaining({ name: "Bunny", message: expectedMsg }),
+        );
+    },
+);
+
+it("IDLE: does NOT broadcast any NPC_MESSAGE", async () => {
+    const bunny = makeBunny({ name: "Bunny" });
+    const state = makeState();
+    mockPost.mockResolvedValue({ data: { action: "IDLE", target_object_id: null } });
+
+    await svc.requestTick(bunny, state);
+
+    expect(state._gameroom.broadcast).not.toHaveBeenCalled();
 });
