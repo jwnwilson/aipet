@@ -105,9 +105,9 @@ export class PlayerInput {
             // if (pointerInfo.type === PointerEventTypes.POINTERMOVE) {
             if (this.left_click) {
                 // this.player_can_move = true;
-                let dpi = window.devicePixelRatio;
-                const x = ((pointerInfo.event.clientX * dpi) / pointerInfo.event.target.width) * 2 - 1;
-                const y = ((pointerInfo.event.clientY * dpi) / pointerInfo.event.target.height) * 2 - 1;
+                const target = pointerInfo.event.target as HTMLCanvasElement;
+                const x = (pointerInfo.event.clientX / target.clientWidth) * 2 - 1;
+                const y = (pointerInfo.event.clientY / target.clientHeight) * 2 - 1;
                 this.angle = Math.atan2(x, y);
                 this.calculateVelocityForces();
             }

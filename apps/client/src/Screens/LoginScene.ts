@@ -56,44 +56,35 @@ export class LoginScene {
     }
 
     create(guiMenu) {
-        // middle columm
-        const columnRect = new Rectangle("column");
-        columnRect.width = this._game.config.UI_SIDEBAR_WIDTH;
-        columnRect.height = 1;
-        columnRect.background = "#000000";
-        columnRect.thickness = 0;
-        columnRect.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
-        guiMenu.addControl(columnRect);
+        // centered panel — fixed height so it sits in the middle of the screen
+        const panel = new Rectangle("panel");
+        panel.width = this._game.config.UI_SIDEBAR_WIDTH;
+        panel.height = "280px";
+        panel.background = "#000000";
+        panel.thickness = 0;
+        panel.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
+        panel.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+        guiMenu.addControl(panel);
 
         // logo
-        var imgLogo = new Image("imgLogo", "./images/logo.svg");
+        const imgLogo = new Image("imgLogo", "./images/logo.svg");
         imgLogo.stretch = Image.STRETCH_UNIFORM;
-        imgLogo.top = "30px";
+        imgLogo.top = "0px";
         imgLogo.width = 1;
-        imgLogo.height = "110px;";
+        imgLogo.height = "180px";
         imgLogo.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-        columnRect.addControl(imgLogo);
+        panel.addControl(imgLogo);
 
-        // welcome text
-        const welcomeText = new TextBlock("infotext", this._game.config.version);
-        welcomeText.width = 0.8;
-        welcomeText.height = "40px";
-        welcomeText.color = "white";
-        welcomeText.top = "120px";
-        welcomeText.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
-        welcomeText.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-        columnRect.addControl(welcomeText);
+        // version text
+        const versionText = new TextBlock("versionText", this._game.config.version);
+        versionText.width = 0.8;
+        versionText.height = "28px";
+        versionText.color = "#888888";
+        versionText.top = "188px";
+        versionText.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
+        versionText.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+        panel.addControl(versionText);
 
-        // FORM CONTAINER columm
-        const formContainer = new Rectangle("formContainer");
-        formContainer.width = 1;
-        formContainer.height = "300px";
-        formContainer.thickness = 0;
-        formContainer.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
-        formContainer.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-        columnRect.addControl(formContainer);
-
-        // ///////////////////////////////////////////
         // // username input
         // const usernameInput = new InputText("usernameInput");
         // usernameInput.top = "-140px";
@@ -104,7 +95,7 @@ export class LoginScene {
         // usernameInput.placeholderText = "Enter username";
         // usernameInput.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
         // usernameInput.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-        // formContainer.addControl(usernameInput);
+        // panel.addControl(usernameInput);
         // usernameInput.onKeyboardEventProcessedObservable.add((ev) => {
         //     if (ev.key === "Tab") {
         //         guiMenu.focusedControl = passwordInput;
@@ -112,7 +103,6 @@ export class LoginScene {
         //     }
         // });
 
-        // ///////////////////////////////////////////
         // // password input
         // const passwordInput = new InputPassword("passwordInput");
         // passwordInput.width = 0.8;
@@ -123,7 +113,7 @@ export class LoginScene {
         // passwordInput.placeholderText = "Enter password";
         // passwordInput.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
         // passwordInput.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-        // formContainer.addControl(passwordInput);
+        // panel.addControl(passwordInput);
         // passwordInput.onKeyboardEventProcessedObservable.add((ev) => {
         //     if (ev.key === "Enter") {
         //         this.login(usernameInput.text, passwordInput.text);
@@ -132,7 +122,6 @@ export class LoginScene {
         //     }
         // });
 
-        // ///////////////////////////////////////////
         // // login button
         // const joinBtn = Button.CreateSimpleButton("back", "Connect To Game");
         // joinBtn.width = 0.8;
@@ -142,29 +131,26 @@ export class LoginScene {
         // joinBtn.thickness = 1;
         // joinBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
         // joinBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-        // formContainer.addControl(joinBtn);
+        // panel.addControl(joinBtn);
         // joinBtn.onPointerDownObservable.add(async () => {
         //     await this.login(usernameInput.text, passwordInput.text);
         //     usernameInput.text = "";
         //     passwordInput.text = "";
         // });
 
-        ///////////////////////////////////////////
         // quick play button
         const joinGuestBtn = Button.CreateSimpleButton("joinGuestBtn", "Quick Play");
         joinGuestBtn.width = 0.8;
-        joinGuestBtn.height = "30px";
+        joinGuestBtn.height = "40px";
         joinGuestBtn.color = "white";
-        joinGuestBtn.top = "-30px";
         joinGuestBtn.thickness = 1;
         joinGuestBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
         joinGuestBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-        formContainer.addControl(joinGuestBtn);
+        panel.addControl(joinGuestBtn);
         joinGuestBtn.onPointerDownObservable.add(async () => {
             this._game.setScene(State.CHARACTER_SELECTION);
         });
 
-        // load scene
         this._ui = guiMenu;
     }
 
