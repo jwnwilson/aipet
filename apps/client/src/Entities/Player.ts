@@ -78,13 +78,17 @@ export class Player extends Entity {
     }
 
     getMeshMetadata(pointerInfo) {
-        if (!pointerInfo._pickInfo.pickedMesh) return false;
+        const pick = pointerInfo.pickInfo ?? pointerInfo._pickInfo;
 
-        if (!pointerInfo._pickInfo.pickedMesh.metadata) return false;
+        // 3D mesh pick
+        const meshMeta = pick?.pickedMesh?.metadata;
+        if (meshMeta != null) return meshMeta;
 
-        if (pointerInfo._pickInfo.pickedMesh.metadata === null) return false;
+        // 2D sprite pick (e.g. bunny) — requires SpriteManager.isPickable = true
+        const spriteMeta = (pick?.pickedSprite as any)?.metadata;
+        if (spriteMeta != null) return spriteMeta;
 
-        return pointerInfo._pickInfo.pickedMesh.metadata;
+        return false;
     }
 
     public rightClick(pointerInfo) {

@@ -27,6 +27,7 @@ import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator"
 import { RenderTargetTexture } from "@babylonjs/core/Materials/Textures/renderTargetTexture";
 import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 import { VatController } from "./VatController";
+import { GrassController } from "./GrassController";
 
 type AssetEntry = {
     name: string;
@@ -109,16 +110,37 @@ export class AssetsController {
         if (races) {
             for (let key in races) {
                 let el = races[key];
-                this.assetDatabase.push({ name: "RACE_" + el.key, filename: "races/" + el.key + ".glb", extension: "glb", type: "mesh", instantiate: true });
-                this.assetDatabase.push({
-                    name: "VAT_" + el.vat.key,
-                    filename: "races/" + el.vat.key + ".glb",
-                    extension: "glb",
-                    type: "mesh",
-                    instantiate: true,
-                });
-                this.assetDatabase.push({ name: el.icon, filename: "portrait/" + el.icon + ".png", extension: "png", type: "image" });
+                if (el.vat) {
+                    this.assetDatabase.push({ name: "RACE_" + el.key, filename: "races/" + el.key + ".glb", extension: "glb", type: "mesh", instantiate: true });
+                    this.assetDatabase.push({
+                        name: "VAT_" + el.vat.key,
+                        filename: "races/" + el.vat.key + ".glb",
+                        extension: "glb",
+                        type: "mesh",
+                        instantiate: true,
+                    });
+                }
+                if (el.icon) {
+                    this.assetDatabase.push({ name: el.icon, filename: "portrait/" + el.icon + ".png", extension: "png", type: "image" });
+                }
             }
+        }
+
+        // world object models (scene props)
+        const WORLD_OBJECT_MODELS = [
+            { name: "OBJECT_bed",    filename: "objects/bed.glb" },
+            { name: "OBJECT_food",   filename: "objects/food.glb" },
+            { name: "OBJECT_toy",    filename: "objects/toy.glb" },
+            { name: "OBJECT_toilet", filename: "objects/toilet.glb" },
+        ];
+        for (const obj of WORLD_OBJECT_MODELS) {
+            this.assetDatabase.push({
+                name: obj.name,
+                filename: obj.filename,
+                extension: "glb",
+                type: "mesh",
+                instantiate: true,
+            });
         }
     }
 
@@ -163,14 +185,16 @@ export class AssetsController {
         if (races) {
             for (let key in races) {
                 let el = races[key];
-                this.assetDatabase.push({ name: "RACE_" + el.key, filename: "races/" + el.key + ".glb", extension: "glb", type: "mesh", instantiate: true });
-                this.assetDatabase.push({
-                    name: "VAT_" + el.vat.key,
-                    filename: "races/" + el.vat.key + ".glb",
-                    extension: "glb",
-                    type: "mesh",
-                    instantiate: true,
-                });
+                if (el.vat) {
+                    this.assetDatabase.push({ name: "RACE_" + el.key, filename: "races/" + el.key + ".glb", extension: "glb", type: "mesh", instantiate: true });
+                    this.assetDatabase.push({
+                        name: "VAT_" + el.vat.key,
+                        filename: "races/" + el.vat.key + ".glb",
+                        extension: "glb",
+                        type: "mesh",
+                        instantiate: true,
+                    });
+                }
             }
         }
         this.assetToPreload = this.assetDatabase;
@@ -366,6 +390,9 @@ export class AssetsController {
             grassMat.diffuseColor = new Color3(0.35, 0.6, 0.25);
             grassMat.specularColor = new Color3(0, 0, 0);
             ground.material = grassMat;
+
+            const grassSprites = new GrassController(this._game.scene);
+            grassSprites.spawn(200, 300);
             return;
         }
 

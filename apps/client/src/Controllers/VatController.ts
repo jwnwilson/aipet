@@ -61,6 +61,7 @@ export class VatController {
         // load all others
         for (let spawn of this._spawns) {
             let race = this._game.getGameData("race", spawn.race);
+            if (!race || !race.vat) continue; // skip sprite-based entities (e.g. bunny)
             if (!this._entityData.has(race.vat)) {
                 await this.prepareVat(race);
             }

@@ -137,16 +137,22 @@ export class Entity extends TransformNode {
         this.debugMaterialActive = this._scene.getMaterialByName("debug_entity_active");
         this.debugMaterialNeutral = this._scene.getMaterialByName("debug_entity_neutral");
 
-        // spawn player
-        this._game._vatController.prepareMesh(entity);
+        // spawn mesh — skipped for sprite-based entities (e.g. Pet) that have no vat data
+        if (race && race.vat) {
+            this._game._vatController.prepareMesh(entity);
+        }
 
-        // wait for vat to be ready
+        // wait for vat to be ready then spawn
         setTimeout(() => {
             this.spawn(entity);
         }, 250);
     }
 
     public async spawn(entity) {
+        // Sprite-based entities (e.g. Pet) override this method entirely.
+        // Guard prevents crash if super.spawn() is ever called with no VAT data.
+        if (!this.vat) return;
+
         // set default vat animation
         this.entityData = this._game._vatController.entityData.get(this.vat.key);
 

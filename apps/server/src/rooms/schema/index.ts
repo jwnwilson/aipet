@@ -9,5 +9,6 @@ import { QuestSchema } from "./player/QuestSchema";
 import { LootSchema } from "./LootSchema";
 import { PlayerSchema } from "./PlayerSchema";
 import { WorldObjectSchema } from "./WorldObjectSchema";
+import { PetStatsSchema } from "./PetStatsSchema";
 
-export { Entity, AbilitySchema, BrainSchema, ChatSchema, InventorySchema, LootSchema, PlayerSchema, EquipmentSchema, QuestSchema, HotbarSchema, WorldObjectSchema };
+export { Entity, AbilitySchema, BrainSchema, ChatSchema, InventorySchema, LootSchema, PlayerSchema, EquipmentSchema, QuestSchema, HotbarSchema, WorldObjectSchema, PetStatsSchema };

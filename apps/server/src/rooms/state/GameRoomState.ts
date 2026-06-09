@@ -81,9 +81,16 @@ export class GameRoomState extends Schema {
             this.entityCTRL.all.forEach((entity) => {
                 entity.update(deltaTime);
 
-                // decay pet stats for bunny entities
+                // decay and sync pet stats for bunny entities
                 if ((entity as any).AI_SPAWN_INFO?.key === "bunny") {
                     this.petStatsService.update(entity.sessionId, deltaTime);
+                    const stats = this.petStatsService.getOrInit(entity.sessionId);
+                    const brain = entity as BrainSchema;
+                    brain.petStats.hunger    = stats.hunger;
+                    brain.petStats.boredom   = stats.boredom;
+                    brain.petStats.social    = stats.social;
+                    brain.petStats.toilet    = stats.toilet;
+                    brain.petStats.tiredness = stats.tiredness;
                 }
             });
         }

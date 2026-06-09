@@ -10,6 +10,7 @@ import { PlayerInput } from "../Controllers/PlayerInput";
 import { UserInterface } from "../Controllers/UserInterface";
 import { Player } from "../Entities/Player";
 import { Entity } from "../Entities/Entity";
+import { Pet } from "../Entities/Pet";
 import { Item } from "../Entities/Item";
 import { WorldObject } from "../Entities/WorldObject";
 import { Room } from "colyseus.js";
@@ -348,9 +349,15 @@ export class GameScene {
             let entity = value[1];
             i++;
 
-            // if player
-            if (entity.type === "player" || entity.type === "entity") {
+            // if player or non-bunny NPC
+            const race = entity.type === "entity" ? (entity as Entity).race : undefined;
+            if (entity.type === "player" || (entity.type === "entity" && race !== "bunny")) {
                 this._entities.set(entity.sessionId, new Entity(entity.sessionId, this._scene, this, entity));
+            }
+
+            // if bunny pet — use sprite-based renderer
+            if (entity.type === "entity" && race === "bunny") {
+                this._entities.set(entity.sessionId, new Pet(entity.sessionId, this._scene, this, entity));
             }
 
             // if item
