@@ -82,6 +82,8 @@ class PatrolState extends State {
 
         // add 10% chance of AI of breaking patrol and slacking off :)
         if (Math.random() > 0.99) {
+            // discard pending action — bunny didn't complete it
+            (owner as any).AI_PENDING_ACTION = null;
             owner._stateMachine.changeTo("IDLE");
             return false;
         }

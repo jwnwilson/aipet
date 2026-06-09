@@ -18,6 +18,7 @@ export class DOMChatBox {
     private _inputEl: HTMLInputElement;
 
     private _chatRoom;
+    private _gameRoom;
     private _game;
     private _currentPlayer;
     private _entities;
@@ -34,8 +35,9 @@ export class DOMChatBox {
         return { focus: () => this._inputEl?.focus() };
     }
 
-    constructor(_playerUI, chatRoom, currentPlayer, entities, game) {
+    constructor(_playerUI, chatRoom, currentPlayer, entities, game, gameRoom?) {
         this._chatRoom = chatRoom;
+        this._gameRoom = gameRoom ?? null;
         this._game = game;
         this._currentPlayer = currentPlayer;
         this._entities = entities;
@@ -208,19 +210,30 @@ export class DOMChatBox {
         });
 
         this._chatRoom.onMessage(ServerMsg.NPC_MESSAGE, (data: { name: string; message: string }) => {
-            const msg: PlayerMessage = {
-                type: "npc",
-                senderID: "NPC",
-                name: data.name,
-                message: data.message,
-                timestamp: 0,
-                createdAt: new Date().toISOString(),
-                color: COLORS["npc"],
-            };
-            this._game.currentChats.push(msg);
-            this._appendMessage(data.name + " says: ", data.message, COLORS["npc"]);
-            this._showMessageAboveNpc(data.name, data.message);
+            this._handleNpcMessage(data);
         });
+
+        // AI behaviour messages arrive on the game room, not the chat room
+        if (this._gameRoom) {
+            this._gameRoom.onMessage(ServerMsg.NPC_MESSAGE, (data: { name: string; message: string }) => {
+                this._handleNpcMessage(data);
+            });
+        }
+    }
+
+    private _handleNpcMessage(data: { name: string; message: string }) {
+        const msg: PlayerMessage = {
+            type: "npc",
+            senderID: "NPC",
+            name: data.name,
+            message: data.message,
+            timestamp: 0,
+            createdAt: new Date().toISOString(),
+            color: COLORS["npc"],
+        };
+        this._game.currentChats.push(msg);
+        this._appendMessage(data.name + " says: ", data.message, COLORS["npc"]);
+        this._showMessageAboveNpc(data.name, data.message);
     }
 
     private _sendMessage() {

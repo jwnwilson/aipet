@@ -1,12 +1,34 @@
 import { randomNumberInRange } from "../../../../shared/Utils";
-import { AI_STATE } from "../../../../shared/types";
+import { AI_STATE, PetAction, ServerMsg } from "../../../../shared/types";
 import { State } from "../brain/StateManager";
+
+function getCompletionMessage(action: PetAction): string | null {
+    switch (action) {
+        case "EAT":
+        case "DRINK":
+            return "That was yummy!";
+        case "SLEEP":
+            return "That was a nice nap!";
+        case "SOCIAL":
+        case "FOLLOW":
+            return "Hello human!";
+        case "PLAY":
+        case "FETCH":
+            return "I like my toy!";
+        default:
+            return null;
+    }
+}
 
 class IdleState extends State {
     enter(owner) {
         // apply stat reset for the action that just completed
         if (owner.AI_PENDING_ACTION && owner._state.aiService) {
             owner._state.aiService.applyPendingAction(owner.sessionId, owner.AI_PENDING_ACTION);
+            const completionMsg = getCompletionMessage(owner.AI_PENDING_ACTION);
+            if (completionMsg && owner._state._gameroom) {
+                owner._state._gameroom.broadcast(ServerMsg.NPC_MESSAGE, { name: owner.name, message: completionMsg });
+            }
             owner.AI_PENDING_ACTION = null;
         }
         owner.IDLE_TIMER = 0;

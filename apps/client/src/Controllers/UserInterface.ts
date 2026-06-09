@@ -83,7 +83,7 @@ export class UserInterface {
         this._Watermark = new Watermark(this);
         this._DebugBox = new DebugBox(this._playerUI, this._engine, this._scene, this._room, this._currentPlayer, this._entities);
         this._MainMenu = new MainMenu(this, currentPlayer);
-        this._ChatBox = new DOMChatBox(this._playerUI, this._chatRoom, currentPlayer, this._entities, this._game);
+        this._ChatBox = new DOMChatBox(this._playerUI, this._chatRoom, currentPlayer, this._entities, this._game, this._room);
 
         this.panelDialog = new Panel_Dialog(this, currentPlayer, {
             name: "Dialog Panel",

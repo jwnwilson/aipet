@@ -100,7 +100,7 @@ let RacesDB: raceDataMap = {
         title: "Bunny",
         description: "A small, curious bunny with an AI-powered mind of its own.",
         icon: "",
-        speed: 0.2,
+        speed: 0.5,
         scale: 1,
         rotationFix: 0,
         baseHealth: 10,

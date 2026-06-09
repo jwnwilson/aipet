@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import Logger from "../utils/Logger";
 import { PetStatsService } from "./PetStatsService";
-import { PetAction } from "../../../shared/types";
+import { PetAction, ServerMsg } from "../../../shared/types";
 
 type SceneObjectType = "bowl" | "bed" | "toy" | "player" | "pet";
 
@@ -155,6 +155,11 @@ export class AIBehaviourService {
             }
         }
 
+        const announcement = this._getActionAnnouncementMessage(action);
+        if (announcement && state._gameroom) {
+            state._gameroom.broadcast(ServerMsg.NPC_MESSAGE, { name: entity.name, message: announcement });
+        }
+
         switch (action) {
             case "IDLE":
                 // Stay in IdleState; reset timer so the next tick fires in ~3s
@@ -184,6 +189,29 @@ export class AIBehaviourService {
                     entity.setTargetDestination(targetEntity.getPosition());
                 }
                 break;
+        }
+    }
+
+    private _getActionAnnouncementMessage(action: PetAction): string | null {
+        switch (action) {
+            case "EAT":
+            case "DRINK":
+                return "I'm hungry, I'm going to try find food!";
+            case "SLEEP":
+                return "zzzzz...";
+            case "SOCIAL":
+            case "FOLLOW":
+                return "I want some company!";
+            case "PLAY":
+            case "FETCH":
+                return "I'm bored, let's play!";
+            case "TOILET":
+                return "Nature is calling...";
+            case "EXPLORE":
+                return "Let me explore around here...";
+            case "IDLE":
+            default:
+                return null;
         }
     }
 }
