@@ -25,7 +25,7 @@ export class Watermark {
         this._bloc = columnRect;
 
         // logo
-        var imgLogo = new Image("imgLogo", "./images/logo.png");
+        var imgLogo = new Image("imgLogo", "./images/logo.svg");
         imgLogo.stretch = Image.STRETCH_UNIFORM;
         imgLogo.top = "0px";
         imgLogo.width = 1;

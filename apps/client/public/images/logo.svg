@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" width="400" height="240">
+  <defs>
+    <linearGradient id="pbsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a8edbe;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6ec9a0;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="earGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#d4b0e8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a87fc7;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Bunny ears (centered around x=200) -->
+  <ellipse cx="180" cy="52" rx="10" ry="26" fill="url(#earGrad)" filter="url(#glow)"/>
+  <ellipse cx="180" cy="52" rx="5" ry="19" fill="#f5c6f0" opacity="0.7"/>
+
+  <ellipse cx="220" cy="48" rx="10" ry="28" fill="url(#earGrad)" filter="url(#glow)"/>
+  <ellipse cx="220" cy="48" rx="5" ry="21" fill="#f5c6f0" opacity="0.7"/>
+
+  <!-- Bunny head (centered at x=200) -->
+  <ellipse cx="200" cy="88" rx="34" ry="30" fill="#e8e0f5"/>
+
+  <!-- Eyes -->
+  <circle cx="188" cy="84" r="5" fill="#5a3a7e"/>
+  <circle cx="212" cy="84" r="5" fill="#5a3a7e"/>
+  <circle cx="190" cy="82" r="2" fill="white"/>
+  <circle cx="214" cy="82" r="2" fill="white"/>
+
+  <!-- Nose -->
+  <ellipse cx="200" cy="94" rx="4" ry="3" fill="#e87fa8"/>
+
+  <!-- Mouth -->
+  <path d="M 196 97 Q 200 102 204 97" stroke="#c0607a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+  <!-- Whiskers left -->
+  <line x1="172" y1="93" x2="192" y2="95" stroke="#aaaaaa" stroke-width="1" opacity="0.8"/>
+  <line x1="172" y1="97" x2="192" y2="97" stroke="#aaaaaa" stroke-width="1" opacity="0.8"/>
+
+  <!-- Whiskers right -->
+  <line x1="208" y1="95" x2="228" y2="93" stroke="#aaaaaa" stroke-width="1" opacity="0.8"/>
+  <line x1="208" y1="97" x2="228" y2="97" stroke="#aaaaaa" stroke-width="1" opacity="0.8"/>
+
+  <!-- PBS lettering — centered -->
+  <text x="200" y="168" font-family="Georgia, serif" font-size="62" font-weight="bold"
+        text-anchor="middle" fill="url(#pbsGrad)" filter="url(#glow)" letter-spacing="6">PBS</text>
+
+  <!-- Divider line -->
+  <line x1="80" y1="182" x2="320" y2="182" stroke="#6ec9a0" stroke-width="1.5" opacity="0.5"/>
+
+  <!-- Subtitle -->
+  <text x="200" y="206" font-family="Georgia, serif" font-size="15" font-weight="normal"
+        fill="#c8f0da" text-anchor="middle" letter-spacing="3">PET BUNNY SIMULATOR</text>
+</svg>

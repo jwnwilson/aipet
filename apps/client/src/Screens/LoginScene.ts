@@ -8,8 +8,8 @@ import { Rectangle } from "@babylonjs/gui/2D/controls/rectangle";
 import { TextBlock } from "@babylonjs/gui/2D/controls/textBlock";
 import { Control } from "@babylonjs/gui/2D/controls/control";
 import { Button } from "@babylonjs/gui/2D/controls/button";
-import { InputText } from "@babylonjs/gui/2D/controls/inputText";
-import { InputPassword } from "@babylonjs/gui/2D/controls/inputPassword";
+// import { InputText } from "@babylonjs/gui/2D/controls/inputText";
+// import { InputPassword } from "@babylonjs/gui/2D/controls/inputPassword";
 import { Image } from "@babylonjs/gui/2D/controls/image";
 
 import State from "./Screens";
@@ -66,11 +66,11 @@ export class LoginScene {
         guiMenu.addControl(columnRect);
 
         // logo
-        var imgLogo = new Image("imgLogo", "./images/logo.png");
+        var imgLogo = new Image("imgLogo", "./images/logo.svg");
         imgLogo.stretch = Image.STRETCH_UNIFORM;
         imgLogo.top = "30px";
         imgLogo.width = 1;
-        imgLogo.height = "75px;";
+        imgLogo.height = "110px;";
         imgLogo.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
         columnRect.addControl(imgLogo);
 
@@ -93,69 +93,64 @@ export class LoginScene {
         formContainer.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
         columnRect.addControl(formContainer);
 
-        ///////////////////////////////////////////
-        // username input
-        const usernameInput = new InputText("usernameInput");
-        usernameInput.top = "-140px";
-        usernameInput.width = 0.8;
-        usernameInput.height = "30px;";
-        usernameInput.color = "#FFF";
-        usernameInput.text = "";
-        //usernameInput.text = "test";
-        usernameInput.placeholderText = "Enter username";
-        usernameInput.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
-        usernameInput.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-        formContainer.addControl(usernameInput);
+        // ///////////////////////////////////////////
+        // // username input
+        // const usernameInput = new InputText("usernameInput");
+        // usernameInput.top = "-140px";
+        // usernameInput.width = 0.8;
+        // usernameInput.height = "30px;";
+        // usernameInput.color = "#FFF";
+        // usernameInput.text = "";
+        // usernameInput.placeholderText = "Enter username";
+        // usernameInput.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
+        // usernameInput.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+        // formContainer.addControl(usernameInput);
+        // usernameInput.onKeyboardEventProcessedObservable.add((ev) => {
+        //     if (ev.key === "Tab") {
+        //         guiMenu.focusedControl = passwordInput;
+        //         ev.preventDefault();
+        //     }
+        // });
 
-        usernameInput.onKeyboardEventProcessedObservable.add((ev) => {
-            if (ev.key === "Tab") {
-                guiMenu.focusedControl = passwordInput;
-                ev.preventDefault();
-            }
-        });
+        // ///////////////////////////////////////////
+        // // password input
+        // const passwordInput = new InputPassword("passwordInput");
+        // passwordInput.width = 0.8;
+        // passwordInput.height = "30px;";
+        // passwordInput.color = "#FFF";
+        // passwordInput.top = "-110px";
+        // passwordInput.text = "";
+        // passwordInput.placeholderText = "Enter password";
+        // passwordInput.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
+        // passwordInput.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+        // formContainer.addControl(passwordInput);
+        // passwordInput.onKeyboardEventProcessedObservable.add((ev) => {
+        //     if (ev.key === "Enter") {
+        //         this.login(usernameInput.text, passwordInput.text);
+        //         usernameInput.text = "";
+        //         passwordInput.text = "";
+        //     }
+        // });
 
-        ///////////////////////////////////////////
-        // password input
-        const passwordInput = new InputPassword("passwordInput");
-        passwordInput.width = 0.8;
-        passwordInput.height = "30px;";
-        passwordInput.color = "#FFF";
-        passwordInput.top = "-110px";
-        passwordInput.text = "";
-        passwordInput.placeholderText = "Enter password";
-        passwordInput.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
-        passwordInput.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-        formContainer.addControl(passwordInput);
-
-        passwordInput.onKeyboardEventProcessedObservable.add((ev) => {
-            if (ev.key === "Enter") {
-                this.login(usernameInput.text, passwordInput.text);
-                usernameInput.text = "";
-                passwordInput.text = "";
-            }
-        });
-
-        ///////////////////////////////////////////
-        // login button
-        const joinBtn = Button.CreateSimpleButton("back", "Connect To Game");
-        joinBtn.width = 0.8;
-        joinBtn.height = "30px";
-        joinBtn.color = "white";
-        joinBtn.top = "-80px";
-        joinBtn.thickness = 1;
-        joinBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
-        joinBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-        formContainer.addControl(joinBtn);
-
-        joinBtn.onPointerDownObservable.add(async () => {
-            await this.login(usernameInput.text, passwordInput.text);
-            // reset input
-            usernameInput.text = "";
-            passwordInput.text = "";
-        });
+        // ///////////////////////////////////////////
+        // // login button
+        // const joinBtn = Button.CreateSimpleButton("back", "Connect To Game");
+        // joinBtn.width = 0.8;
+        // joinBtn.height = "30px";
+        // joinBtn.color = "white";
+        // joinBtn.top = "-80px";
+        // joinBtn.thickness = 1;
+        // joinBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
+        // joinBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+        // formContainer.addControl(joinBtn);
+        // joinBtn.onPointerDownObservable.add(async () => {
+        //     await this.login(usernameInput.text, passwordInput.text);
+        //     usernameInput.text = "";
+        //     passwordInput.text = "";
+        // });
 
         ///////////////////////////////////////////
-        // guest button
+        // quick play button
         const joinGuestBtn = Button.CreateSimpleButton("joinGuestBtn", "Quick Play");
         joinGuestBtn.width = 0.8;
         joinGuestBtn.height = "30px";
@@ -173,10 +168,10 @@ export class LoginScene {
         this._ui = guiMenu;
     }
 
-    async login(username, password) {
-        let loginResult = await this._game.login(username, password);
-        if (loginResult) {
-            this._game.setScene(State.CHARACTER_SELECTION);
-        }
-    }
+    // async login(username, password) {
+    //     let loginResult = await this._game.login(username, password);
+    //     if (loginResult) {
+    //         this._game.setScene(State.CHARACTER_SELECTION);
+    //     }
+    // }
 }
