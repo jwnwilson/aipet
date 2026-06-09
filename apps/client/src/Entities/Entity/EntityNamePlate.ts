@@ -190,8 +190,11 @@ export class EntityNamePlate {
         // create mesh + texture sized for all lines plus speech-bubble padding
         const extraW = 2 * this.BUBBLE_PAD_X;
         const extraH = 2 * this.BUBBLE_PAD_Y + this.BUBBLE_TAIL;
+        const textDTHeight = numLines * this.font_size;
+        const totalDTHeight = textDTHeight + extraH;
+        const scaledPlaneHeight = 0.4 * numLines * (totalDTHeight / textDTHeight);
         let entity_height = this.getEntityheight(offset_y);
-        let { planeWidth, planeHeight, texture, material } = this.createMaterial(0.4 * numLines, numLines, longestLine, this._entity.scale, extraW, extraH);
+        let { planeWidth, planeHeight, texture, material } = this.createMaterial(scaledPlaneHeight, numLines, longestLine, this._entity.scale, extraW, extraH);
 
         const size = texture.getSize();
         const ctx  = texture.getContext();
@@ -200,7 +203,7 @@ export class EntityNamePlate {
         // draw white rounded-rect bubble with downward tail, then text on top
         this._drawSpeechBubble(ctx, size.width, size.height);
         ctx.fillStyle = color;
-        const lineHeight = (size.height - this.BUBBLE_TAIL) / numLines;
+        const lineHeight = (size.height - this.BUBBLE_TAIL - 2 * this.BUBBLE_PAD_Y) / numLines;
         lines.forEach((line, i) => {
             ctx.fillText(line, this.BUBBLE_PAD_X, this.BUBBLE_PAD_Y + (i + 0.85) * lineHeight);
         });

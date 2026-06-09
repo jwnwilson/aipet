@@ -69,6 +69,7 @@ export class DOMChatBox {
             "box-sizing:border-box",
             "padding:6px",
             "gap:4px",
+            "border:1px solid #000",
         ].join(";");
         this._container = container;
         document.body.appendChild(container);
