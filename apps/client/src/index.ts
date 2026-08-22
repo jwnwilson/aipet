@@ -38,6 +38,7 @@ import { DebugScene } from "./Screens/DebugScene";
 import { Config } from "../../shared/Config";
 import { Loading } from "./Controllers/Loading";
 import { isLocal } from "./Utils";
+import { engineOptionsFromQuery, describeEngineOptions } from "./Utils/engineOptions";
 import { GameController } from "./Controllers/GameController";
 
 // App class is our entire game application
@@ -60,11 +61,20 @@ class App {
     }
 
     private async _init(): Promise<void> {
-        // create engine
-        this.engine = new Engine(this.canvas, true, {
-            adaptToDeviceRatio: true,
-            antialias: true,
+        // create engine — URL flags allow alternative WebGL paths to be tried on
+        // devices where the default one fails to draw (see Utils/engineOptions).
+        const engineOptions = engineOptionsFromQuery(window.location.search);
+        console.info("[ENGINE] options:", describeEngineOptions(engineOptions));
+        this.engine = new Engine(this.canvas, engineOptions.antialias, {
+            adaptToDeviceRatio: engineOptions.adaptToDeviceRatio,
+            antialias: engineOptions.antialias,
+            disableWebGL2Support: engineOptions.disableWebGL2Support,
         });
+        console.info(
+            "[ENGINE] WebGL " + this.engine.webGLVersion +
+            " · max texture " + this.engine.getCaps().maxTextureSize +
+            " · " + (this.engine.getGlInfo ? this.engine.getGlInfo().renderer : "renderer unknown")
+        );
 
         //
         this.engine.setHardwareScalingLevel(1);

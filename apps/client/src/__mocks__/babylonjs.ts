@@ -54,8 +54,26 @@ export class DynamicTexture {
   drawText(..._args: unknown[]) {}
   dispose() {}
 }
+export class MockObservable {
+  callbacks: Array<(...args: unknown[]) => void> = [];
+  addOnce(cb: (...args: unknown[]) => void) { this.callbacks.push(cb); }
+  notify() { this.callbacks.forEach((cb) => cb()); this.callbacks = []; }
+}
+export class MockTexture {
+  ready = false;
+  baseWidth = 672;
+  baseHeight = 2016;
+  onLoadObservable = new MockObservable();
+  isReady() { return this.ready; }
+  getBaseSize() { return { width: this.baseWidth, height: this.baseHeight }; }
+  /** Simulates the atlas PNG finishing its upload to the GPU. */
+  finishLoad() { this.ready = true; this.onLoadObservable.notify(); }
+}
 export class SpriteManager {
-  constructor(..._args: unknown[]) {}
+  static last: SpriteManager | null = null;
+  texture = new MockTexture();
+  isPickable = false;
+  constructor(..._args: unknown[]) { SpriteManager.last = this; }
   dispose() {}
 }
 export class Sprite {

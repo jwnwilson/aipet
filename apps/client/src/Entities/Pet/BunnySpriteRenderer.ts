@@ -3,6 +3,8 @@ import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { SpriteManager } from '@babylonjs/core/Sprites/spriteManager';
 import { Sprite } from '@babylonjs/core/Sprites/sprite';
 
+import { spriteOptionsFromQuery, describeSpriteOptions } from '../../Utils/spriteOptions';
+
 export type AnimationState = 'idle' | 'walk' | 'jump';
 
 interface DirectionLayout {
@@ -47,6 +49,72 @@ export const SPRITE_WORLD_SIZE = 3.0;
 const ATLAS_URL = '/sprites/bunny/atlas.png';
 const ATLAS_JSON_URL = '/sprites/bunny/atlas.json';
 
+/**
+ * How long the atlas PNG may take to reach the GPU before we treat it as broken.
+ * A sprite whose texture never becomes ready is silently invisible: the nameplate
+ * and shadow still render, so the failure is otherwise indistinguishable from a
+ * correctly spawned bunny.
+ */
+export const TEXTURE_READY_TIMEOUT_MS = 8000;
+
+/** The subset of Babylon's Texture we need in order to observe atlas upload. */
+interface AtlasTexture {
+  isReady(): boolean;
+  getBaseSize(): { width: number; height: number };
+  onLoadObservable?: { addOnce(callback: () => void): void };
+}
+
+/** The subset of Babylon's Engine that explains a GPU-side texture failure. */
+interface EngineFacts {
+  webGLVersion?: number;
+  getCaps?(): { maxTextureSize?: number };
+}
+
+export interface SpriteDiagnostics {
+  atlasUrl: string;
+  descriptorLoaded: boolean;
+  textureReady: boolean;
+  textureBaseSize: string;
+  webGLVersion: number | 'unknown';
+  maxTextureSize: number | 'unknown';
+  animationState: AnimationState | null;
+  direction: string | null;
+}
+
+function asAtlasTexture(value: unknown): AtlasTexture | null {
+  if (!value || typeof value !== 'object') return null;
+  const candidate = value as Partial<AtlasTexture>;
+  const hasApi =
+    typeof candidate.isReady === 'function' && typeof candidate.getBaseSize === 'function';
+  return hasApi ? (value as AtlasTexture) : null;
+}
+
+/** Redraws the atlas through a 2D canvas, producing the same kind of source the grass uses. */
+async function toCanvasDataUrl(url: string): Promise<string> {
+  const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error(`atlas image failed to load: ${url}`));
+    img.src = url;
+  });
+
+  const canvas = document.createElement('canvas');
+  canvas.width = image.naturalWidth;
+  canvas.height = image.naturalHeight;
+  const context = canvas.getContext('2d');
+  if (!context) throw new Error('2D context unavailable for atlas conversion');
+  context.drawImage(image, 0, 0);
+  return canvas.toDataURL('image/png');
+}
+
+function asEngineFacts(scene: unknown): EngineFacts | null {
+  if (!scene || typeof scene !== 'object') return null;
+  const getEngine = (scene as { getEngine?: () => unknown }).getEngine;
+  if (typeof getEngine !== 'function') return null;
+  const engine = getEngine.call(scene);
+  return engine && typeof engine === 'object' ? (engine as EngineFacts) : null;
+}
+
 /** Maps entity Y-rotation (radians, Babylon.js convention) to nearest 8-direction string. */
 export function directionFromAngle(rot: number): string {
   const normalized = ((rot % TAU) + TAU) % TAU;
@@ -60,6 +128,7 @@ export class BunnySpriteRenderer {
   private _atlasData: AtlasDescriptor | null = null;
   private _currentState: AnimationState | null = null;
   private _currentDir: string | null = null;
+  private _textureWatchdog: ReturnType<typeof setTimeout> | null = null;
 
   constructor(private readonly _scene: Scene) {}
 
@@ -84,10 +153,26 @@ export class BunnySpriteRenderer {
     }
     this._atlasData = json;
 
+    const spriteOptions = spriteOptionsFromQuery(
+      typeof window !== 'undefined' ? window.location.search : ''
+    );
+    console.info('[BUNNY] sprite options:', describeSpriteOptions(spriteOptions));
+
+    // The grass renders on devices where the bunny does not, and it feeds its
+    // manager a canvas data URL rather than a network URL. This reproduces that.
+    let atlasSource = ATLAS_URL;
+    if (spriteOptions.useCanvasAtlas) {
+      try {
+        atlasSource = await toCanvasDataUrl(ATLAS_URL);
+      } catch (err) {
+        console.error('BunnySpriteRenderer: canvas atlas conversion failed, using the URL:', err);
+      }
+    }
+
     this._manager = new SpriteManager(
       'bunnyManager',
-      ATLAS_URL,
-      1,
+      atlasSource,
+      spriteOptions.managerCapacity,
       { width: this._atlasData.frameSize, height: this._atlasData.frameSize },
       this._scene
     );
@@ -97,6 +182,54 @@ export class BunnySpriteRenderer {
     this._sprite.width = SPRITE_WORLD_SIZE;
     this._sprite.height = SPRITE_WORLD_SIZE;
     this._sprite.isPickable = true;
+
+    this._watchAtlasTexture();
+  }
+
+  /**
+   * Reports why a bunny might be invisible. Loading the descriptor and creating the
+   * Sprite can both succeed while the atlas PNG never reaches the GPU, so readiness
+   * of the texture — not existence of the sprite — is what decides visibility.
+   */
+  describeState(): SpriteDiagnostics {
+    const texture = asAtlasTexture(this._manager?.texture);
+    const engine = asEngineFacts(this._scene);
+    const baseSize = texture?.getBaseSize();
+    const caps = engine?.getCaps?.();
+
+    return {
+      atlasUrl: ATLAS_URL,
+      descriptorLoaded: this._atlasData !== null,
+      textureReady: texture?.isReady() ?? false,
+      textureBaseSize: baseSize ? `${baseSize.width}x${baseSize.height}` : 'unknown',
+      webGLVersion: engine?.webGLVersion ?? 'unknown',
+      maxTextureSize: caps?.maxTextureSize ?? 'unknown',
+      animationState: this._currentState,
+      direction: this._currentDir,
+    };
+  }
+
+  /** Surfaces an atlas upload that never completes, instead of failing silently. */
+  private _watchAtlasTexture(): void {
+    const texture = asAtlasTexture(this._manager?.texture);
+    if (!texture || texture.isReady()) return;
+
+    this._textureWatchdog = setTimeout(() => {
+      this._textureWatchdog = null;
+      console.error(
+        `BunnySpriteRenderer: atlas texture still not ready after ${TEXTURE_READY_TIMEOUT_MS}ms — ` +
+          'the bunny will be invisible even though its nameplate and shadow render.',
+        this.describeState()
+      );
+    }, TEXTURE_READY_TIMEOUT_MS);
+
+    texture.onLoadObservable?.addOnce(() => this._clearTextureWatchdog());
+  }
+
+  private _clearTextureWatchdog(): void {
+    if (this._textureWatchdog === null) return;
+    clearTimeout(this._textureWatchdog);
+    this._textureWatchdog = null;
   }
 
   setMetadata(metadata: unknown): void {
@@ -121,6 +254,7 @@ export class BunnySpriteRenderer {
   }
 
   dispose(): void {
+    this._clearTextureWatchdog();
     this._sprite?.dispose();
     this._manager?.dispose();
   }
