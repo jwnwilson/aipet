@@ -1,14 +1,21 @@
 /**
- * Bunny sprite options that can be overridden from the URL.
+ * How the bunny's sprite atlas reaches Babylon.
  *
- * The meadow grass renders correctly on devices where the bunny does not, and the
- * two differ in only a couple of ways: the grass builds its texture in-page as a
- * canvas data URL and allocates a large sprite manager, while the bunny points the
- * manager at a network URL with a capacity of one. These flags make the bunny
- * behave like the grass so the difference can be tested on a real device.
+ * On Chrome for Android with an ANGLE/Vulkan backend (seen on a Samsung Xclipse
+ * 940), the bunny sprite did not render while the meadow grass — drawn by the same
+ * Babylon SpriteManager one frame later — did. The two differed in exactly two
+ * ways, and both had to change before bunny and grass would render together:
  *
- *   ?bunnycanvas=1  draw the atlas into a canvas and use that, as the grass does
- *   ?bunnycap=N     allocate the sprite manager with capacity N instead of 1
+ *   - the grass builds its texture in-page as a canvas data URL, the bunny pointed
+ *     the manager at a network URL
+ *   - the grass allocates a manager with hundreds of slots, the bunny used one
+ *
+ * Allocating capacity alone made the bunny appear but stopped the grass rendering;
+ * only both together restored both. The defaults below therefore match the grass,
+ * and the flags exist to reproduce the old behaviour when investigating further:
+ *
+ *   ?bunnycanvas=0  point the manager at the network URL again
+ *   ?bunnycap=N     allocate N slots instead of the default
  */
 export interface SpriteFlagOptions {
   useCanvasAtlas: boolean;
@@ -18,13 +25,13 @@ export interface SpriteFlagOptions {
 const MAX_CAPACITY = 1024;
 
 export const DEFAULT_SPRITE_OPTIONS: SpriteFlagOptions = {
-  useCanvasAtlas: false,
-  managerCapacity: 1,
+  useCanvasAtlas: true,
+  managerCapacity: 64,
 };
 
-function isFlagSet(params: URLSearchParams, name: string): boolean {
+function readFlag(params: URLSearchParams, name: string, fallback: boolean): boolean {
   const value = params.get(name);
-  if (value === null) return false;
+  if (value === null) return fallback;
   return value !== '0' && value.toLowerCase() !== 'false';
 }
 
@@ -40,14 +47,14 @@ export function spriteOptionsFromQuery(search: string): SpriteFlagOptions {
   const params = new URLSearchParams(search.startsWith('?') ? search.slice(1) : search);
 
   return {
-    useCanvasAtlas: isFlagSet(params, 'bunnycanvas'),
+    useCanvasAtlas: readFlag(params, 'bunnycanvas', DEFAULT_SPRITE_OPTIONS.useCanvasAtlas),
     managerCapacity: readCapacity(params),
   };
 }
 
 export function describeSpriteOptions(options: SpriteFlagOptions): string {
   const overrides: string[] = [];
-  if (options.useCanvasAtlas) overrides.push('atlas via canvas');
+  if (!options.useCanvasAtlas) overrides.push('network atlas');
   if (options.managerCapacity !== DEFAULT_SPRITE_OPTIONS.managerCapacity) {
     overrides.push(`capacity ${options.managerCapacity}`);
   }

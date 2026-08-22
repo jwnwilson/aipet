@@ -9,17 +9,23 @@
  *   ?webgl1=1  force the WebGL 1 backend instead of WebGL 2
  *   ?noaa=1    create the engine without antialiasing
  *   ?nodpr=1   ignore the device pixel ratio
+ *   ?novao=1   stop Babylon caching vertex array objects
+ *   ?noinst=1  stop Babylon using hardware instancing
  */
 export interface EngineFlagOptions {
   adaptToDeviceRatio: boolean;
   antialias: boolean;
   disableWebGL2Support: boolean;
+  disableVertexArrayObjects: boolean;
+  disableInstancing: boolean;
 }
 
 export const DEFAULT_ENGINE_OPTIONS: EngineFlagOptions = {
   adaptToDeviceRatio: true,
   antialias: true,
   disableWebGL2Support: false,
+  disableVertexArrayObjects: false,
+  disableInstancing: false,
 };
 
 function isFlagSet(params: URLSearchParams, name: string): boolean {
@@ -35,6 +41,8 @@ export function engineOptionsFromQuery(search: string): EngineFlagOptions {
     adaptToDeviceRatio: !isFlagSet(params, 'nodpr'),
     antialias: !isFlagSet(params, 'noaa'),
     disableWebGL2Support: isFlagSet(params, 'webgl1'),
+    disableVertexArrayObjects: isFlagSet(params, 'novao'),
+    disableInstancing: isFlagSet(params, 'noinst'),
   };
 }
 
@@ -44,5 +52,7 @@ export function describeEngineOptions(options: EngineFlagOptions): string {
   if (options.disableWebGL2Support) overrides.push('WebGL 1 forced');
   if (!options.antialias) overrides.push('antialiasing off');
   if (!options.adaptToDeviceRatio) overrides.push('device pixel ratio ignored');
+  if (options.disableVertexArrayObjects) overrides.push('vertex array objects off');
+  if (options.disableInstancing) overrides.push('hardware instancing off');
   return overrides.length ? overrides.join(', ') : 'defaults';
 }
