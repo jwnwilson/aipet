@@ -1,4 +1,10 @@
-import { directionFromAngle, BunnySpriteRenderer } from './BunnySpriteRenderer';
+import { SpriteManager } from '@babylonjs/core/Sprites/spriteManager';
+
+import {
+  directionFromAngle,
+  BunnySpriteRenderer,
+  TEXTURE_READY_TIMEOUT_MS,
+} from './BunnySpriteRenderer';
 
 describe('directionFromAngle', () => {
   it('returns south for angle 0', () => {
@@ -76,5 +82,80 @@ describe('BunnySpriteRenderer', () => {
 
   it('dispose does not throw when not loaded', () => {
     expect(() => renderer.dispose()).not.toThrow();
+  });
+});
+
+describe('BunnySpriteRenderer atlas texture observability', () => {
+  let renderer: BunnySpriteRenderer;
+  let errorSpy: jest.SpyInstance;
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: jest.fn().mockResolvedValue(mockAtlasJson),
+    } as unknown as Response);
+    errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    (SpriteManager as any).last = null;
+    renderer = new BunnySpriteRenderer({} as any);
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    errorSpy.mockRestore();
+  });
+
+  it('reports an error when the atlas texture never becomes ready', async () => {
+    // Arrange
+    await renderer.load();
+
+    // Act — the descriptor parsed and the sprite exists, but the PNG never uploads
+    jest.advanceTimersByTime(TEXTURE_READY_TIMEOUT_MS + 1);
+
+    // Assert
+    expect(errorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('atlas texture'),
+      expect.objectContaining({ textureReady: false })
+    );
+  });
+
+  it('stays silent when the atlas texture finishes loading', async () => {
+    // Arrange
+    await renderer.load();
+
+    // Act
+    (SpriteManager as any).last.texture.finishLoad();
+    jest.advanceTimersByTime(TEXTURE_READY_TIMEOUT_MS + 1);
+
+    // Assert
+    expect(errorSpy).not.toHaveBeenCalled();
+  });
+
+  it('stops watching the texture once disposed', async () => {
+    // Arrange
+    await renderer.load();
+
+    // Act
+    renderer.dispose();
+    jest.advanceTimersByTime(TEXTURE_READY_TIMEOUT_MS + 1);
+
+    // Assert
+    expect(errorSpy).not.toHaveBeenCalled();
+  });
+
+  it('describeState reports atlas and GPU facts needed to diagnose a blank sprite', async () => {
+    // Arrange
+    await renderer.load();
+
+    // Act
+    const state = renderer.describeState();
+
+    // Assert
+    expect(state).toMatchObject({
+      atlasUrl: '/sprites/bunny/atlas.png',
+      descriptorLoaded: true,
+      textureReady: false,
+      textureBaseSize: '672x2016',
+    });
   });
 });
