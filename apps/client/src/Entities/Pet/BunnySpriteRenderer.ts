@@ -89,6 +89,11 @@ function asAtlasTexture(value: unknown): AtlasTexture | null {
   return hasApi ? (value as AtlasTexture) : null;
 }
 
+/** Canvas conversion needs a DOM; unit tests and any headless host will not have one. */
+function canUseCanvasAtlas(): boolean {
+  return typeof document !== 'undefined' && typeof Image !== 'undefined';
+}
+
 /** Redraws the atlas through a 2D canvas, producing the same kind of source the grass uses. */
 async function toCanvasDataUrl(url: string): Promise<string> {
   const image = await new Promise<HTMLImageElement>((resolve, reject) => {
@@ -161,7 +166,7 @@ export class BunnySpriteRenderer {
     // The grass renders on devices where the bunny does not, and it feeds its
     // manager a canvas data URL rather than a network URL. This reproduces that.
     let atlasSource = ATLAS_URL;
-    if (spriteOptions.useCanvasAtlas) {
+    if (spriteOptions.useCanvasAtlas && canUseCanvasAtlas()) {
       try {
         atlasSource = await toCanvasDataUrl(ATLAS_URL);
       } catch (err) {

@@ -70,6 +70,15 @@ class App {
             antialias: engineOptions.antialias,
             disableWebGL2Support: engineOptions.disableWebGL2Support,
         });
+        // Must be set before any SpriteManager is built: the sprite renderer reads
+        // these capabilities once, in its constructor.
+        if (engineOptions.disableVertexArrayObjects) {
+            this.engine.disableVertexArrayObjects = true;
+        }
+        if (engineOptions.disableInstancing) {
+            this.engine.getCaps().instancedArrays = false;
+        }
+
         console.info(
             "[ENGINE] WebGL " + this.engine.webGLVersion +
             " · max texture " + this.engine.getCaps().maxTextureSize +

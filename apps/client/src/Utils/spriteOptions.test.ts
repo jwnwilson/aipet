@@ -1,7 +1,7 @@
 import { spriteOptionsFromQuery, DEFAULT_SPRITE_OPTIONS } from './spriteOptions';
 
 describe('spriteOptionsFromQuery', () => {
-  it('returns the standard options when no flags are present', () => {
+  it('defaults to the configuration that renders on affected Android devices', () => {
     // Arrange
     const search = '';
 
@@ -9,10 +9,22 @@ describe('spriteOptionsFromQuery', () => {
     const options = spriteOptionsFromQuery(search);
 
     // Assert
+    expect(options).toEqual({ useCanvasAtlas: true, managerCapacity: 64 });
     expect(options).toEqual(DEFAULT_SPRITE_OPTIONS);
   });
 
-  it('routes the atlas through a canvas when bunnycanvas is set', () => {
+  it('falls back to the network atlas when bunnycanvas is turned off', () => {
+    // Arrange
+    const search = '?bunnycanvas=0';
+
+    // Act
+    const options = spriteOptionsFromQuery(search);
+
+    // Assert
+    expect(options.useCanvasAtlas).toBe(false);
+  });
+
+  it('keeps the canvas atlas when the flag is explicitly on', () => {
     // Arrange
     const search = '?bunnycanvas=1';
 
@@ -25,13 +37,13 @@ describe('spriteOptionsFromQuery', () => {
 
   it('overrides the sprite manager capacity', () => {
     // Arrange
-    const search = '?bunnycap=64';
+    const search = '?bunnycap=1';
 
     // Act
     const options = spriteOptionsFromQuery(search);
 
     // Assert
-    expect(options.managerCapacity).toBe(64);
+    expect(options.managerCapacity).toBe(1);
   });
 
   it('ignores a capacity that is not a positive whole number', () => {
@@ -57,12 +69,12 @@ describe('spriteOptionsFromQuery', () => {
 
   it('combines both flags', () => {
     // Arrange
-    const search = '?bunnycanvas=1&bunnycap=32';
+    const search = '?bunnycanvas=0&bunnycap=32';
 
     // Act
     const options = spriteOptionsFromQuery(search);
 
     // Assert
-    expect(options).toEqual({ useCanvasAtlas: true, managerCapacity: 32 });
+    expect(options).toEqual({ useCanvasAtlas: false, managerCapacity: 32 });
   });
 });

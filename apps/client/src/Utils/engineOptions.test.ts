@@ -57,6 +57,8 @@ describe('engineOptionsFromQuery', () => {
       adaptToDeviceRatio: true,
       antialias: false,
       disableWebGL2Support: true,
+      disableVertexArrayObjects: false,
+      disableInstancing: false,
     });
   });
 
@@ -69,6 +71,28 @@ describe('engineOptionsFromQuery', () => {
 
     // Assert
     expect(options).toEqual(DEFAULT_ENGINE_OPTIONS);
+  });
+
+  it('disables vertex array objects when novao is set', () => {
+    // Arrange
+    const search = '?novao=1';
+
+    // Act
+    const options = engineOptionsFromQuery(search);
+
+    // Assert
+    expect(options.disableVertexArrayObjects).toBe(true);
+  });
+
+  it('disables hardware instancing when noinst is set', () => {
+    // Arrange
+    const search = '?noinst=1';
+
+    // Act
+    const options = engineOptionsFromQuery(search);
+
+    // Assert
+    expect(options.disableInstancing).toBe(true);
   });
 
   it('tolerates a search string without a leading question mark', () => {
